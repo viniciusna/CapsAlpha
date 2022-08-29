@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  api_caps_alpha:
+    build: .
+    restart: always
+    environment:
+      -  PORT=3000
+      -  DB_HOST=db_caps_alpha
+      -  DB_PORT=5432
+      -  DB_USER=postgres
+      -  DB_PASSWORD=postgres
+      -  DB_NAME=postgres
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db_caps_alpha
+    links:
+      - db_caps_alpha 
+    command: npm run watch
+    volumes:
+      - type: bind
+        source: ./src  
+        target: /usr/caps_alpha/src
+        
+  db_caps_alpha:
+    build: ./docker/db/
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '8002:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
+volumes:
+  db:
+    driver: local

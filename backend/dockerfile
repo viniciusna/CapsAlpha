@@ -1,0 +1,5 @@
+FROM node:alpine
+WORKDIR /usr/caps_alpha
+COPY package.json .
+RUN npm install 
+COPY . .
