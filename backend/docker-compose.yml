@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  api_caps_alpha:
+  api_caps_alpha_1:
     build: .
     restart: always
     environment:
@@ -13,16 +13,16 @@ services:
     ports:
       - '3000:3000'
     depends_on:
-      - db_caps_alpha
+      - db_caps_alpha_1
     links:
-      - db_caps_alpha 
+      - db_caps_alpha_1 
     command: npm run watch
     volumes:
       - type: bind
-        source: ./src  
-        target: /usr/caps_alpha/src
+        source: ./app 
+        target: /usr/caps_alpha/app
         
-  db_caps_alpha:
+  db_caps_alpha_1:
     build: ./docker/db/
     restart: always
     environment:
