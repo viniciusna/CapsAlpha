@@ -1,4 +1,4 @@
-module.exports = class IndexController {
+class IndexController {
   handler(req, res) {
     const data = "Ola Mundo";
     res.send({
@@ -7,4 +7,6 @@ module.exports = class IndexController {
       status: 200,
     });
   }
-};
+}
+
+module.exports = IndexController;

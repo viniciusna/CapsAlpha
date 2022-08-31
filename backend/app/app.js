@@ -1,5 +1,5 @@
 require("express-async-errors");
-const indexRoute = require("./controllers/index");
+const indexRoute = require("./routes/index");
 const express = require("express");
 const cors = require("cors");
 
@@ -13,11 +13,11 @@ app.use(express.json());
 //   origin: allowedOrigins,
 // };
 // app.use(cors(options));
-app.get("/index", (req, res) => {
-  console.log("asasd");
-  res.send("asdasd");
+
+app.get("/a", (req, res) => {
+  res.send("Algo");
 });
-app.use(indexRoute);
+app.use("/coisas", indexRoute);
 
 app.use((err, req, res, next) => {
   console.log(err);
