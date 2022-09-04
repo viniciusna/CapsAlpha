@@ -1,7 +1,8 @@
-require("express-async-errors");
-const indexRoute = require("./routes/index");
 const express = require("express");
+require("express-async-errors");
 const cors = require("cors");
+const indexRoute = require("./routes/index");
+const userRoute = require("./routes/user");
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -14,10 +15,8 @@ app.use(express.json());
 // };
 // app.use(cors(options));
 
-app.get("/a", (req, res) => {
-  res.send("Algo");
-});
-app.use("/coisas", indexRoute);
+app.use("/", indexRoute);
+app.use("/user", userRoute);
 
 app.use((err, req, res, next) => {
   console.log(err);

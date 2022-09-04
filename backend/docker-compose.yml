@@ -5,24 +5,25 @@ services:
     restart: always
     environment:
       -  PORT=3000
-      -  DB_HOST=db_caps_alpha
+      -  DB_HOST=db_caps
       -  DB_PORT=5432
       -  DB_USER=postgres
       -  DB_PASSWORD=postgres
       -  DB_NAME=postgres
+      -  DB_DATABASE=caps_alpha
     ports:
       - '3000:3000'
     depends_on:
-      - db_caps_alpha_1
+      - db_caps
     links:
-      - db_caps_alpha_1 
+      - db_caps 
     command: npm run watch
     volumes:
       - type: bind
         source: ./app 
         target: /usr/caps_alpha/app
-        
-  db_caps_alpha_1:
+
+  db_caps:
     build: ./docker/db/
     restart: always
     environment:

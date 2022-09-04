@@ -1,34 +1,28 @@
--- Database: caps_alpha
-
--- DROP DATABASE IF EXISTS caps_alpha;
-
-CREATE DATABASE caps_alpha
-    WITH 
-    OWNER = postgres
-    ENCODING = 'UTF8'
-    LC_COLLATE = 'Portuguese_Brazil.1252'
-    LC_CTYPE = 'Portuguese_Brazil.1252'
-    TABLESPACE = pg_default
-    CONNECTION LIMIT = -1;
-
-CREATE TABLE users (
-	id INTEGER PRIMARY KEY,
-	email VARCHAR(30),
-	name VARCHAR(80),
-	password VARCHAR(30),
-	created_at DATETIME default now()
+CREATE TABLE users(
+	id serial not null,
+	name varchar(60) not null,
+	email varchar(60) not null,
+	password varchar(100) not null,
+	created_at date not null default now(),
+	updated_at date not null default now(),
+	PRIMARY KEY (id)
+);
+  
+CREATE TABLE documents(
+	id varchar(60),
+	PRIMARY KEY (id),
+	title varchar(60) not null default 'title',
+	owner integer not null,
+	content text not null default ' ',
+	private boolean,
+	created_at date not null default now(),
+	updated_at date not null default now(),
+	FOREIGN KEY (owner) REFERENCES users (id)
 );
 
-CREATE TABLE documents (
-	id CHAR(36) PRIMARY KEY,
-	title VARCHAR(80),
-	owner INTEGER REFERENCES users (id),
-	content TEXT,
-	private BOOLEAN,
-	created_at DATETIME default now()
-);
-
-CREATE TABLE users_documents (
-	document_id CHAR(36) REFERENCES documents (id),
-	user_id INTEGER REFERENCES users (id)
+CREATE TABLE users_documents(
+	document_id varchar(60),
+	user_id integer,
+	FOREIGN KEY (user_id) REFERENCES users (id),
+	FOREIGN KEY (document_id) REFERENCES documents (id)
 );
