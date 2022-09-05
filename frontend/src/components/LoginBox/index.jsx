@@ -1,6 +1,6 @@
 import React from "react";
 import { Context } from "../../context/Context.jsx";
-import { LoginForms, LoginBtns, LoginInput, LoginBtn } from "./style"
+import { LoginForms, LoginBtnsDiv, LoginInput, LoginBtn } from "./style"
 
 function LoginBox(props) {
     return (
@@ -9,11 +9,11 @@ function LoginBox(props) {
                 <LoginInput></LoginInput>
                 <LoginInput></LoginInput>
             </LoginForms>
-            <LoginBtns>
+            <LoginBtnsDiv>
                 <LoginBtn></LoginBtn>
                 <LoginBtn></LoginBtn>
                 <LoginBtn></LoginBtn>
-            </LoginBtns>
+            </LoginBtnsDiv>
         </section>
     );
 }
