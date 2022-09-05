@@ -48,7 +48,7 @@ class User extends PostgresDB {
     try {
       const client = await this.pool.connect();
       const query = `          
-          SELECT * 
+          SELECT id, name, email, created_at 
           FROM users
           WHERE id = $1;
         `;

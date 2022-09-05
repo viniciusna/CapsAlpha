@@ -14,7 +14,16 @@ class BadRequest extends Error {
   }
 }
 
+class Unauthorized extends Error {
+  constructor(msg) {
+    super(msg);
+    this.name = "Unauthorized";
+    this.status = 401;
+  }
+}
+
 module.exports = {
   InternalServerError,
   BadRequest,
+  Unauthorized,
 };

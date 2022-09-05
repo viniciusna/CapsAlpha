@@ -4,7 +4,6 @@ class IndexController {
     res.send({
       data: data,
       message: "Success",
-      status: 200,
     });
   }
 }
