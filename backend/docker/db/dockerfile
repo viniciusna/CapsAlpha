@@ -1,5 +1,4 @@
 FROM postgres 
 ENV POSTGRES_PASSWORD postgres 
-ENV POSTGRES_DB bank 
-ENV POSTGRES_PASSWORD postgres
+ENV POSTGRES_DB caps_alpha
 COPY init.sql /docker-entrypoint-initdb.d/

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 require("express-async-errors");
 const indexRoute = require("./routes/index");
 const { wsStart } = require("./websocket/index");
@@ -14,7 +15,13 @@ const wss = new WebSocket.Server({
   clientTracking: true
 })
 
+=======
+const express = require("express");
+require("express-async-errors");
+>>>>>>> d7eefab4527f8cc4204870edc9e77568891f53e4
 const cors = require("cors");
+const indexRoute = require("./routes/index");
+const userRoute = require("./routes/user");
 
 ////////////////////////////////////////////////////////////////////////////////
 // Middleware
@@ -29,14 +36,8 @@ app.use(express.json());
 // };
 // app.use(cors(options));
 
-////////////////////////////////////////////////////////////////////////////////
-// HTTP Server
-
-app.get("/a", (req, res) => {
-  res.send("Algo");
-});
-
-app.use("/coisas", indexRoute);
+app.use("/", indexRoute);
+app.use("/user", userRoute);
 
 app.use((err, req, res, next) => {
   console.log(err);
