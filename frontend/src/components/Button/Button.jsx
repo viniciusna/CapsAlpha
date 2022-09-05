@@ -1,17 +1,21 @@
 import React from "react";
 import * as S from "./style";
-import logo from "../../images/logo.svg";
 import { Context } from "../../context/Context.jsx";
 import { useContext } from "react";
 
-function Header(props) {
+function Button(props) {
   let { navigate } = useContext(Context);
   return (
-    <S.header>
-      <S.logo src={logo} onClick={props.onClick} />
+    <S.button
+      colorbg={props.colorbg}
+      colorfnt={props.colorfnt}
+      height={props.height}
+      width={props.width}
+    >
       {props.children}
-    </S.header>
+      {props.value}
+    </S.button>
   );
 }
 
-export default Header;
+export default Button;

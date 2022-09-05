@@ -5,6 +5,7 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import MyProjects from "../pages/MyProjects";
+import Prototype from "../pages/Prototype";
 import Editor from "../pages/Editor";
 
 function Router() {
@@ -15,6 +16,7 @@ function Router() {
       <Route path="/Login" element={<Login />} />
       <Route path="/MyProjects" element={<MyProjects />} />
       <Route path="/Editor" element={<Editor />} />
+      <Route path="/Prototype" element={<Prototype />} />
 
     </Routes>
   );
