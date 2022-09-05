@@ -1,7 +1,8 @@
 //Vai exportar todas as controllers
-const app = require("./app");
-const port = 3000;
+const server = require("./app");
+const config = require("../app/config");
+const port = config.port;
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });
