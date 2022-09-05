@@ -6,6 +6,7 @@ export const headerButton = Styled.div`
     align-items: center;
     height:5vh;
     width:fit-content;
-    gap:20px;
+    gap: 3rem;
+    // border:1px solid red;
 `;
 

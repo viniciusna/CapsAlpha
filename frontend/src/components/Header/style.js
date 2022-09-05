@@ -6,12 +6,10 @@ export const header = Styled.header`
     justify-content: space-between;
     align-items: center;
     height: 10vh;
-    width: 100vw;
+    width: 100%;
     background-color: #859AB2;
     color: white;
     padding-right:2%;
-    cursor: pointer;
-    font-weight: bold;
 `;
 
 export const logo = Styled.img`
