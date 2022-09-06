@@ -30,27 +30,27 @@ export const GlobalStyle = createGlobalStyle`
   width:75%;
 }
 
-h1{
+.h1-home{
   font-family: 'Roboto Mono', monospace;
   font-size:3em;
   // border:1px solid red;
   width:75%;
 
 }
-h3{
+.h3-home{
   all:unset;
   font-family: 'Roboto', sans-serif;
   font-size:1em;
   color:grey;
   width:75%;
 }
-h2{
+.h2-home{
   text-align:center;
   // border:1px solid red;
   width:45%;
 }
 
-p{
+.p-home{
   text-align:center;
   // border:1px solid red;
   width:60%;

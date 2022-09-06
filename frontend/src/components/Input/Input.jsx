@@ -2,16 +2,15 @@ import React from "react";
 import * as S from "./style";
 import { Context } from "../../context/Context.jsx";
 import { useContext } from "react";
-import {FaKeyboard} from "react-icons/fa"
 
-function Button(props) {
+function Input(props) {
   let { navigate } = useContext(Context);
   return (
-    <S.div height={props.height} width={props.width}>
-      <FaKeyboard />
-      <S.input placeholder={props.placeholder}/>
-    </S.div>
+        <S.div>
+            <label>{props.label}</label>
+            <S.input placeholder={props.placeholder} height={props.height} width={props.width}/>
+        </S.div>
   );
 }
 
-export default Button;
+export default Input;

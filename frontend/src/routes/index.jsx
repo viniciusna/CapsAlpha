@@ -2,8 +2,8 @@ import { Routes, Route } from "react-router-dom";
 
 import React from "react";
 import Home from "../pages/Home";
-import Login from "../pages/Login";
 import Register from "../pages/Register";
+import Login from "../pages/Login";
 import MyProjects from "../pages/MyProjects";
 import Prototype from "../pages/Prototype";
 import Editor from "../pages/Editor";

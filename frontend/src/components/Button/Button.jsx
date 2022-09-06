@@ -7,6 +7,7 @@ function Button(props) {
   let { navigate } = useContext(Context);
   return (
     <S.button
+      onClick={props.onClick}
       colorbg={props.colorbg}
       colorfnt={props.colorfnt}
       height={props.height}

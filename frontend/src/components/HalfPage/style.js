@@ -6,7 +6,7 @@ flex-direction: column;
 justify-content: center;
 gap: ${(props) => props.gap};
 align-items: center;
-height:84vh;
+height:${(props) => props.height};
 width:50%;
 // border:1px solid red;
 `;
