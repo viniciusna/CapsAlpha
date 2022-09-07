@@ -7,11 +7,11 @@ import { createGlobalStyle } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
 *{
-        margin:0;
-        padding:0;
-        box-sizing: border-box;
-        font-family: 'Roboto', sans-serif;
-        display:;
+  margin:0;
+  padding:0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+  display:;
     }
 .divv{
       display:flex;
@@ -66,8 +66,16 @@ export const GlobalStyle = createGlobalStyle`
 
 a{
   all:unset;
-  color:blue;
+  font-weight:bold;
   cursor:pointer;
 }
+
+.prototype-title{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:20vh;
+}
+
 
 `;

@@ -43,7 +43,7 @@ function Home() {
           <h3 className="h3-home">Faça aqui seu Mardown</h3>
           <div className="div">
             <Button
-              onClick={() => navigate("/Editor")}
+              onClick={() => navigate("/Prototype")}
               colorbg="#000000"
               colorfnt="#FFFFFF"
               value="Novo Documento"
