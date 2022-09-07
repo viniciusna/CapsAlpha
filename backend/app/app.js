@@ -32,7 +32,7 @@ app.use(cookieParser());
 // const options = {
 //   origin: allowedOrigins,
 // };
-// app.use(cors(options));
+app.use(cors());
 
 ////////////////////////////////////////////////////////////////////////////////
 // HTTP Server
