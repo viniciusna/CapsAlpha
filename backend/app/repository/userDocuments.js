@@ -1,56 +1,14 @@
 const PostgresDB = require("./index");
 const { BadRequest, InternalServerError } = require("../error/errors");
 
-class User extends PostgresDB {
-  async create(user) {
+class UserDocuments extends PostgresDB {
+  async getDocuments(id) {
     try {
       const client = await this.pool.connect();
-      const query = `          
-            INSERT INTO users(email, password, name)
-            VALUES($1,$2,$3)
-            RETURNING id;
-          `;
-      const values = [user.email, user.password, user.name];
-      const result = await client.query(query, values);
-      client.release();
-      if (result.rows.length == 0) {
-        return null;
-      }
-      return result.rows[0].id;
-    } catch (e) {
-      console.log(e);
-      throw new InternalServerError("Service temporarily unavailable");
-    }
-  }
-
-  async findByEmail(email) {
-    try {
-      const client = await this.pool.connect();
-      const query = `          
-          SELECT id, password
-          FROM users
-          WHERE email = $1;
-        `;
-      const values = [email];
-      const result = await client.query(query, values);
-      client.release();
-      if (result.rows.length == 0) {
-        return false;
-      }
-      return result.rows[0];
-    } catch (e) {
-      console.log(e);
-      throw new InternalServerError("Service temporarily unavailable");
-    }
-  }
-
-  async find(id) {
-    try {
-      const client = await this.pool.connect();
-      const query = `          
-          SELECT id, name, email, created_at 
-          FROM users
-          WHERE id = $1;
+      const query = `                
+           SELECT id,title,owner,created_at, updated_at, document_id FROM documents
+           INNER JOIN users_documents on users_documents.document_id = documents.id
+           WHERE users_documents.user_id = $1;
         `;
       const values = [id];
       const result = await client.query(query, values);
@@ -58,7 +16,43 @@ class User extends PostgresDB {
       if (result.rows.length == 0) {
         return false;
       }
-      return result.rows[0];
+      return result.rows;
+    } catch (e) {
+      console.log(e);
+      throw new InternalServerError("Service temporarily unavailable");
+    }
+  }
+
+  async set(userId, documentId) {
+    try {
+      const client = await this.pool.connect();
+      const query = `                
+            INSERT INTO users_documents(user_id, document_id)
+            VALUES($1,$2);
+        `;
+      const values = [userId, documentId];
+      const result = await client.query(query, values);
+      client.release();
+      return true;
+    } catch (e) {
+      console.log(e);
+      throw new InternalServerError("Service temporarily unavailable");
+    }
+  }
+  async find(userId, documentId) {
+    try {
+      const client = await this.pool.connect();
+      const query = `                
+            SELECT * FROM users_documents
+            WHERE document_id = $1 and user_id = $2;
+        `;
+      const values = [documentId, userId];
+      const result = await client.query(query, values);
+      client.release();
+      if (result.rows.length == 0) {
+        return false;
+      }
+      return result.rows;
     } catch (e) {
       console.log(e);
       throw new InternalServerError("Service temporarily unavailable");
@@ -66,4 +60,4 @@ class User extends PostgresDB {
   }
 }
 
-module.exports = User;
+module.exports = UserDocuments;

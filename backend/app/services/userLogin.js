@@ -4,8 +4,8 @@ const UserLoginValidator = require("../utils/validator/userLoginValidator");
 const bcrypt = require("bcrypt");
 const config = require("../config/index");
 const jwt = require("jsonwebtoken");
-
-module.exports = class UserRegister {
+const UserDocuments = require("../repository/userDocuments");
+module.exports = class UserLogin {
   async execute(params) {
     await new UserLoginValidator().execute(params);
     const user = await new User().findByEmail(params.email);
@@ -14,7 +14,8 @@ module.exports = class UserRegister {
     }
     const userData = await new User().find(user.id);
     const token = this.getToken(userData.id, userData.name);
-    return { userData, token };
+    const documents = await new UserDocuments().getDocuments(userData.id);
+    return { userData, token, documents };
   }
 
   decryptPassword(correctPassword, password) {
