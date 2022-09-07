@@ -1,17 +1,17 @@
 import React from "react";
 import * as S from "./style";
-import logo from "../../images/logo.svg";
 import { Context } from "../../context/Context.jsx";
 import { useContext } from "react";
 
-function Header(props) {
+
+function InputHome(props) {
   let { navigate } = useContext(Context);
   return (
-    <S.header>
-      <S.logo src={logo} onClick={props.onClick} />
-      {props.children}
-    </S.header>
+    <S.div height={props.height} width={props.width}>
+        {props.children}
+      <S.input placeholder={props.placeholder}/>
+    </S.div>
   );
 }
 
-export default Header;
+export default InputHome;

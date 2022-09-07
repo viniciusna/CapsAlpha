@@ -1,17 +1,15 @@
 import React from "react";
 import * as S from "./style";
-import logo from "../../images/logo.svg";
 import { Context } from "../../context/Context.jsx";
 import { useContext } from "react";
 
-function Header(props) {
+function HalfPage(props) {
   let { navigate } = useContext(Context);
   return (
-    <S.header>
-      <S.logo src={logo} onClick={props.onClick} />
+    <S.HalfPage className="halfpage" gap={props.gap} height={props.height}>
       {props.children}
-    </S.header>
+    </S.HalfPage>
   );
 }
 
-export default Header;
+export default HalfPage;
