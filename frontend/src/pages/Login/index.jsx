@@ -15,7 +15,7 @@ function Login() {
     <>
       <div className="divv">
         <HalfPage gap="0em" height="100vh">
-          <InputBox title="Fazer Login" height="60vh">
+          <InputBox title="Fazer Login" height="65vh">
             <Input
               label="Email"
               height={inputHeight}
@@ -35,7 +35,7 @@ function Login() {
               colorfnt="#FFFFFF"
               value="Logar"
               height="6vh"
-              width="30vw"
+              width="31vw"
             />
             <p>
               Crie sua conta.{" "}

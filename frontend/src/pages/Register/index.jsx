@@ -15,7 +15,7 @@ function Register() {
     <>
       <div className="divv">
         <HalfPage gap="0em" height="100vh">
-          <InputBox title="Registre-se" height="88vh">
+          <InputBox title="Registre-se" height="92vh">
             <Input
               label="Email"
               height={inputHeight}
@@ -46,7 +46,7 @@ function Register() {
               colorfnt="#FFFFFF"
               value="Cadastrar"
               height="6vh"
-              width="30vw"
+              width="31vw"
             />
             <p>
               Você já tem uma conta?{" "}
