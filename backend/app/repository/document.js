@@ -67,7 +67,7 @@ class Document extends PostgresDB {
     }
   }
 
-  async getDocument(id) {
+  async get(id) {
     try {
       const client = await this.pool.connect();
       const query = `                          

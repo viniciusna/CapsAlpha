@@ -39,6 +39,25 @@ class UserDocuments extends PostgresDB {
       throw new InternalServerError("Service temporarily unavailable");
     }
   }
+  async find(userId, documentId) {
+    try {
+      const client = await this.pool.connect();
+      const query = `                
+            SELECT * FROM users_documents
+            WHERE document_id = $1 and user_id = $2;
+        `;
+      const values = [documentId, userId];
+      const result = await client.query(query, values);
+      client.release();
+      if (result.rows.length == 0) {
+        return false;
+      }
+      return result.rows;
+    } catch (e) {
+      console.log(e);
+      throw new InternalServerError("Service temporarily unavailable");
+    }
+  }
 }
 
 module.exports = UserDocuments;

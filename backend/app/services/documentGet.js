@@ -1,21 +1,32 @@
 const Document = require("../repository/document");
 const { checkTokenUser } = require("../utils/jwt");
-const { Unauthorized } = require("../error/errors");
+const { Unauthorized, BadRequest } = require("../error/errors");
+const UserDocuments = require("../repository/userDocuments");
 
-module.exports = class DocumentCreate {
+module.exports = class DocumentGet {
   async execute(req) {
-    //Ver se tem acesso ao document
     if (!("token" in req?.cookies)) {
       throw new Unauthorized("Access denied");
     }
     const token = req.cookies["token"];
     const decoded = await checkTokenUser(token);
-    console.log(req.params);
-    const documentId = req.params.documentId;
+    const documentId = req.params.id;
     const userId = decoded.id;
-    await new Document().get(userId, documentId);
+    console.log(documentId, userId);
+    const document = await new Document().get(documentId);
+    if (!document) {
+      throw new BadRequest("Document don't exist");
+    }
+    await this.saveInUserDocuments(userId, documentId);
     return {
       document,
     };
+  }
+  async saveInUserDocuments(userId, documentId) {
+    const exist = await new UserDocuments().find(userId, documentId);
+    if (!exist) {
+      return await new UserDocuments().set(userId, documentId);
+    }
+    return true;
   }
 };
