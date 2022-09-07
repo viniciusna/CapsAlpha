@@ -23,7 +23,10 @@ function Login() {
 
   function handleClick (event) {
     fetch('http://localhost:3001/user/login', {
-      method: 'POST',
+      method: 'POST',  
+      credentials: 'include',
+      // credentials: "same-origin"
+
       body: JSON.stringify(values),
       headers: new Headers({
         'Content-Type': 'application/json'

@@ -15,7 +15,6 @@ export const headers = Styled.div`
     flex-direction:column;
     gap:0.5em;
     margin-bottom:1rem;
-
  `;
 
 export const inputs = Styled.div`

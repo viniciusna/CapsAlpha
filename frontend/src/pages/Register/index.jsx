@@ -24,6 +24,7 @@ function Register() {
   function handleClick (event) {
     fetch('http://localhost:3001/user/register', {
       method: 'POST',
+      credentials: 'include',
       body: JSON.stringify(values),
       headers: new Headers({
         'Content-Type': 'application/json'
