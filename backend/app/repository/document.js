@@ -67,6 +67,28 @@ class Document extends PostgresDB {
     }
   }
 
+  async update(documentId, title, content) {
+    try {
+      const client = await this.pool.connect();
+      const query = `                          
+        UPDATE documents 
+        SET title = $2, content = $3 , updated_at = now()
+        WHERE id = $1
+        RETURNING *;
+        `;
+      const values = [documentId, title, content];
+      const result = await client.query(query, values);
+      client.release();
+      if (result.rows.length == 0) {
+        return false;
+      }
+      return result.rows[0];
+    } catch (e) {
+      console.log(e);
+      throw new InternalServerError("Service temporarily unavailable");
+    }
+  }
+
   async get(id) {
     try {
       const client = await this.pool.connect();
