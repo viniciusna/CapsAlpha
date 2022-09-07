@@ -14,7 +14,7 @@ export const div = Styled.div`
     display:flex;
     flex-direction:column;
     gap:0.5em;
-    border: red 1px solid;
+    // border: red 1px solid;
     margin-bottom:1rem;
 
  `;
