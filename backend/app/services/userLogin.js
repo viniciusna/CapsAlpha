@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const config = require("../config/index");
 const jwt = require("jsonwebtoken");
 const UserDocuments = require("../repository/userDocuments");
-module.exports = class UserRegister {
+module.exports = class UserLogin {
   async execute(params) {
     await new UserLoginValidator().execute(params);
     const user = await new User().findByEmail(params.email);

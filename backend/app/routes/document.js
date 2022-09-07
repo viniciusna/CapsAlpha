@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const DocumentCreateController = require("../controllers/documentCreate");
+const DocumentDeleteController = require("../controllers/documentDelete");
 
 router
   .route("/")
@@ -10,7 +11,7 @@ router
 router
   .route("/:id")
   .delete(
-    new DocumentCreateController().handler.bind(new DocumentCreateController())
+    new DocumentDeleteController().handler.bind(new DocumentDeleteController())
   );
 
 module.exports = router;

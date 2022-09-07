@@ -29,6 +29,43 @@ class Document extends PostgresDB {
       throw new InternalServerError("Service temporarily unavailable");
     }
   }
+  async delete(userId, documentId) {
+    try {
+      const client = await this.pool.connect();
+      const queryExist = `                          
+        SELECT * FROM documents WHERE id = $1 and owner = $2;
+      `;
+      const valuesExist = [documentId, userId];
+      const resultExist = await client.query(queryExist, valuesExist);
+      if (resultExist.rows.length == 0) {
+        return false;
+      }
+
+      const queryUserDocuments = `                          
+        DELETE FROM users_documents WHERE document_id = $1 
+        RETURNING document_id ;
+      `;
+      const valuesUserDocuments = [documentId];
+      const resultUserDocuments = await client.query(
+        queryUserDocuments,
+        valuesUserDocuments
+      );
+
+      const query = `                          
+        DELETE FROM documents WHERE id = $1 and owner = $2
+        RETURNING id ;
+      `;
+      const values = [documentId, userId];
+      const result = await client.query(query, values);
+
+      client.release();
+
+      return result.rows[0].id;
+    } catch (e) {
+      console.log(e);
+      throw new InternalServerError("Service temporarily unavailable");
+    }
+  }
 
   async getDocument(id) {
     try {
