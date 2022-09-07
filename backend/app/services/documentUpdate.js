@@ -8,8 +8,7 @@ module.exports = class DocumentUpdate {
       throw new Unauthorized("Access denied");
     }
     const token = req.cookies["token"];
-    const decoded = await checkTokenUser(token);
-    const userId = decoded.id;
+    await checkTokenUser(token);
     const { documentId, title, content } = req.body;
     if (!documentId || !title || !content) {
       throw new BadRequest("Missing data");
