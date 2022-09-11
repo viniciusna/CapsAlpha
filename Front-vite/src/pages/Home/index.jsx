@@ -1,7 +1,6 @@
 import { Context } from "../../context/Context.jsx";
 import { IconContext } from "react-icons";
 import { useContext } from "react";
-import logo from "../../images/logo.svg";
 import Header from "../../components/Header/Header.jsx";
 import HeadersButtons from "../../components/HeadersButtons/headerButton";
 import Button from "../../components/Button/Button.jsx";
@@ -14,7 +13,7 @@ import Input from "../../components/InputHome/InputHome"
 
 
 function Home() {
-  let { navigate } = useContext(Context);
+  let { navigate,logo } = useContext(Context);
   return (
     <>
       <Header>

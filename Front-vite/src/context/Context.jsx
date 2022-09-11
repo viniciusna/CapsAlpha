@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import logo from "../images/logo.svg";
 
 export const Context = createContext({});
 
@@ -36,7 +37,8 @@ export const Provider = (props) => {
                 users,
                 setUsers,
                 addUser,
-                usersColors,  
+                usersColors,
+                logo,
             }}
         >
             {props.children}
