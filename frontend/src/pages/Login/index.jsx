@@ -34,7 +34,7 @@ function Login() {
       .then(res => res.json())
       .then(res => {
         console.log(res);
-        if(res.message != 'Success') {
+        if(res.message !== 'Success') {
           setError(res.message)
           return null
         }
