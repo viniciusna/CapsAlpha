@@ -4,7 +4,7 @@ import * as S from "./style";
 
 function headerButton(props) {
   return (
-    <S.headerButton>
+    <S.headerButton gap={props.gap}>
       {props.children}
     </S.headerButton>
   );

@@ -1,6 +1,7 @@
 import { Context } from "../../context/Context.jsx";
 import { IconContext } from "react-icons";
 import { useContext } from "react";
+import logo from "../../images/logo.svg";
 import Header from "../../components/Header/Header.jsx";
 import HeadersButtons from "../../components/HeadersButtons/headerButton";
 import Button from "../../components/Button/Button.jsx";
@@ -16,8 +17,9 @@ function Home() {
   let { navigate } = useContext(Context);
   return (
     <>
-      <Header onClick={() => navigate("/")}>
-        <HeadersButtons>
+      <Header>
+        <img src={logo} onClick={() => navigate("/")} height="65vh"/>
+        <HeadersButtons gap="2rem">
           <Button
             onClick={() => navigate("/Login")}
             colorbg="#FFFFFF"

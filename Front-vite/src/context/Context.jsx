@@ -5,12 +5,38 @@ export const Context = createContext({});
 
 export const Provider = (props) => {
 
+    const [user, setUser] = useState("");
+    const [users, setUsers] = useState(["Victor", "Victoria", "Vinicius","Vitor","Welligton","Yeté"]);
+
+    const usersColors = [
+      ["black", "white"],
+      ["grey", "white"],
+      ["white", "black"],
+      ["black", "white"],
+      ["grey", "white"],
+      ["white", "black"],
+    ];
+
+    function addUser(event) {
+        const newUser = user
+        let allUsers = users
+        allUsers.push(newUser);
+        setUsers(allUsers);
+
+    }   
+
     const navigate = useNavigate();
 
     return (
         <Context.Provider
             value={{
                 navigate,
+                user,
+                setUser,
+                users,
+                setUsers,
+                addUser,
+                usersColors,  
             }}
         >
             {props.children}

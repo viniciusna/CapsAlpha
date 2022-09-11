@@ -3,13 +3,13 @@ import * as S from "./style";
 import { Context } from "../../context/Context.jsx";
 import { useContext } from "react";
 
-function Header(props) {
+function UserIdentifier(props) {
   let { navigate } = useContext(Context);
   return (
-    <S.header>
+    <S.user colorbg={props.colorbg} colorfnt={props.colorfnt}>
       {props.children}
-    </S.header>
+    </S.user>
   );
 }
 
-export default Header;
+export default UserIdentifier;

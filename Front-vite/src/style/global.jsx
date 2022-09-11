@@ -74,7 +74,7 @@ a{
   display:flex;
   justify-content:center;
   align-items:center;
-  height:20vh;
+  height:12vh;
 }
 
 
