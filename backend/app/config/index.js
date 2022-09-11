@@ -10,6 +10,11 @@ const config = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
   },
+  redis: {
+    password: process.env.REDIS_PASSWORD,
+    host: process.env.REDIS_HOST,
+    password: process.env.REDIS_PORT,
+  },
 };
 
 module.exports = config;

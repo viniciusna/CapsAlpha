@@ -81,7 +81,6 @@ wss.on("close", () => {
   console.log("Socket Server Close");
 });
 
-const rooms = {};
 wss.on("connection", (ws, req) => {
   console.log("Socket Client Connection");
 
@@ -94,15 +93,17 @@ wss.on("connection", (ws, req) => {
   });
 
   ws.on("close", () => {
+    const websocketMethods = new WebsocketMethods(ws);
+    websocketMethods.removeUser(ws.room, ws.userId);
     console.log("Socket Client Disconnected");
   });
 
   //wsStart(ws, req)
   ws.userId = uuid();
 
-  ws.on("message", (data) => {
+  ws.on("message", async (data) => {
     try {
-      const websocketMethods = new WebsocketMethods(ws, rooms);
+      const websocketMethods = new WebsocketMethods(ws);
       const obj = JSON.parse(data);
       console.log(data);
       console.log(obj);
@@ -110,13 +111,13 @@ wss.on("connection", (ws, req) => {
       const params = obj.params;
       switch (type) {
         case "join":
-          websocketMethods.join(params);
+          await websocketMethods.join(params);
           break;
         case "leave":
           websocketMethods.leave(params);
           break;
         case "message":
-          websocketMethods.message(params);
+          websocketMethods.message(params, wss.clients, WebSocket);
           break;
         default:
           console.warn(`Type: ${type} unknown`);
@@ -137,3 +138,23 @@ wss.on("connection", (ws, req) => {
 // Export HTTP Server
 
 module.exports = server;
+
+// {
+//   api_caps_alpha_1_1  |       _events: [Object],
+//   api_caps_alpha_1_1  |       _eventsCount: 4,
+//   api_caps_alpha_1_1  |       _binaryType: 'nodebuffer',
+//   api_caps_alpha_1_1  |       _closeCode: 1006,
+//   api_caps_alpha_1_1  |       _closeFrameReceived: false,
+//   api_caps_alpha_1_1  |       _closeFrameSent: false,
+//   api_caps_alpha_1_1  |       _closeMessage: [Object],
+//   api_caps_alpha_1_1  |       _closeTimer: null,
+//   api_caps_alpha_1_1  |       _extensions: {},
+//   api_caps_alpha_1_1  |       _paused: false,
+//   api_caps_alpha_1_1  |       _protocol: '',
+//   api_caps_alpha_1_1  |       _readyState: 1,
+//   api_caps_alpha_1_1  |       _receiver: [Object],
+//   api_caps_alpha_1_1  |       _sender: [Object],
+//   api_caps_alpha_1_1  |       _socket: [Object],
+//   api_caps_alpha_1_1  |       _isServer: true,
+//   api_caps_alpha_1_1  |       userId: '4909fe0e-8f05-4f21-86b1-f66e14b02673'
+//   api_caps_alpha_1_1  |     }

@@ -1,12 +1,18 @@
 const configWebSocket = require("./config");
-
+const Redis = require("ioredis");
+const config = require("../config/index");
+const redis = new Redis({
+  port: config.redis.port,
+  host: config.redis.host,
+  password: config.redis.password,
+});
 class WebsocketMethods {
   constructor(ws, rooms) {
     this.ws = ws;
     this.rooms = rooms;
   }
 
-  message(params) {
+  async message(params, clients, websocket) {
     const data = JSON.stringify({
       type: "message",
       status: "Success",
@@ -16,77 +22,95 @@ class WebsocketMethods {
       },
     });
     const room = this.ws.room;
-    this.rooms[room].forEach((so) => {
-      if (so !== this.ws) {
-        so.send(data);
+    const rooms = await this.getRoom(room);
+    console.log(room);
+    console.log(rooms);
+    console.log(this.ws.userId);
+    rooms.forEach((userId) => {
+      if (userId !== this.ws.userId) {
+        console.log(userId);
+        clients.forEach((client) => {
+          if (
+            client.readyState === websocket.OPEN &&
+            client.userId === userId
+          ) {
+            client.send(data);
+          }
+        });
       }
     });
   }
 
-  create(room) {
-    console.log(this.rooms);
-    if (this.rooms[room]) {
-      return;
-    }
-    this.rooms[room] = [];
+  async addUser(room, user) {
+    await redis.lpush(`room_${room}`, user);
   }
 
-  join(params) {
-    const room = params.documentId;
-    if (!Object.keys(this.rooms).includes(room)) {
-      this.create(room);
-    }
+  async getRoom(room) {
+    return await redis.lrange(`room_${room}`, 0, -1);
+  }
 
-    if (this.rooms[room].length >= configWebSocket.maxUsers) {
-      console.warn(`Room ${room} is full!`);
+  async removeUser(room, user) {
+    const index = await redis.lpos(`room_${room}`, user);
+    console.log(index);
+    console.log(await this.getRoom(room));
+    await redis.lrem(`room_${room}`, 5, user);
+    console.log(await this.getRoom(room));
+  }
+
+  async deleteRoom(room) {
+    await redis.del(`room_${room}`);
+  }
+
+  async join(params) {
+    const roomId = params.documentId;
+    const room = await this.getRoom(roomId);
+
+    if (room.length >= configWebSocket.maxUsers) {
+      console.warn(`Room ${roomId} is full!`);
 
       this.ws.send(
         JSON.stringify({
           type: "join",
           status: "Error",
-          message: `Room ${room} is full!`,
+          message: `Room ${roomId} is full!`,
           params: {},
         })
       );
       return;
     }
 
-    this.rooms[room].push(this.ws);
-    this.ws["room"] = room;
+    await this.addUser(roomId, this.ws.userId);
+    this.ws["room"] = roomId;
 
     this.ws.send(
       JSON.stringify({
         type: "join",
         status: "Success",
-        message: `Joined in room ${room}`,
+        message: `Joined in room ${roomId}`,
         params: {},
       })
     );
   }
 
-  leave(params) {
-    const room = this.ws.room;
-    try {
-      const res = this.rooms[room].filter((so) => so !== this.ws);
-      this.rooms[room] = res;
-    } catch (e) {
-      console.log(e);
-    }
+  async leave(params) {
+    const roomId = this.ws.room;
+
+    await this.removeUser(roomId, this.ws.userId);
 
     this.ws["room"] = undefined;
-    if (this.rooms[room].length == 0) this.close(room);
+    if (this.getRoom(roomId).length == 0) this.close(room);
     this.ws.send(
       JSON.stringify({
         type: "leave",
         status: "Success",
-        message: `Leave from room ${room}`,
+        message: `Leave from room ${roomId}`,
         params: {},
       })
     );
   }
 
-  close(room) {
-    delete this.rooms[room];
+  async close(room) {
+    this.deleteRoom(room);
   }
 }
 
