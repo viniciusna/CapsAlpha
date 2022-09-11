@@ -17,6 +17,7 @@ function Router() {
       <Route path="/MyProjects" element={<MyProjects />} />
       <Route path="/Editor" element={<Editor />} />
       <Route path="/Prototype" element={<Prototype />} />
+      <Route path="/Home" element={<Home />} />
 
     </Routes>
   );

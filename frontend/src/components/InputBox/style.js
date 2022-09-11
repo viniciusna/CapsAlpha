@@ -14,6 +14,10 @@ export const headers = Styled.div`
     display:flex;
     flex-direction:column;
     gap:0.5em;
+<<<<<<< HEAD
+=======
+    // border: red 1px solid;
+>>>>>>> 4eb4711bfdfdf8771e329f90bb5706e9b99447e9
     margin-bottom:1rem;
  `;
 

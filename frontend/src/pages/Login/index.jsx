@@ -25,7 +25,6 @@ function Login() {
     fetch('http://localhost:3001/user/login', {
       method: 'POST',  
       credentials: 'include',
-      // credentials: "same-origin"
 
       body: JSON.stringify(values),
       headers: new Headers({
@@ -39,14 +38,14 @@ function Login() {
           setError(res.message)
           return null
         }
-        navigate('/editor')
+        navigate('/home')
       })
       .catch(err => console.log(err));
   }
 
   return (
     <>
-      <div className="divv">
+      <div className="div">
         <HalfPage gap="0em" height="100vh">
           <InputBox title="Fazer Login" height="65vh">
               <Input

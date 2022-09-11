@@ -33,7 +33,7 @@ function Register() {
       .then(res => res.json())
       .then(res => {
         console.log(res);
-        if(res.message != 'Success') {
+        if(res.message !== 'Success') {
           setError(res.message)
           return null
         }
@@ -41,9 +41,10 @@ function Register() {
       })
       .catch(err => console.log(err));
   }
+
   return (
     <>
-      <div className="divv">
+      <div className="div">
         <HalfPage gap="0em" height="100vh">
           <InputBox title="Registre-se" height="92vh">
             <Input
@@ -54,7 +55,7 @@ function Register() {
               type="email"
               name='email'
               handleChange={handleChange}
-/>
+            />
             <Input
               label="Usuário"
               height={inputHeight}
@@ -89,7 +90,7 @@ function Register() {
               height="6vh"
               width="31vw"
               onClick={handleClick} 
-        />
+            />
            <Error error={error}/>
             <p>
               Você já tem uma conta?{" "}
