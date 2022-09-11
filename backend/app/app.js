@@ -14,6 +14,7 @@ const wss = new WebSocket.Server({
   server: server,
   clientTracking: true,
 });
+const WebsocketMethods = require("./websocket/methods");
 
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -80,9 +81,9 @@ wss.on("close", () => {
   console.log("Socket Server Close");
 });
 
+const rooms = {};
 wss.on("connection", (ws, req) => {
   console.log("Socket Client Connection");
-  //ws.send('Welcome to the chat, enjoy :)');
 
   ws.on("error", (error) => {
     console.log("Socket Error: " + error);
@@ -97,22 +98,30 @@ wss.on("connection", (ws, req) => {
   });
 
   //wsStart(ws, req)
-
   ws.userId = uuid();
 
-  ws.on("message", (data, isBinary) => {
+  ws.on("message", (data) => {
     try {
-      const message = isBinary ? data : data.toString();
-      //console.log(isBinary, message, typeof message)
-      console.log(wss);
-      wss.clients.forEach((client) => {
-        if (
-          client.readyState === WebSocket.OPEN &&
-          ws.userId !== client.userId
-        ) {
-          client.send(message);
-        }
-      });
+      const websocketMethods = new WebsocketMethods(ws, rooms);
+      const obj = JSON.parse(data);
+      console.log(data);
+      console.log(obj);
+      const type = obj.type;
+      const params = obj.params;
+      switch (type) {
+        case "join":
+          websocketMethods.join(params);
+          break;
+        case "leave":
+          websocketMethods.leave(params);
+          break;
+        case "message":
+          websocketMethods.message(params);
+          break;
+        default:
+          console.warn(`Type: ${type} unknown`);
+          break;
+      }
     } catch (e) {
       console.log(
         "WS-MESSAGE ERROR: message(fn) --> received non-parsable DATA --> " + e
