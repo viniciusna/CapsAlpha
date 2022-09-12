@@ -2,7 +2,6 @@ require("express-async-errors");
 
 const express = require("express");
 const app = express();
-const wss = require("./websocket");
 const http = require("http");
 const server = http.createServer(app);
 
