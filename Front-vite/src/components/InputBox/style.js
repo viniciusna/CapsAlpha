@@ -14,14 +14,17 @@ export const headers = Styled.div`
     display:flex;
     flex-direction:column;
     gap:0.5em;
-<<<<<<< HEAD
-=======
     // border: red 1px solid;
->>>>>>> 4eb4711bfdfdf8771e329f90bb5706e9b99447e9
     margin-bottom:1rem;
  `;
 
 export const inputs = Styled.div`
+    // border: red 1px solid;
+    margin-bottom:1rem;
+
+ `;
+ 
+ export const inputs = Styled.div`
     // border:1px solid black;
     display: flex;
     flex-direction: column;

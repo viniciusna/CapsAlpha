@@ -119,6 +119,7 @@ function Home() {
         </HalfPage>
         <HalfPage gap="0.5em" height="84vh">
           <img src={Note} alt="" srcSet="" />
+
           <div className="text">
             <h2 className="h2-home">Criar um link para compartilhar</h2>
             <p className="p-home">

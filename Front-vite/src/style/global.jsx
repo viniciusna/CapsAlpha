@@ -76,6 +76,4 @@ a{
   align-items:center;
   height:12vh;
 }
-
-
 `;

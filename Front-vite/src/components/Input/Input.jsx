@@ -9,6 +9,7 @@ function Input(props) {
         <S.div>
             <label>{props.label}</label>
             <S.input name={props.name} type={props.type} onChange={props.handleChange} placeholder={props.placeholder} height={props.height} width={props.width}/>
+
         </S.div>
   );
 }
