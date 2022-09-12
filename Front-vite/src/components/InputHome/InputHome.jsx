@@ -9,7 +9,7 @@ function InputHome(props) {
   return (
     <S.div height={props.height} width={props.width}>
         {props.children}
-      <S.input placeholder={props.placeholder}/>
+      <S.input onChange={props.handleChange} placeholder={props.placeholder}/>
     </S.div>
   );
 }

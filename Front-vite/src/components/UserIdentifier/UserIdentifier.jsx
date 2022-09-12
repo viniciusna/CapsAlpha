@@ -3,13 +3,13 @@ import * as S from "./style";
 import { Context } from "../../context/Context.jsx";
 import { useContext } from "react";
 
-function HalfPage(props) {
+function UserIdentifier(props) {
   let { navigate } = useContext(Context);
   return (
-    <S.HalfPage className="halfpage" gap={props.gap} height={props.height}>
+    <S.user colorbg={props.colorbg} colorfnt={props.colorfnt}>
       {props.children}
-    </S.HalfPage>
+    </S.user>
   );
 }
 
-export default HalfPage;
+export default UserIdentifier;
