@@ -34,7 +34,7 @@ app.use(cookieParser());
 // const options = {
 //   origin: allowedOrigins,
 // };
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(cors({ credentials: true, origin: "http://127.0.0.1:5173" }));
 
 app.use("/", indexRoute);
 app.use("/user", userRoute);

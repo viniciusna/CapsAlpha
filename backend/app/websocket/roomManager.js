@@ -25,7 +25,6 @@ class RoomManager {
     const rooms = await this.getRoom(room);
     rooms.forEach((userId) => {
       if (userId !== this.ws.userId) {
-        console.log(userId);
         clients.forEach((client) => {
           if (
             client.readyState === websocket.OPEN &&

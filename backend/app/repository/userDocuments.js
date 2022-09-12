@@ -6,8 +6,10 @@ class UserDocuments extends PostgresDB {
     try {
       const client = await this.pool.connect();
       const query = `                
-           SELECT id,title,owner,created_at, updated_at, document_id FROM documents
-           INNER JOIN users_documents on users_documents.document_id = documents.id
+           SELECT documents.id, documents.title, users.name as owner, documents.created_at, documents.updated_at 
+           FROM documents
+            INNER JOIN users_documents on users_documents.document_id = documents.id
+            INNER JOIN users on users.id = documents.owner
            WHERE users_documents.user_id = $1;
         `;
       const values = [id];
