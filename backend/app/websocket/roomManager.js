@@ -6,7 +6,7 @@ const redis = new Redis({
   host: config.redis.host,
   password: config.redis.password,
 });
-class WebsocketMethods {
+class RoomManager {
   constructor(ws, rooms) {
     this.ws = ws;
     this.rooms = rooms;
@@ -23,9 +23,6 @@ class WebsocketMethods {
     });
     const room = this.ws.room;
     const rooms = await this.getRoom(room);
-    console.log(room);
-    console.log(rooms);
-    console.log(this.ws.userId);
     rooms.forEach((userId) => {
       if (userId !== this.ws.userId) {
         console.log(userId);
@@ -50,11 +47,7 @@ class WebsocketMethods {
   }
 
   async removeUser(room, user) {
-    const index = await redis.lpos(`room_${room}`, user);
-    console.log(index);
-    console.log(await this.getRoom(room));
     await redis.lrem(`room_${room}`, 5, user);
-    console.log(await this.getRoom(room));
   }
 
   async deleteRoom(room) {
@@ -114,4 +107,4 @@ class WebsocketMethods {
   }
 }
 
-module.exports = WebsocketMethods;
+module.exports = RoomManager;
