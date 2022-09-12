@@ -8,7 +8,7 @@ function InputBox(props) {
         <S.headers>
           <h3>Bem-Vindo!</h3>
           <h2>{props.title}</h2>
-        </S.headers>  
+        </S.headers>
         <S.inputs>{props.children}</S.inputs>
       </S.div>
     );

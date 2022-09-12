@@ -30,10 +30,10 @@ function Router() {
           <Editor />
         </ProtectedRoute>
       } />
-      <Route path="/Prototype" element={
-        <ProtectedRoute user={user}>
+      <Route path="Prototype/:id" element={
+        // <ProtectedRoute user={user}>
           <Prototype /> 
-        </ProtectedRoute>
+        // </ProtectedRoute>
       }/>
     </Routes>
   );

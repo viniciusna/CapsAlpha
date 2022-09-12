@@ -1,6 +1,3 @@
-import { Context } from "../../context/Context.jsx";
-import { IconContext } from "react-icons";
-import { useContext, useState } from "react";
 import Header from "../../components/Header/Header.jsx";
 import HeadersButtons from "../../components/HeadersButtons/headerButton";
 import Button from "../../components/Button/Button.jsx";
@@ -9,7 +6,13 @@ import Note from "../../images/notes.svg";
 import Doc from "../../images/document.svg";
 import { CgProfile } from "react-icons/cg";
 import { FaKeyboard } from "react-icons/fa";
+import { AiOutlineSearch } from 'react-icons/ai'
 import Input from "../../components/InputHome/InputHome"
+import CardDocuments from "../../components/CardDocuments/CardDocuments.jsx";
+import { useLocation, useNavigate} from 'react-router-dom'
+import { useState, useEffect } from "react";
+import getCookie from "../../utils/getCookie";
+import * as S from './style'
 import Error from "../../components/Error/Error.jsx";
 
 function Home() {
@@ -18,8 +21,15 @@ function Home() {
   const [error, setError] = useState("")
   const logo = "/src/images/logo.svg"
 
+function Home() {  
+  const [value, setValue] = useState('')
+  const userIsLog = getCookie('token')
+  const location = useLocation()
+  const navigate = useNavigate()
+ 
   function handleChange (event) {
     const value = event.target.value;
+    setValue(value);
     setDocumentCode(value);
   }
   function handleClickLinkDocument(event){
@@ -63,75 +73,88 @@ function Home() {
 
   return (
     <>
-      <Header>
-        <img src={logo} onClick={() => navigate("/")} height="65vh"/>
-        <HeadersButtons gap="2rem">
-          <Button
-            onClick={() => navigate("/Login")}
-            colorbg="#FFFFFF"
-            colorfnt="#000000"
-            value="Entrar"
-            height="5vh"
-            width="9vw"
-          />
-          <Button
-            onClick={() => navigate("/Register")}
-            colorbg="#000000"
-            colorfnt="#FFFFFF"
-            value="Criar conta"
-            height="5vh"
-            width="9vw"
-          />
-          <CgProfile size={38} />
+      <Header onClick={() => navigate("/")}>
+        <HeadersButtons>
+          {
+            userIsLog
+            ?
+            <>
+              <Button
+                onClick={() => navigate("/Login")}
+                colorbg="#FFFFFF"
+                colorfnt="#000000"
+                value="Entrar"
+                height="5vh"
+                width="9vw"
+              />
+              <Button
+                onClick={() => navigate("/Register")}
+                colorbg="#000000"
+                colorfnt="#FFFFFF"
+                value="Criar conta"
+                height="5vh"
+                width="9vw"
+              />
+            </>
+            :
+            <CgProfile size={38} />
+        }
+          
         </HeadersButtons>
       </Header>
       <div className="divv">
         <HalfPage gap="3em" height="84vh">
           <h1 className="h1-home">Documentos Simultâneos</h1>
           <h3 className="h3-home">Faça aqui seu Mardown</h3>
-          <div className="div">
-            <Button
-              onClick={handleClickCreateDocument}
-              colorbg="#000000"
-              colorfnt="#FFFFFF"
-              value="Novo Documento"
-              height="6vh"
-              width="18vw"
-            >
-              <img src={Doc} alt="" height={35} />
-            </Button>
-            <Input handleChange={handleChange} height="6vh" width="18vw" placeholder="Digite um código">
-              <FaKeyboard />
-            </Input>
-            {documentCode && <Button
-              onClick={handleClickLinkDocument}
-              colorbg="#FFF"
-              colorfnt="#000"
-              value="Participar"
-              height="6vh"
-              width="5vw"
-            ></Button>}
-            <Error error={error}/>
-          </div>
+          <S.button>
+            <div>
+              <Button
+                onClick={() => navigate("/Prototype")}
+                colorbg="#000000"
+                colorfnt="#FFFFFF"
+                value="Novo Documento"
+                height="6vh"
+                width="18vw"
+              >
+                <img src={Doc} alt="" height={35} />
+              </Button>
+              <Input handleChange={handleChange} height="6vh" width="18vw" placeholder="Digite um código">
+                <FaKeyboard />
+              </Input>
+            </div>            
+            {value ? <S.search onClick={() => navigate(`/prototype/${value}`)}>Join</S.search> : ''}
+          </S.button>
           <div className="hometrace">
             Não tem uma conta?
             <a onClick={() => navigate("/Register")}> Comece agora</a>
           </div>
         </HalfPage>
-        <HalfPage gap="0.5em" height="84vh">
-          <img src={Note} alt="" srcSet="" />
+       
 
-          <div className="text">
-            <h2 className="h2-home">Criar um link para compartilhar</h2>
-            <p className="p-home">
-              Clique em Novo documento se quiser criar um link para enviar aos
-              convidados
-            </p>
-          </div>
+        <HalfPage gap="0.5em" height="84vh">
+          {
+            location?.state?.documents ?
+            location.state.documents.map((document)=>{
+              return <CardDocuments title={document.title} updatedAt={document.updated_at} owner={document.owner} handleClick={()=> navigate(`/Prototype/${document.id}`)} />
+            })
+            :
+            <>
+            <img src={Note} alt="" srcset="" />
+            <div className="text">
+              <h2 className="h2-home">Criar um link para compartilhar</h2>
+              <p className="p-home">
+                Clique em Novo documento se quiser criar um link para enviar aos
+                convidados
+              </p>
+            </div>
+          </>
+ 
+        }
+          
         </HalfPage>
       </div>
     </>
   );
+  }
 }
-
-export default Home;
+export default Home
