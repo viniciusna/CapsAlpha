@@ -18,11 +18,11 @@ export const headers = Styled.div`
     margin-bottom:1rem;
  `;
 
-export const inputs = Styled.div`
-    // border: red 1px solid;
-    margin-bottom:1rem;
+// export const inputs = Styled.div`
+//     // border: red 1px solid;
+//     margin-bottom:1rem;
 
- `;
+//  `;
  
  export const inputs = Styled.div`
     // border:1px solid black;

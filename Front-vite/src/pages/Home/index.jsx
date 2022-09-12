@@ -16,9 +16,10 @@ function Home() {
   const [documentCode, setDocumentCode] = useState("");
   let { navigate } = useContext(Context);
   const [error, setError] = useState("")
+  const logo = "/src/images/logo.svg"
 
   function handleChange (event) {
-    const value = event.target.value;    
+    const value = event.target.value;
     setDocumentCode(value);
   }
   function handleClickLinkDocument(event){
