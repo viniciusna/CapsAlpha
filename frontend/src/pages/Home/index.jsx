@@ -13,6 +13,13 @@ import { useLocation, useNavigate} from 'react-router-dom'
 import { useState, useEffect } from "react";
 import getCookie from "../../utils/getCookie";
 import * as S from './style'
+import Error from "../../components/Error/Error.jsx";
+
+function Home() {
+  const [documentCode, setDocumentCode] = useState("");
+  let { navigate } = useContext(Context);
+  const [error, setError] = useState("")
+  const logo = "/src/images/logo.svg"
 
 function Home() {  
   const [value, setValue] = useState('')
@@ -23,6 +30,45 @@ function Home() {
   function handleChange (event) {
     const value = event.target.value;
     setValue(value);
+    setDocumentCode(value);
+  }
+  function handleClickLinkDocument(event){
+    fetch(`http://localhost:3001/document/${documentCode}`, {
+      method: 'GET',  
+      credentials: 'include',
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+    })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res);
+        if(res.message !== 'Success') {
+          setError(res.message)
+          return null
+        }
+        navigate('/prototype')
+      })
+      .catch(err => console.log(err)); 
+  }
+  function handleClickCreateDocument (event) {
+    fetch('http://localhost:3001/document/', {
+      method: 'POST',  
+      credentials: 'include',
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+    })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res);
+        if(res.message !== 'Success') {
+          setError(res.message)
+          return null
+        }
+        navigate('/prototype')
+      })
+      .catch(err => console.log(err));
   }
 
   return (
@@ -109,6 +155,6 @@ function Home() {
       </div>
     </>
   );
+  }
 }
-
-export default Home;
+export default Home

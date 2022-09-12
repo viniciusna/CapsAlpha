@@ -12,7 +12,6 @@ import getCookie from "../utils/getCookie";
 
 function Router() {
   const user = getCookie('token')
-
   return (
     <Routes>
       <Route index element={<Home />} />

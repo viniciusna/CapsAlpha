@@ -16,7 +16,6 @@ export const div = Styled.div`
     gap:0.5em;
     // border: red 1px solid;
     margin-bottom:1rem;
-
  `;
  
  export const inputs = Styled.div`
