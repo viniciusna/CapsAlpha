@@ -4,15 +4,16 @@ services:
     build: .
     restart: always
     environment:
-      -  PORT=3000
+      -  PORT=3001
       -  DB_HOST=db_caps
       -  DB_PORT=5432
       -  DB_USER=postgres
       -  DB_PASSWORD=postgres
       -  DB_NAME=postgres
       -  DB_DATABASE=caps_alpha
+      -  JWT_SECRET=1231nsadnaj2i3j2iji2jii2j32j
     ports:
-      - '3000:3000'
+      - '3001:3001'
     depends_on:
       - db_caps
     links:

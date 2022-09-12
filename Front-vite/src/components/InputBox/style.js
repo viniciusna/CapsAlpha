@@ -8,18 +8,20 @@ export const div = Styled.div`
     padding:1em;
     box-shadow: 3px 3px 15px 3px rgba(0,0,0,0.2); `;
 
- export const headers = Styled.div`
+export const headers = Styled.div`
     height:fit-content;
     padding: 0em 1em;
     display:flex;
     flex-direction:column;
     gap:0.5em;
+<<<<<<< HEAD
+=======
     // border: red 1px solid;
+>>>>>>> 4eb4711bfdfdf8771e329f90bb5706e9b99447e9
     margin-bottom:1rem;
-
  `;
- 
- export const inputs = Styled.div`
+
+export const inputs = Styled.div`
     // border:1px solid black;
     display: flex;
     flex-direction: column;
