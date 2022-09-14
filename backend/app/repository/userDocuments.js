@@ -10,8 +10,10 @@ class UserDocuments extends PostgresDB {
            FROM documents
             INNER JOIN users_documents on users_documents.document_id = documents.id
             INNER JOIN users on users.id = documents.owner
-           WHERE users_documents.user_id = $1;
-        `;
+           WHERE users_documents.user_id = $1
+           ORDER BY documents.updated_at DESC;
+
+           `;
       const values = [id];
       const result = await client.query(query, values);
       client.release();

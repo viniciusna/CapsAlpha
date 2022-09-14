@@ -3,11 +3,20 @@ const DocumentCreateController = require("../controllers/documentCreate");
 const DocumentDeleteController = require("../controllers/documentDelete");
 const DocumentGetController = require("../controllers/documentGet");
 const DocumentUpdateController = require("../controllers/documentUpdate");
+const UserDocumentGetController = require("../controllers/userDocumentsGet");
 
 router
   .route("/")
   .post(
     new DocumentCreateController().handler.bind(new DocumentCreateController())
+  );
+
+router
+  .route("/my")
+  .get(
+    new UserDocumentGetController().handler.bind(
+      new UserDocumentGetController()
+    )
   );
 
 router

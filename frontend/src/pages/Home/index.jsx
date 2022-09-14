@@ -4,17 +4,18 @@ import Button from "../../components/Button/Button.jsx";
 import HalfPage from "../../components/HalfPage/HalfPage.jsx";
 import Note from "../../images/notes.svg";
 import Doc from "../../images/document.svg";
-import { CgProfile } from "react-icons/cg";
 import { FaKeyboard } from "react-icons/fa";
 import { AiOutlineSearch } from 'react-icons/ai'
 import Input from "../../components/InputHome/InputHome"
 import CardDocuments from "../../components/CardDocuments/CardDocuments.jsx";
 import { useLocation, useNavigate} from 'react-router-dom'
-import { useState, useEffect } from "react";
+import { useState, useEffect, useDebugValue } from "react";
 import getCookie from "../../utils/getCookie";
 import * as S from './style'
 import { Context } from "../../context/Context.jsx";
 import { useContext } from "react";
+import PerfilModal from '../../components/PerfilModal/index'
+
 function Home() {  
   const [value, setValue] = useState('')
   const { user, setUser, documents, setDocuments} = useContext(Context);
@@ -23,8 +24,32 @@ function Home() {
   function handleChange (event) {
     const value = event.target.value;
     setValue(value);
-    console.log(user)
   }
+
+  useEffect(()=>{
+    if(!user) return 
+
+    fetch('http://localhost:3001/document/my', {
+      method: 'GET',  
+      credentials: 'include',
+
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+    })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res);
+        if(res.message !== 'Success') {
+          setError(res.message)
+          return null
+        }
+        setDocuments(res.data.documents)
+        console.log(res)
+      })
+      .catch(err => console.log(err));
+  },[])
+ 
   function handleClickLinkDocument(event){
     fetch(`http://localhost:3001/document/${documentCode}`, {
       method: 'GET',  
@@ -71,7 +96,7 @@ function Home() {
           {
             user
             ?
-              <CgProfile size={38} />
+              <PerfilModal />
             :
             <>
               <Button
@@ -127,7 +152,8 @@ function Home() {
         <HalfPage gap="0.5em" height="84vh">
           {
             documents ?
-            documents.map((document)=>{
+            documents.map((document, i)=>{
+              if (i > 4) return 
               return <CardDocuments title={document.title} key={document.id} updatedAt={document.updated_at} owner={document.owner} handleClick={()=> navigate(`/Prototype/${document.id}`)} />
             })
             :
