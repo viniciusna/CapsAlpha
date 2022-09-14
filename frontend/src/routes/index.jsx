@@ -12,7 +12,7 @@ import ProtectedRoute from '../routes/protectedRoute'
 import getCookie from "../utils/getCookie";
 
 function Router() {
-  const user = getCookie('token')
+  const user = getCookie("token");
   return (
     <Routes>
       <Route index element={<Home />} />
