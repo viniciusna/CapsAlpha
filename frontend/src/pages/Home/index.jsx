@@ -15,7 +15,8 @@ import getCookie from "../../utils/getCookie";
 import * as S from './style'
 import { Context } from "../../context/Context.jsx";
 import { useContext } from "react";
-function Home() {  
+
+function Home() {
   const [value, setValue] = useState('')
   const { user, setUser, documents, setDocuments} = useContext(Context);
   const navigate = useNavigate()
@@ -40,7 +41,7 @@ function Home() {
           setError(res.message);
           return null;
         }
-        navigate("/prototype");
+        navigate("/Editor");
       })
       .catch((err) => console.log(err));
   }
@@ -59,7 +60,7 @@ function Home() {
           setError(res.message);
           return null;
         }
-        navigate('/prototype/'+res.data.documentId)
+        navigate('/Editor/'+res.data.documentId)
       })
       .catch((err) => console.log(err));
   }
@@ -67,7 +68,7 @@ function Home() {
   return (
     <>
       <Header onClick={() => navigate("/")}>
-        <HeadersButtons>
+        <HeadersButtons gap="2em">
           {
             user
             ?
@@ -120,7 +121,7 @@ function Home() {
               </Input>
             </div>
             {value ? (
-              <S.search onClick={() => navigate(`/prototype/${value}`)}>
+              <S.search onClick={() => navigate(`/Editor/${value}`)}>
                 Join
               </S.search>
             ) : (
@@ -142,7 +143,7 @@ function Home() {
                   key={document.id}
                   updatedAt={document.updated_at}
                   owner={document.owner}
-                  handleClick={() => navigate(`/Prototype/${document.id}`)}
+                  handleClick={() => navigate(`/Editor/${document.id}`)}
                 />
               );
             })
@@ -157,7 +158,7 @@ function Home() {
               </p>
             </div>
           </>
-        } 
+        )}
         </HalfPage>
       </div>
     </>

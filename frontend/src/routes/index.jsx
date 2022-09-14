@@ -5,7 +5,6 @@ import Home from "../pages/Home";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
 import MyProjects from "../pages/MyProjects";
-import Prototype from "../pages/Prototype";
 import Editor from "../pages/Editor";
 import ProtectedRoute from "../routes/protectedRoute";
 import getCookie from "../utils/getCookie";
@@ -30,9 +29,9 @@ function Router() {
           <Editor />
         // </#ProtectedRoute>
       } />
-      <Route path="Prototype/:id" element={
+      <Route path="Editor/:id" element={
         //  <ProtectedRoute user={user}>
-          <Prototype /> 
+          <Editor /> 
         //  </ProtectedRoute>
       }/>
     </Routes>
