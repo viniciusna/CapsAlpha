@@ -13,8 +13,7 @@ function Prototype() {
   let { navigate,user, setUser, users, setUsers, addUser, usersColors, logo } = useContext(Context);
   return (
     <>
-      <Header>
-        <img src={logo} onClick={() => navigate("/")} height="65vh" />
+      <Header onClick={ () => navigate("/")}>
         <HeadersButtons gap="2rem">
           <HeadersButtons gap="0.2rem">
             {users.map((user, i) => (

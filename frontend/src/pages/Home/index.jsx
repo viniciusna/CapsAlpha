@@ -12,18 +12,18 @@ import CardDocuments from "../../components/CardDocuments/CardDocuments.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import getCookie from "../../utils/getCookie";
-import * as S from "./style";
+import * as S from './style'
 import { Context } from "../../context/Context.jsx";
 import { useContext } from "react";
-function Home() {
-  const [value, setValue] = useState("");
-  const { user, setUser, documents, setDocuments } = useContext(Context);
-  const navigate = useNavigate();
-
-  function handleChange(event) {
+function Home() {  
+  const [value, setValue] = useState('')
+  const { user, setUser, documents, setDocuments} = useContext(Context);
+  const navigate = useNavigate()
+ 
+  function handleChange (event) {
     const value = event.target.value;
     setValue(value);
-    console.log(user);
+    console.log(user)
   }
   function handleClickLinkDocument(event) {
     fetch(`http://localhost:3001/document/${documentCode}`, {
@@ -59,7 +59,7 @@ function Home() {
           setError(res.message);
           return null;
         }
-        navigate("/prototype/" + res.data.documentId);
+        navigate('/prototype/'+res.data.documentId)
       })
       .catch((err) => console.log(err));
   }
@@ -68,9 +68,11 @@ function Home() {
     <>
       <Header onClick={() => navigate("/")}>
         <HeadersButtons>
-          {user ? (
-            <CgProfile size={38} />
-          ) : (
+          {
+            user
+            ?
+              <CgProfile size={38} />
+            :
             <>
               <Button
                 onClick={() => navigate("/Login")}
@@ -89,7 +91,7 @@ function Home() {
                 width="9vw"
               />
             </>
-          )}
+        }
         </HeadersButtons>
       </Header>
       <div className="divv">
@@ -146,16 +148,16 @@ function Home() {
             })
           ) : (
             <>
-              <img src={Note} alt="" srcSet="" />
-              <div className="text">
-                <h2 className="h2-home">Criar um link para compartilhar</h2>
-                <p className="p-home">
-                  Clique em Novo documento se quiser criar um link para enviar
-                  aos convidados
-                </p>
-              </div>
-            </>
-          )}
+            <img src={Note} alt="" srcSet="" />
+            <div className="text">
+              <h2 className="h2-home">Criar um link para compartilhar</h2>
+              <p className="p-home">
+                Clique em Novo documento se quiser criar um link para enviar aos
+                convidados
+              </p>
+            </div>
+          </>
+        } 
         </HalfPage>
       </div>
     </>
