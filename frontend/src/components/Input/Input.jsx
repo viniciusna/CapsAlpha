@@ -8,7 +8,7 @@ function Input(props) {
   return (
         <S.div>
             <label>{props.label}</label>
-            <S.input name={props.name} type={props.type} onChange={props.handleChange} placeholder={props.placeholder} height={props.height} width={props.width}/>
+            <S.input name={props.name} value={props.value} type={props.type} onChange={props.handleChange} placeholder={props.placeholder} height={props.height} width={props.width}/>
 
         </S.div>
   );

@@ -46,7 +46,7 @@ function Register() {
     <>
       <div className="div">
         <HalfPage gap="0em" height="100vh">
-          <InputBox title="Registre-se" height="92vh">
+          <InputBox title="Registre-se" height="">
             <Input
               label="Email"
               height={inputHeight}

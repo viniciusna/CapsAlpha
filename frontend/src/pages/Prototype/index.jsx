@@ -10,7 +10,7 @@ import Button from "../../components/Button/Button.jsx";
 
 
 function Prototype() {
-  let { navigate,user, setUser, users, setUsers, addUser, usersColors, logo } = useContext(Context);
+  const { navigate,user, setUser, users, setUsers, addUser, usersColors, logo } = useContext(Context);
   return (
     <>
       <Header onClick={ () => navigate("/")}>
@@ -25,23 +25,31 @@ function Prototype() {
               </UserIdentifier>
             ))}
           </HeadersButtons>
-          <Button
-            onClick={() => navigate("/Login")}
-            colorbg="#FFFFFF"
-            colorfnt="#000000"
-            value="Entrar"
-            height="5vh"
-            width="9vw"
-          />
-          <Button
-            onClick={() => navigate("/Register")}
-            colorbg="#000000"
-            colorfnt="#FFFFFF"
-            value="Criar conta"
-            height="5vh"
-            width="9vw"
-          />
-          <CgProfile size={38} />
+          {
+            !user 
+            ?
+            <>
+            <Button
+              onClick={() => navigate("/Login")}
+              colorbg="#FFFFFF"
+              colorfnt="#000000"
+              value="Entrar"
+              height="5vh"
+              width="9vw"
+            />
+            <Button
+              onClick={() => navigate("/Register")}
+              colorbg="#000000"
+              colorfnt="#FFFFFF"
+              value="Criar conta"
+              height="5vh"
+              width="9vw"
+              />
+            </>
+          :
+            <CgProfile size={38} />
+          }
+          
         </HeadersButtons>
       </Header>
       <div className="divv">
