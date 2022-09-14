@@ -26,14 +26,14 @@ function Router() {
         </ProtectedRoute>
       }/>
       <Route path="/Editor" element={
-        <ProtectedRoute user={user}>
+        // <ProtectedRoute user={user}>
           <Editor />
-        </ProtectedRoute>
+        // </#ProtectedRoute>
       } />
       <Route path="Prototype/:id" element={
-        // <ProtectedRoute user={user}>
+        //  <ProtectedRoute user={user}>
           <Prototype /> 
-        // </ProtectedRoute>
+        //  </ProtectedRoute>
       }/>
     </Routes>
   );
