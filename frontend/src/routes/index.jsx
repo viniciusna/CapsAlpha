@@ -6,7 +6,8 @@ import Register from "../pages/Register";
 import Login from "../pages/Login";
 import MyProjects from "../pages/MyProjects";
 import Editor from "../pages/Editor";
-import ProtectedRoute from "../routes/protectedRoute";
+import Profile from "../pages/Profile";
+import ProtectedRoute from '../routes/protectedRoute'
 import getCookie from "../utils/getCookie";
 
 function Router() {
@@ -24,6 +25,12 @@ function Router() {
           <MyProjects />
         </ProtectedRoute>
       }/>
+        <Route path="/Profile" element={
+        // <ProtectedRoute user={user}>
+          <Profile />
+        // </ProtectedRoute>
+      }/>
+   
       <Route path="/Editor" element={
         // <ProtectedRoute user={user}>
           <Editor />

@@ -44,6 +44,28 @@ class User extends PostgresDB {
     }
   }
 
+  async update(id, name, email, password) {
+    try {
+      const client = await this.pool.connect();
+      const query = `                          
+        UPDATE users 
+        SET name = $2, email = $3 , password = $4 updated_at = now()
+        WHERE id = $1
+        RETURNING *;
+        `;
+      const values = [id, name, email, password];
+      const result = await client.query(query, values);
+      client.release();
+      if (result.rows.length == 0) {
+        return false;
+      }
+      return result.rows[0];
+    } catch (e) {
+      console.log(e);
+      throw new InternalServerError("Service temporarily unavailable");
+    }
+  }
+
   async find(id) {
     try {
       const client = await this.pool.connect();

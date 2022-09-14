@@ -51,7 +51,7 @@ function Login() {
     <>
       <div className="div">
         <HalfPage gap="0em" height="100vh">
-          <InputBox title="Fazer Login" height="65vh">
+          <InputBox title="Fazer Login" height="">
               <Input
                 label="Email"
                 height={inputHeight}

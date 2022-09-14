@@ -22,6 +22,12 @@ export const GlobalStyle = createGlobalStyle`
   display:flex;
   gap:2rem;
 }
+.invisible{
+  display: none;
+}
+.visible_flex{
+  display: flex;
+}
 .hometrace{
   height:8vh;
   display:flex;
