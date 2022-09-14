@@ -6,9 +6,10 @@ export const Context = createContext({});
 
 export const Provider = (props) => {
 
-    const [user, setUser] = useState("");
+    const [user, setUser] = useState();
     const [users, setUsers] = useState(["Victor", "Victoria", "Vinicius","Vitor","Welligton","Yeté"]);
-
+    const [documents, setDocuments] = useState();
+ 
     const usersColors = [
       ["black", "white"],
       ["grey", "white"],
@@ -38,6 +39,8 @@ export const Provider = (props) => {
                 users,
                 setUsers,
                 addUser,
+                documents,
+                setDocuments,
                 usersColors,
                 logo,
             }}

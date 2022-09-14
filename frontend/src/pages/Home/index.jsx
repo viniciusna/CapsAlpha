@@ -13,24 +13,17 @@ import { useLocation, useNavigate} from 'react-router-dom'
 import { useState, useEffect } from "react";
 import getCookie from "../../utils/getCookie";
 import * as S from './style'
-import Error from "../../components/Error/Error.jsx";
-
-function Home() {
-  const [documentCode, setDocumentCode] = useState("");
-  let { navigate } = useContext(Context);
-  const [error, setError] = useState("")
-  const logo = "/src/images/logo.svg"
-
+import { Context } from "../../context/Context.jsx";
+import { useContext } from "react";
 function Home() {  
   const [value, setValue] = useState('')
-  const userIsLog = getCookie('token')
-  const location = useLocation()
+  const { user, setUser, documents, setDocuments} = useContext(Context);
   const navigate = useNavigate()
  
   function handleChange (event) {
     const value = event.target.value;
     setValue(value);
-    setDocumentCode(value);
+    console.log(user)
   }
   function handleClickLinkDocument(event){
     fetch(`http://localhost:3001/document/${documentCode}`, {
@@ -66,7 +59,7 @@ function Home() {
           setError(res.message)
           return null
         }
-        navigate('/prototype')
+        navigate('/prototype/'+res.data.documentId)
       })
       .catch(err => console.log(err));
   }
@@ -76,8 +69,10 @@ function Home() {
       <Header onClick={() => navigate("/")}>
         <HeadersButtons>
           {
-            userIsLog
+            user
             ?
+              <CgProfile size={38} />
+            :
             <>
               <Button
                 onClick={() => navigate("/Login")}
@@ -96,8 +91,6 @@ function Home() {
                 width="9vw"
               />
             </>
-            :
-            <CgProfile size={38} />
         }
           
         </HeadersButtons>
@@ -109,7 +102,7 @@ function Home() {
           <S.button>
             <div>
               <Button
-                onClick={() => navigate("/Prototype")}
+                onClick={handleClickCreateDocument}
                 colorbg="#000000"
                 colorfnt="#FFFFFF"
                 value="Novo Documento"
@@ -133,13 +126,13 @@ function Home() {
 
         <HalfPage gap="0.5em" height="84vh">
           {
-            location?.state?.documents ?
-            location.state.documents.map((document)=>{
-              return <CardDocuments title={document.title} updatedAt={document.updated_at} owner={document.owner} handleClick={()=> navigate(`/Prototype/${document.id}`)} />
+            documents ?
+            documents.map((document)=>{
+              return <CardDocuments title={document.title} key={document.id} updatedAt={document.updated_at} owner={document.owner} handleClick={()=> navigate(`/Prototype/${document.id}`)} />
             })
             :
             <>
-            <img src={Note} alt="" srcset="" />
+            <img src={Note} alt="" srcSet="" />
             <div className="text">
               <h2 className="h2-home">Criar um link para compartilhar</h2>
               <p className="p-home">
@@ -148,13 +141,10 @@ function Home() {
               </p>
             </div>
           </>
- 
-        }
-          
+        } 
         </HalfPage>
       </div>
     </>
   );
-  }
 }
 export default Home
