@@ -25,7 +25,7 @@ module.exports = class UserLogin {
 
   getToken(id, name) {
     const token = jwt.sign({ id: id, name: name }, config.jwt_secret, {
-      expiresIn: 6000,
+      expiresIn: 60000000,
     });
     return token;
   }

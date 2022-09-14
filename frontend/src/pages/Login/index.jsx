@@ -1,4 +1,3 @@
-import { Context } from "../../context/Context.jsx";
 import { useNavigate } from "react-router-dom";
 import { useLocation , useContext, useState } from "react";
 import InputBox from "../../components/InputBox/InputBox.jsx";
@@ -7,6 +6,7 @@ import HalfPage from "../../components/HalfPage/HalfPage.jsx";
 import logo from "../../images/LogoVertical.svg";
 import Button from "../../components/Button/Button.jsx";
 import Error from '../../components/Error/Error'
+import { Context } from "../../context/Context.jsx";
 
 const inputHeight = "6vh";
 const inputWidth = "30vw";
@@ -15,6 +15,7 @@ function Login() {
   const [values, setValues] = useState({});
   const [error, setError] = useState("")
   const navigate = useNavigate();
+  const { user, setUser, documents, setDocuments} = useContext(Context);
 
   function handleChange (event) {
     const name = event.target.name;
@@ -39,7 +40,9 @@ function Login() {
           setError(res.message)
           return null
         }
-        navigate('/home', {state: {documents: res.data.documents}})
+        setUser(res.data.user)
+        setDocuments(res.data.documents)
+        navigate('/home')
       })
       .catch(err => console.log(err));
   }

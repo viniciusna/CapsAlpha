@@ -7,34 +7,41 @@ import Login from "../pages/Login";
 import MyProjects from "../pages/MyProjects";
 import Prototype from "../pages/Prototype";
 import Editor from "../pages/Editor";
-import ProtectedRoute from '../routes/protectedRoute'
+import ProtectedRoute from "../routes/protectedRoute";
 import getCookie from "../utils/getCookie";
 
 function Router() {
-  const user = getCookie('token')
+  const user = getCookie("token");
   return (
     <Routes>
       <Route index element={<Home />} />
       <Route path="/Register" element={<Register />} />
       <Route path="/Login" element={<Login />} />
-      <Route path="/Home" element={
-          <Home />
-       } />
-      <Route path="/MyProjects" element={
-        <ProtectedRoute user={user}>
-          <MyProjects />
-        </ProtectedRoute>
-      }/>
-      <Route path="/Editor" element={
-        //<ProtectedRoute user={user}>
+      <Route path="/Home" element={<Home />} />
+      <Route
+        path="/MyProjects"
+        element={
+          <ProtectedRoute user={user}>
+            <MyProjects />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/Editor"
+        element={
+          // <ProtectedRoute user={user}>
           <Editor />
-        //</ProtectedRoute>
-      } />
-      <Route path="Prototype/:id" element={
-        // <ProtectedRoute user={user}>
-          <Prototype /> 
-        // </ProtectedRoute>
-      }/>
+          // </#ProtectedRoute>
+        }
+      />
+      <Route
+        path="Prototype/:id"
+        element={
+          //  <ProtectedRoute user={user}>
+          <Prototype />
+          //  </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

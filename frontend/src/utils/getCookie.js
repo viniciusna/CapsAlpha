@@ -11,6 +11,6 @@ function getCookie(cname) {
       return c.substring(name.length, c.length);
     }
   }
-  return "";
+  return false;
 }
 export default getCookie;

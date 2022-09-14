@@ -4,7 +4,7 @@ class UserLoginController {
   async handler(req, res) {
     const data = await new UserLoginService().execute(req.body);
     res.cookie("token", data.token, {
-      maxAge: 6000,
+      maxAge: 60000000,
       secure: true,
       httpOnly: false,
       sameSite: "none",
