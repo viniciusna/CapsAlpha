@@ -54,8 +54,7 @@ function Editor() {
 
   return (
     <>
-      <Header>
-        <img src={logo} onClick={() => navigate("/")} height="65vh" />
+      <Header onClick={() => navigate("/Home")}>
         <HeadersButtons gap="2rem">
           <HeadersButtons gap="0.2rem">
             {users.map((user, i) => (
@@ -67,22 +66,6 @@ function Editor() {
               </UserIdentifier>
             ))}
           </HeadersButtons>
-          <Button
-            onClick={() => navigate("/Login")}
-            colorbg="#FFFFFF"
-            colorfnt="#000000"
-            value="Entrar"
-            height="5vh"
-            width="9vw"
-          />
-          <Button
-            onClick={() => navigate("/Register")}
-            colorbg="#000000"
-            colorfnt="#FFFFFF"
-            value="Criar conta"
-            height="5vh"
-            width="9vw"
-          />
           <CgProfile size={38} />
         </HeadersButtons>
       </Header>
