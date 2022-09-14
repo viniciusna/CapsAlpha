@@ -6,10 +6,10 @@ import Note from "../../images/notes.svg";
 import Doc from "../../images/document.svg";
 import { CgProfile } from "react-icons/cg";
 import { FaKeyboard } from "react-icons/fa";
-import { AiOutlineSearch } from 'react-icons/ai'
-import Input from "../../components/InputHome/InputHome"
+import { AiOutlineSearch } from "react-icons/ai";
+import Input from "../../components/InputHome/InputHome";
 import CardDocuments from "../../components/CardDocuments/CardDocuments.jsx";
-import { useLocation, useNavigate} from 'react-router-dom'
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import getCookie from "../../utils/getCookie";
 import * as S from './style'
@@ -25,43 +25,43 @@ function Home() {
     setValue(value);
     console.log(user)
   }
-  function handleClickLinkDocument(event){
+  function handleClickLinkDocument(event) {
     fetch(`http://localhost:3001/document/${documentCode}`, {
-      method: 'GET',  
-      credentials: 'include',
+      method: "GET",
+      credentials: "include",
       headers: new Headers({
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       }),
     })
-      .then(res => res.json())
-      .then(res => {
+      .then((res) => res.json())
+      .then((res) => {
         console.log(res);
-        if(res.message !== 'Success') {
-          setError(res.message)
-          return null
+        if (res.message !== "Success") {
+          setError(res.message);
+          return null;
         }
-        navigate('/prototype')
+        navigate("/prototype");
       })
-      .catch(err => console.log(err)); 
+      .catch((err) => console.log(err));
   }
-  function handleClickCreateDocument (event) {
-    fetch('http://localhost:3001/document/', {
-      method: 'POST',  
-      credentials: 'include',
+  function handleClickCreateDocument(event) {
+    fetch("http://localhost:3001/document/", {
+      method: "POST",
+      credentials: "include",
       headers: new Headers({
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       }),
     })
-      .then(res => res.json())
-      .then(res => {
+      .then((res) => res.json())
+      .then((res) => {
         console.log(res);
-        if(res.message !== 'Success') {
-          setError(res.message)
-          return null
+        if (res.message !== "Success") {
+          setError(res.message);
+          return null;
         }
         navigate('/prototype/'+res.data.documentId)
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   }
 
   return (
@@ -92,7 +92,6 @@ function Home() {
               />
             </>
         }
-          
         </HeadersButtons>
       </Header>
       <div className="divv">
@@ -111,26 +110,43 @@ function Home() {
               >
                 <img src={Doc} alt="" height={35} />
               </Button>
-              <Input handleChange={handleChange} height="6vh" width="18vw" placeholder="Digite um código">
+              <Input
+                handleChange={handleChange}
+                height="6vh"
+                width="18vw"
+                placeholder="Digite um código"
+              >
                 <FaKeyboard />
               </Input>
-            </div>            
-            {value ? <S.search onClick={() => navigate(`/prototype/${value}`)}>Join</S.search> : ''}
+            </div>
+            {value ? (
+              <S.search onClick={() => navigate(`/prototype/${value}`)}>
+                Join
+              </S.search>
+            ) : (
+              ""
+            )}
           </S.button>
           <div className="hometrace">
             Não tem uma conta?
             <a onClick={() => navigate("/Register")}> Comece agora</a>
           </div>
         </HalfPage>
-       
 
         <HalfPage gap="0.5em" height="84vh">
-          {
-            documents ?
-            documents.map((document)=>{
-              return <CardDocuments title={document.title} key={document.id} updatedAt={document.updated_at} owner={document.owner} handleClick={()=> navigate(`/Prototype/${document.id}`)} />
+          {documents ? (
+            documents.map((document) => {
+              return (
+                <CardDocuments
+                  title={document.title}
+                  key={document.id}
+                  updatedAt={document.updated_at}
+                  owner={document.owner}
+                  handleClick={() => navigate(`/Prototype/${document.id}`)}
+                />
+              );
             })
-            :
+          ) : (
             <>
             <img src={Note} alt="" srcSet="" />
             <div className="text">
@@ -147,4 +163,4 @@ function Home() {
     </>
   );
 }
-export default Home
+export default Home;

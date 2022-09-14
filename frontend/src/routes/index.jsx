@@ -7,11 +7,11 @@ import Login from "../pages/Login";
 import MyProjects from "../pages/MyProjects";
 import Prototype from "../pages/Prototype";
 import Editor from "../pages/Editor";
-import ProtectedRoute from '../routes/protectedRoute'
+import ProtectedRoute from "../routes/protectedRoute";
 import getCookie from "../utils/getCookie";
 
 function Router() {
-  const user = getCookie('token')
+  const user = getCookie("token");
   return (
     <Routes>
       <Route index element={<Home />} />
