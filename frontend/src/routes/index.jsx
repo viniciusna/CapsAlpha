@@ -36,7 +36,7 @@ function Router() {
           <Editor />
         // </#ProtectedRoute>
       } />
-      <Route path="Editor/:id" element={
+      <Route path="Editor/:documentId" element={
         //  <ProtectedRoute user={user}>
           <Editor /> 
         //  </ProtectedRoute>

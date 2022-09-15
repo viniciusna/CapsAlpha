@@ -84,8 +84,8 @@ function Register() {
               placeholder="Confirme a sua senha"
             />
             <Button
-              colorbg="#000000"
-              colorfnt="#FFFFFF"
+              colorbg="black"
+              colorfnt="white"
               value="Cadastrar"
               height="6vh"
               width="31vw"
@@ -98,7 +98,7 @@ function Register() {
             </p>
           </InputBox>
         </HalfPage>
-        <HalfPage gap="0em" height="100vh">
+        <HalfPage gap="0em" height="100vh" widthMax="">
           <img onClick={() => navigate("/")} src={logo} alt="" />
         </HalfPage>
       </div>

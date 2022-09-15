@@ -36,6 +36,7 @@ module.exports = (server) => {
     ws.on("message", async (data) => {
       try {
         const { type, params } = JSON.parse(data);
+        console.log(JSON.parse(data));
         switch (type) {
           case "join":
             ws.userId = params.userId;

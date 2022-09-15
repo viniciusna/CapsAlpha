@@ -4,17 +4,17 @@ import Button from "../../components/Button/Button.jsx";
 import HalfPage from "../../components/HalfPage/HalfPage.jsx";
 import Note from "../../images/notes.svg";
 import Doc from "../../images/document.svg";
-import { FaKeyboard } from "react-icons/fa";
-import { AiOutlineSearch } from "react-icons/ai";
+import { BsFillFileEarmarkTextFill } from "react-icons/bs";
 import Input from "../../components/InputHome/InputHome";
 import CardDocuments from "../../components/CardDocuments/CardDocuments.jsx";
 import { useLocation, useNavigate} from 'react-router-dom'
 import { useState, useEffect, useDebugValue } from "react";
-import getCookie from "../../utils/getCookie";
 import * as S from './style'
 import { Context } from "../../context/Context.jsx";
 import { useContext } from "react";
 import PerfilModal from '../../components/PerfilModal/index'
+import InputDocumentCode from "./InputDocumentCode.jsx";
+import ButtonNewDocument from "./ButtonNewDocument.jsx";
 
 function Home() {  
   const [value, setValue] = useState('')
@@ -101,16 +101,16 @@ function Home() {
             <>
               <Button
                 onClick={() => navigate("/Login")}
-                colorbg="#FFFFFF"
-                colorfnt="#000000"
+                colorbg="black"
+                colorfnt="white"
                 value="Entrar"
                 height="5vh"
                 width="9vw"
               />
               <Button
                 onClick={() => navigate("/Register")}
-                colorbg="#000000"
-                colorfnt="#FFFFFF"
+                colorbg="black"
+                colorfnt="white"
                 value="Criar conta"
                 height="5vh"
                 width="9vw"
@@ -125,24 +125,8 @@ function Home() {
           <h3 className="h3-home">Faça aqui seu Mardown</h3>
           <S.button>
             <div>
-              <Button
-                onClick={handleClickCreateDocument}
-                colorbg="#000000"
-                colorfnt="#FFFFFF"
-                value="Novo Documento"
-                height="6vh"
-                width="18vw"
-              >
-                <img src={Doc} alt="" height={35} />
-              </Button>
-              <Input
-                handleChange={handleChange}
-                height="6vh"
-                width="18vw"
-                placeholder="Digite um código"
-              >
-                <FaKeyboard />
-              </Input>
+              <ButtonNewDocument handleClick={handleClickCreateDocument} />
+              <InputDocumentCode handleChange={handleChange}/>
             </div>
             {value ? (
               <S.search onClick={() => navigate(`/Editor/${value}`)}>
@@ -160,7 +144,8 @@ function Home() {
 
         <HalfPage gap="0.5em" height="84vh">
           {documents ? (
-            documents.map((document) => {
+            documents.map((document, index) => {
+              if (index > 4) return 
               return (
                 <CardDocuments
                   title={document.title}

@@ -72,8 +72,8 @@ function Login() {
               />
               <Button
                 onClick={handleClick}
-                colorbg="#000000"
-                colorfnt="#FFFFFF"
+                colorbg="black"
+                colorfnt="white"
                 value="Logar"
                 height="6vh"
                 width="31vw"

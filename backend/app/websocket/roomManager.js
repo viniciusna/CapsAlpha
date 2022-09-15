@@ -1,6 +1,9 @@
 const configWebSocket = require("./config");
 const Redis = require("ioredis");
 const config = require("../config/index");
+const {
+  user,
+} = require("../../../frontend/src/components/UserIdentifier/style");
 const redis = new Redis({
   port: config.redis.port,
   host: config.redis.host,
@@ -23,13 +26,23 @@ class RoomManager {
     });
     const room = this.ws.room;
     const rooms = await this.getRoom(room);
+    console.log("Rooms", rooms);
+    console.log(this.ws.userId);
+    console.log(params);
+    console.log(params.data.ops);
     rooms.forEach((userId) => {
       if (userId !== this.ws.userId) {
         clients.forEach((client) => {
-          if (
-            client.readyState === websocket.OPEN &&
-            client.userId === userId
-          ) {
+          console.log(client.room);
+          console.log(client.userId);
+          console.log(client.readyState);
+          console.log(websocket.OPEN);
+
+          console.log("========");
+          console.log(client.userId == userId);
+          console.log(client.readyState === websocket.OPEN);
+          if (client.readyState === websocket.OPEN && client.userId == userId) {
+            console.log("Manda os dadso");
             client.send(data);
           }
         });
@@ -57,9 +70,12 @@ class RoomManager {
     const roomId = params.documentId;
     const room = await this.getRoom(roomId);
 
+    console.log("ROOM", room);
+    if (room.includes(this.ws.userId)) {
+      console.warn(`Room ${roomId} already have this user`);
+    }
     if (room.length >= configWebSocket.maxUsers) {
       console.warn(`Room ${roomId} is full!`);
-
       this.ws.send(
         JSON.stringify({
           type: "join",

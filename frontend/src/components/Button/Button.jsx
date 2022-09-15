@@ -12,6 +12,9 @@ function Button(props) {
       colorfnt={props.colorfnt}
       height={props.height}
       width={props.width}
+      sizefnt={props.sizefnt}
+      onMouseOut={props.onMouseOut}
+      onMouseOver={props.onMouseOver}
     >
       {props.children}
       {props.value}

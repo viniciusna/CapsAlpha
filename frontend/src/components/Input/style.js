@@ -1,4 +1,4 @@
-import Styled from "styled-components";
+import Styled from 'styled-components';
 
 export const input = Styled.input`
     all:unset;
@@ -8,9 +8,9 @@ export const input = Styled.input`
     width:${(props) => props.width};
     padding-left:0.5rem;
 
-`
+`;
 export const div = Styled.div`
     display:flex;
     gap:0.5rem;
     flex-direction:column;
-`
+`;
