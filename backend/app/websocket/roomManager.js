@@ -1,9 +1,6 @@
 const configWebSocket = require("./config");
 const Redis = require("ioredis");
 const config = require("../config/index");
-const {
-  user,
-} = require("../../../frontend/src/components/UserIdentifier/style");
 const redis = new Redis({
   port: config.redis.port,
   host: config.redis.host,
@@ -16,6 +13,15 @@ class RoomManager {
   }
 
   async message(params, clients, websocket) {
+    const room = params.room;
+    console.log(`params ${params}`)
+    console.log(`params.room ${params.room}`)
+    console.log(room)
+    const rooms = await this.getRoom(params.room);
+    // console.log("Rooms", rooms);
+    // console.log(this.ws.userId);
+    // console.log(params);
+    // console.log(params.data.ops);
     const data = JSON.stringify({
       type: "message",
       status: "Success",
@@ -24,14 +30,8 @@ class RoomManager {
         data: params.data,
       },
     });
-    const room = this.ws.room;
-    const rooms = await this.getRoom(room);
-    console.log("Rooms", rooms);
-    console.log(this.ws.userId);
-    console.log(params);
-    console.log(params.data.ops);
     rooms.forEach((userId) => {
-      if (userId !== this.ws.userId) {
+      if (userId != `${this.ws.userId}`) {
         clients.forEach((client) => {
           console.log(client.room);
           console.log(client.userId);
@@ -71,8 +71,9 @@ class RoomManager {
     const room = await this.getRoom(roomId);
 
     console.log("ROOM", room);
-    if (room.includes(this.ws.userId)) {
+    if (room.includes(`${this.ws.userId}`)) {
       console.warn(`Room ${roomId} already have this user`);
+      return
     }
     if (room.length >= configWebSocket.maxUsers) {
       console.warn(`Room ${roomId} is full!`);

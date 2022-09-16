@@ -22,111 +22,35 @@ function Editor() {
 
   // Inicia o socket
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:3001");
-     
-    setSocket(ws)
-    document.getElementById('textBox').innerHTML = "";
-    const editor = document.createElement("div");
-    document.getElementById('textBox').append(editor);
-    const q = new Quill(editor, {
-      modules: {
-        toolbar: false,
-        syntax: false,
-      },
-      formats: [],
-      theme: "bubble",
-    });
-    q.setText("Loading...");
-    setQuill(q);
-    ws.onopen = () =>{
-        setConnect(true)
-        ws.send(JSON.stringify(
-          {
-            type: "join",
-            params: {
-              userId: 199,
-              documentId: documentId
-            }
+    const s = new WebSocket("ws://localhost:3001")
+    setSocket(s)
+
+    s.onopen = () =>{
+      setConnect(true)
+      s.send(JSON.stringify(
+        {
+          type: "join",
+          params: {
+            userId: user.id,
+            documentId: documentId
           }
-          )
-        );            
-      }
-      const handler = (delta, oldDelta, source) => {   
-        if(!ws) return 
-        if (source !== "user") return
-        document.getElementById("textPreview").innerHTML = marked.parse(
-          document.getElementById("textBox").innerText
-        );
-        ws.send(JSON.stringify(
-          {
-            type: "message",
-            params: {
-              data: delta
-            }
-          }
-          )
-        );  
-      }
-      
-    q.on("text-change", handler)     
-    return () => {
-       ws.close()
+        }
+        )
+      );            
     }
+
+    // return () => {
+    //   s.close()
+    // }
   }, [])
 
- 
-  // useEffect(() => {
-  //   if (socket == null || connect == true) return  
-  //   socket.addEventListener("open", () =>{
-  //     socket.send(JSON.stringify(
-  //        {
-  //          type: "join",
-  //          params: {
-  //            userId: user.id,
-  //            documentId: documentId
-  //          }
-  //        }
-  //        )
-  //      );  
-  //    })    
-  
-  // }, [socket])
-
-  // Emite as mudanças
   useEffect(() => {
     if (socket == null || quill == null) return
-    
-    // const handler = (delta, oldDelta, source) => {   
-    //   if (source !== "user") return
-    //   document.getElementById("textPreview").innerHTML = marked.parse(
-    //     document.getElementById("textBox").innerText
-    //   );
-    //   socket.send(JSON.stringify(
-    //     {
-    //       type: "message",
-    //       params: {
-    //         data: delta
-    //       }
-    //     }
-    //     )
-    //   );  
-    // }
-    // quill.on("text-change", handler)
 
-    return () => {
-      quill.off("text-change", handler)
-    }
-  }, [socket, quill])
-
-  // Recebe as mudanças
-  useEffect(() => {
-    if (quill == null || socket == null) return
-    
     const handler = delta => {
-      console.log(delta)
       quill.updateContents(delta)
-      console.log(quill.getContents())
     }
+
     socket.onmessage =  (event) =>  {
       console.log('Recebeu')
       console.log(event.data)
@@ -136,29 +60,44 @@ function Editor() {
     };
 
     return () => {
-      // socket.off("receive-changes", handler)
+      socket.close()
     }
   }, [socket, quill])
 
-  // start quill
-  const wrapperRef = useCallback((wrapper) => {
-    if (wrapper == null) return;
+  useEffect(() => {
+    if (socket == null || quill == null) return
 
-    // wrapper.innerHTML = "";
-    // const editor = document.createElement("div");
-    // wrapper.append(editor);
-    // const q = new Quill(editor, {
-    //   modules: {
-    //     toolbar: false,
-    //     syntax: false,
-    //   },
-    //   formats: [],
-    //   theme: "bubble",
-    // });
-    // //q.disable();
-    // q.setText("Loading...");
-    // setQuill(q);
-  }, []);
+    const handler = (delta, oldDelta, source) => {
+      if (source !== "user") return
+      console.log(delta)
+      socket.send(JSON.stringify({type: "message",params: { data: delta, room: documentId }}))
+    }
+
+    quill.on("text-change", handler)
+
+    return () => {
+      quill.off("text-change", handler)
+    }
+  }, [socket, quill])
+
+  const wrapperRef = useCallback(wrapper => {
+    if (wrapper == null) return
+
+    wrapper.innerHTML = ""
+    const editor = document.createElement("div")
+    wrapper.append(editor)
+    const q = new Quill(editor, {
+      modules: {
+        toolbar: false,
+        syntax: false,
+      },
+      formats: [],
+      theme: "bubble",
+    });
+    // q.disable()
+    // q.setText("Loading...")
+    setQuill(q)
+  }, [])
 
   return (
     <>
