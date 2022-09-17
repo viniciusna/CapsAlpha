@@ -2,6 +2,8 @@ const configWebSocket = require("./config");
 const Redis = require("ioredis");
 const Delta = require("quill-delta");
 const config = require("../config/index");
+const Document = require("../repository/document");
+
 const redis = new Redis({
   port: config.redis.port,
   host: config.redis.host,
@@ -13,7 +15,7 @@ class DocumentManager {
     this.documentId = "";
   }
 
-  setDocument(documentId) {
+  setDocumentId(documentId) {
     this.documentId = documentId;
   }
 
@@ -36,6 +38,24 @@ class DocumentManager {
 
   async setText(text) {
     return await redis.set(`document_${this.documentId}`, text);
+  }
+
+  async getDocument() {
+    const redisText = await this.getText();
+    if (redisText != "") {
+      return redisText;
+    }
+
+    const postgresText = await new Document().get(this.room);
+    console.log(postgresText);
+    if (!postgresText) {
+      console.log("Document don't exist ");
+      await this.setText("");
+      return postgresText;
+    } else {
+      await this.setText(postgresText);
+      return postgresText;
+    }
   }
 
   toPlaintext(delta) {

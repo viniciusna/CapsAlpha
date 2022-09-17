@@ -55,6 +55,7 @@ function Editor() {
       );
     }
     const handlerJoin = text => {
+      console.log(text)
       quill.setText(text)
       document.getElementById("textPreview").innerHTML = marked.parse(
         document.getElementById("textBox").innerText
@@ -122,6 +123,10 @@ function Editor() {
     setQuill(q)
   }, [])
 
+  function saveDocument(){
+    socket.send(JSON.stringify({type: "save",params: {room: documentId }}))
+  }
+
   return (
     <>
       <Header onClick={() => navigate("/Home")}>
@@ -143,6 +148,7 @@ function Editor() {
       <div className="divv">
         <HalfPage gap="0em" height="92vh">
           <CustomToolbar />
+          <button onClick={saveDocument}>Salvar</button>
           <div
             id="textBox"
             ref={wrapperRef}

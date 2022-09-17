@@ -3,6 +3,7 @@ const Redis = require("ioredis");
 const config = require("../config/index");
 const UserDocument = require("../repository/userDocuments");
 const DocumentManager = require("./documentManager");
+const Document = require("../repository/document");
 const redis = new Redis({
   port: config.redis.port,
   host: config.redis.host,
@@ -38,6 +39,13 @@ class RoomManager {
     });
   }
 
+  async saveRelation(documentId, userId) {
+    const relationExist = await new UserDocument().find(userId, documentId);
+    if (!relationExist) {
+      await new UserDocument().set(userId, documentId);
+    }
+  }
+
   async addUser(room, user) {
     await redis.lpush(`room_${room}`, user);
   }
@@ -52,12 +60,6 @@ class RoomManager {
 
   async deleteRoom(room) {
     await redis.del(`room_${room}`);
-  }
-  async saveRelation(documentId, userId) {
-    const relationExist = await new UserDocument().find(userId, documentId);
-    if (!relationExist) {
-      await new UserDocument().set(userId, documentId);
-    }
   }
 
   async join(params) {
@@ -83,8 +85,8 @@ class RoomManager {
     await this.saveRelation(roomId, this.ws.userId);
     await this.addUser(roomId, this.ws.userId);
 
-    this.documentManager.setDocument(roomId);
-    const document = await this.documentManager.getText();
+    this.documentManager.setDocumentId(roomId);
+    const document = await this.documentManager.getDocument();
     this.ws.room = roomId;
 
     this.ws.send(
@@ -118,6 +120,30 @@ class RoomManager {
 
   async close(room) {
     this.deleteRoom(room);
+  }
+
+  async save(params) {
+    const roomId = this.room;
+    const text = await this.documentManager.getText();
+    const result = await new Document().updateContent(roomId, text);
+    if (result) {
+      this.ws.send(
+        JSON.stringify({
+          type: "save",
+          status: "Success",
+          message: `Updated document ${roomId}`,
+          params: {},
+        })
+      );
+    }
+    this.ws.send(
+      JSON.stringify({
+        type: "save",
+        status: "Error",
+        message: `Document ${roomId} not updated`,
+        params: {},
+      })
+    );
   }
 }
 
