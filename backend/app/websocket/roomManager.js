@@ -1,6 +1,7 @@
 const configWebSocket = require("./config");
 const Redis = require("ioredis");
 const config = require("../config/index");
+const UserDocument = require("../repository/userDocuments");
 const redis = new Redis({
   port: config.redis.port,
   host: config.redis.host,
@@ -14,9 +15,9 @@ class RoomManager {
 
   async message(params, clients, websocket) {
     const room = params.room;
-    console.log(`params ${params}`)
-    console.log(`params.room ${params.room}`)
-    console.log(room)
+    console.log(`params ${params}`);
+    console.log(`params.room ${params.room}`);
+    console.log(room);
     const rooms = await this.getRoom(params.room);
     // console.log("Rooms", rooms);
     // console.log(this.ws.userId);
@@ -33,14 +34,6 @@ class RoomManager {
     rooms.forEach((userId) => {
       if (userId != `${this.ws.userId}`) {
         clients.forEach((client) => {
-          console.log(client.room);
-          console.log(client.userId);
-          console.log(client.readyState);
-          console.log(websocket.OPEN);
-
-          console.log("========");
-          console.log(client.userId == userId);
-          console.log(client.readyState === websocket.OPEN);
           if (client.readyState === websocket.OPEN && client.userId == userId) {
             console.log("Manda os dadso");
             client.send(data);
@@ -65,7 +58,12 @@ class RoomManager {
   async deleteRoom(room) {
     await redis.del(`room_${room}`);
   }
-
+  async saveRelation(documentId, userId) {
+    const relationExist = await new UserDocument().find(userId, documentId);
+    if (!relationExist) {
+      await new UserDocument().set(userId, documentId);
+    }
+  }
   async join(params) {
     const roomId = params.documentId;
     const room = await this.getRoom(roomId);
@@ -73,7 +71,7 @@ class RoomManager {
     console.log("ROOM", room);
     if (room.includes(`${this.ws.userId}`)) {
       console.warn(`Room ${roomId} already have this user`);
-      return
+      return;
     }
     if (room.length >= configWebSocket.maxUsers) {
       console.warn(`Room ${roomId} is full!`);
@@ -87,7 +85,7 @@ class RoomManager {
       );
       return;
     }
-
+    await this.saveRelation(roomId, this.ws.userId);
     await this.addUser(roomId, this.ws.userId);
     this.ws["room"] = roomId;
 

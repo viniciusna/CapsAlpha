@@ -19,6 +19,7 @@ const HoverText = ({name, handleMouseOver,handleMouseOut}) => {
   
     function handleClickExit(){
         setUser('')
+        setDocuments('')
         navigate("/home")
     }
   return (
