@@ -43,6 +43,7 @@ class UserDocuments extends PostgresDB {
       throw new InternalServerError("Service temporarily unavailable");
     }
   }
+  
   async find(userId, documentId) {
     try {
       const client = await this.pool.connect();
