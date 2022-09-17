@@ -13,6 +13,15 @@ class RoomManager {
   }
 
   async message(params, clients, websocket) {
+    const room = params.room;
+    console.log(`params ${params}`)
+    console.log(`params.room ${params.room}`)
+    console.log(room)
+    const rooms = await this.getRoom(params.room);
+    // console.log("Rooms", rooms);
+    // console.log(this.ws.userId);
+    // console.log(params);
+    // console.log(params.data.ops);
     const data = JSON.stringify({
       type: "message",
       status: "Success",
@@ -21,15 +30,19 @@ class RoomManager {
         data: params.data,
       },
     });
-    const room = this.ws.room;
-    const rooms = await this.getRoom(room);
     rooms.forEach((userId) => {
-      if (userId !== this.ws.userId) {
+      if (userId != `${this.ws.userId}`) {
         clients.forEach((client) => {
-          if (
-            client.readyState === websocket.OPEN &&
-            client.userId === userId
-          ) {
+          console.log(client.room);
+          console.log(client.userId);
+          console.log(client.readyState);
+          console.log(websocket.OPEN);
+
+          console.log("========");
+          console.log(client.userId == userId);
+          console.log(client.readyState === websocket.OPEN);
+          if (client.readyState === websocket.OPEN && client.userId == userId) {
+            console.log("Manda os dadso");
             client.send(data);
           }
         });
@@ -57,9 +70,13 @@ class RoomManager {
     const roomId = params.documentId;
     const room = await this.getRoom(roomId);
 
+    console.log("ROOM", room);
+    if (room.includes(`${this.ws.userId}`)) {
+      console.warn(`Room ${roomId} already have this user`);
+      return
+    }
     if (room.length >= configWebSocket.maxUsers) {
       console.warn(`Room ${roomId} is full!`);
-
       this.ws.send(
         JSON.stringify({
           type: "join",

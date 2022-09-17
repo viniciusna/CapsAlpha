@@ -9,36 +9,83 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import Quill from "quill";
 import "quill/dist/quill.bubble.css";
 import { marked } from "marked";
+import { useParams } from "react-router-dom";
 
 function Editor() {
-  let { navigate, user, setUser, users, setUsers, addUser, usersColors } =
+  const { navigate, user, setUser, users, setUsers, addUser, usersColors } =
     useContext(Context);
-
+  const [socket, setSocket] = useState()
   const [quill, setQuill] = useState();
-
+  const [connect, setConnect] = useState(false)
+  const { documentId } = useParams()
   const logo = "/src/images/logo.svg";
 
-  /*  useEffect(() => {
-    const handler = (delta, oldDelta, source) => {
-      if (source !== "user") return;
-      document.getElementById("textPreview").innerHTML = marked.parse(
-        document.getElementById("textBox").innerText
+  // Inicia o socket
+  useEffect(() => {
+    const s = new WebSocket("ws://localhost:3001")
+    setSocket(s)
+
+    s.onopen = () =>{
+      setConnect(true)
+      s.send(JSON.stringify(
+        {
+          type: "join",
+          params: {
+            userId: user.id,
+            documentId: documentId
+          }
+        }
+        )
       );
+    }
+
+    // return () => {
+    //   s.close()
+    // }
+  }, [])
+
+  useEffect(() => {
+    if (socket == null || quill == null) return
+
+    const handler = delta => {
+      quill.updateContents(delta)
+    }
+
+    socket.onmessage =  (event) =>  {
+      console.log('Recebeu')
+      console.log(event.data)
+      const data = JSON.parse(event.data)
+      console.log(event)
+      if(data.type == 'message') handler(data.params.data)
     };
-    quill.on("text-change", handler);
 
     return () => {
-      quill.off("text-change", handler);
-    };
-  }, [quill]); */
+      socket.close()
+    }
+  }, [socket, quill])
 
-  // start quill
-  const wrapperRef = useCallback((wrapper) => {
-    if (wrapper == null) return;
+  useEffect(() => {
+    if (socket == null || quill == null) return
 
-    wrapper.innerHTML = "";
-    const editor = document.createElement("div");
-    wrapper.append(editor);
+    const handler = (delta, oldDelta, source) => {
+      if (source !== "user") return
+      console.log(delta)
+      socket.send(JSON.stringify({type: "message",params: { data: delta, room: documentId }}))
+    }
+
+    quill.on("text-change", handler)
+
+    return () => {
+      quill.off("text-change", handler)
+    }
+  }, [socket, quill])
+
+  const wrapperRef = useCallback(wrapper => {
+    if (wrapper == null) return
+
+    wrapper.innerHTML = ""
+    const editor = document.createElement("div")
+    wrapper.append(editor)
     const q = new Quill(editor, {
       modules: {
         toolbar: false,
@@ -47,10 +94,10 @@ function Editor() {
       formats: [],
       theme: "bubble",
     });
-    //q.disable();
-    q.setText("Loading...");
-    setQuill(q);
-  }, []);
+    // q.disable()
+    // q.setText("Loading...")
+    setQuill(q)
+  }, [])
 
   return (
     <>
@@ -59,6 +106,7 @@ function Editor() {
           <HeadersButtons gap="0.2rem">
             {users.map((user, i) => (
               <UserIdentifier
+                key={i}
                 colorbg={usersColors[i][0]}
                 colorfnt={usersColors[i][1]}
               >
@@ -72,7 +120,7 @@ function Editor() {
       <div className="divv">
         <HalfPage gap="0em" height="92vh">
           <div
-            id="texBox"
+            id="textBox"
             ref={wrapperRef}
             style={{ height: "100%", width: "100%" }}
           ></div>

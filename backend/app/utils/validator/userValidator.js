@@ -25,10 +25,6 @@ class UserValidator {
     if (name.length > 60) {
       throw new BadRequest("Name is too long");
     }
-    const regex = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g;
-    if (!regex.test(name)) {
-      throw new BadRequest("Invalid name");
-    }
   }
 
   passwordValidate(params) {
