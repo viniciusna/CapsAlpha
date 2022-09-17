@@ -32,7 +32,7 @@ function Editor() {
         {
           type: "join",
           params: {
-            userId: user.id,
+            userId: 2,
             documentId: documentId
           }
         }
@@ -53,15 +53,18 @@ function Editor() {
       document.getElementById("textPreview").innerHTML = marked.parse(
         document.getElementById("textBox").innerText
       );
-
+    }
+    const handlerJoin = text => {
+      quill.setText(text)
+      document.getElementById("textPreview").innerHTML = marked.parse(
+        document.getElementById("textBox").innerText
+      );
     }
 
     socket.onmessage =  (event) =>  {
-      console.log('Recebeu')
-      console.log(event.data)
       const data = JSON.parse(event.data)
-      console.log(event)
       if(data.type == 'message') handler(data.params.data)
+      if(data.type == 'join') handlerJoin(data.params.data)
     };
 
     return () => {

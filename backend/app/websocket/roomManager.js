@@ -2,27 +2,22 @@ const configWebSocket = require("./config");
 const Redis = require("ioredis");
 const config = require("../config/index");
 const UserDocument = require("../repository/userDocuments");
+const DocumentManager = require("./documentManager");
 const redis = new Redis({
   port: config.redis.port,
   host: config.redis.host,
   password: config.redis.password,
 });
 class RoomManager {
-  constructor(ws, rooms) {
+  constructor(ws) {
     this.ws = ws;
-    this.rooms = rooms;
+    this.room = "";
+    this.documentManager = new DocumentManager();
   }
 
   async message(params, clients, websocket) {
     const room = params.room;
-    console.log(`params ${params}`);
-    console.log(`params.room ${params.room}`);
-    console.log(room);
     const rooms = await this.getRoom(params.room);
-    // console.log("Rooms", rooms);
-    // console.log(this.ws.userId);
-    // console.log(params);
-    // console.log(params.data.ops);
     const data = JSON.stringify({
       type: "message",
       status: "Success",
@@ -31,11 +26,11 @@ class RoomManager {
         data: params.data,
       },
     });
+    await this.documentManager.update(params.data);
     rooms.forEach((userId) => {
       if (userId != `${this.ws.userId}`) {
         clients.forEach((client) => {
           if (client.readyState === websocket.OPEN && client.userId == userId) {
-            console.log("Manda os dadso");
             client.send(data);
           }
         });
@@ -64,11 +59,11 @@ class RoomManager {
       await new UserDocument().set(userId, documentId);
     }
   }
+
   async join(params) {
     const roomId = params.documentId;
     const room = await this.getRoom(roomId);
-
-    console.log("ROOM", room);
+    this.room = roomId;
     if (room.includes(`${this.ws.userId}`)) {
       console.warn(`Room ${roomId} already have this user`);
       return;
@@ -87,25 +82,30 @@ class RoomManager {
     }
     await this.saveRelation(roomId, this.ws.userId);
     await this.addUser(roomId, this.ws.userId);
-    this.ws["room"] = roomId;
+
+    this.documentManager.setDocument(roomId);
+    const document = await this.documentManager.getText();
+    this.ws.room = roomId;
 
     this.ws.send(
       JSON.stringify({
         type: "join",
         status: "Success",
         message: `Joined in room ${roomId}`,
-        params: {},
+        params: {
+          data: document,
+        },
       })
     );
   }
 
-  async leave(params) {
-    const roomId = this.ws.room;
+  async leave() {
+    const roomId = this.room;
 
     await this.removeUser(roomId, this.ws.userId);
 
-    this.ws["room"] = undefined;
-    if (this.getRoom(roomId).length == 0) this.close(room);
+    this.room = undefined;
+    if (this.getRoom(roomId).length == 0) this.close(this.room);
     this.ws.send(
       JSON.stringify({
         type: "leave",
