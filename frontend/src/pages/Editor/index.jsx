@@ -36,7 +36,7 @@ function Editor() {
           }
         }
         )
-      );            
+      );
     }
 
     // return () => {
