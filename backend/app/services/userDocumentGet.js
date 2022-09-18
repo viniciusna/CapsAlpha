@@ -9,12 +9,12 @@ module.exports = class UserDocumentGet {
       throw new Unauthorized("Access denied");
     }
     const token = req.cookies["token"];
-    console.log("===========================");
-    console.log(req.cookies);
-    console.log(token);
+    // console.log("===========================");
+    // console.log(req.cookies);
+    // console.log(token);
     const decoded = await checkTokenUser(token);
     const userId = decoded.id;
-    console.log(userId);
+    // console.log(userId);
     const documents = await new UserDocuments().getDocuments(userId);
     return {
       documents: documents,

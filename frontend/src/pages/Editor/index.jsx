@@ -42,9 +42,9 @@ function Editor() {
       );
     }
 
-    // return () => {
-    //   s.close()
-    // }
+    return () => {
+      s.close()
+    }
   }, [])
 
   useEffect(() => {
@@ -83,7 +83,7 @@ function Editor() {
     return () => {
       socket.close()
     }
-  }, [socket, quill, quillCursors])
+  }, [socket])
 
   useEffect(() => {
     if (socket == null || quill == null) return
@@ -93,7 +93,7 @@ function Editor() {
       document.getElementById("textPreview").innerHTML = marked.parse(
         document.getElementById("textBox").innerText
       );
-      socket.send(JSON.stringify({type: "message",params: { data: delta, room: documentId }}))
+      socket.send(JSON.stringify({type: "message",params: { data: delta}}))
     }
 
     quill.on("text-change", handler)
