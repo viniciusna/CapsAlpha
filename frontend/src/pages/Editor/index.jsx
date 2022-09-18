@@ -17,9 +17,11 @@ function Editor() {
     useContext(Context);
   const [socket, setSocket] = useState()
   const [quill, setQuill] = useState();
+  const [quillCursors, setQuillCursors] = useState();
   const [connect, setConnect] = useState(false)
   const { documentId } = useParams()
   const logo = "/src/images/logo.svg";
+  const cursorColors = ["blue", "red", "green", "yellow"]
 
   // Inicia o socket
   useEffect(() => {
@@ -57,17 +59,31 @@ function Editor() {
     }
 
     socket.onmessage =  (event) =>  {
-      console.log('Recebeu')
-      console.log(event.data)
+      // console.log('Recebeu')
+      // console.log(event.data)
       const data = JSON.parse(event.data)
-      console.log(event)
-      if(data.type == 'message') handler(data.params.data)
+      // console.log(data)
+      if(data.type == 'message') {
+        handler(data.params.data)
+      } else {
+        const { cursor, name } = data.params.data
+        console.log(quillCursors)
+        const cursors = quillCursors.cursors()
+
+        const cursorExist = cursors.filter( cursor => cursor.name === name ).length > 0
+
+        if(cursorExist) {
+          quillCursors.moveCursor(name, cursor)
+        } else {
+          quillCursors.createCursor(name, name, cursorColors[cursors.length])
+        }
+      }
     };
 
     return () => {
       socket.close()
     }
-  }, [socket, quill])
+  }, [socket, quill, quillCursors])
 
   useEffect(() => {
     if (socket == null || quill == null) return
@@ -84,6 +100,23 @@ function Editor() {
 
     return () => {
       quill.off("text-change", handler)
+    }
+  }, [socket, quill])
+
+  useEffect(() => {
+    if (socket == null || quill == null) return
+
+    const cursorHandler = function(range, oldRange, source) {
+      if (range) {
+        // console.log(JSON.stringify({type: "cursor", params: {cursor: range}}))
+        socket.send(JSON.stringify({type: "cursor", params: {cursor: range, room: documentId, name: user.name}}))
+      }
+    }
+
+    quill.on('selection-change', cursorHandler)
+
+    return () => {
+      quill.off("selection-change", cursorHandler)
     }
   }, [socket, quill])
 
@@ -114,9 +147,12 @@ function Editor() {
       ],  
       theme: 'snow',
     });
+
+    const qc = q.getModule("cursors")
     // q.disable()
     // q.setText("Loading...")
     setQuill(q)
+    setQuillCursors(qc)
   }, [])
 
   return (

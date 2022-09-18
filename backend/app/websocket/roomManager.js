@@ -43,6 +43,35 @@ class RoomManager {
     });
   }
 
+  async msgCursor(params, clients, websocket) {
+    const rooms = await this.getRoom(params.room);
+    const data = JSON.stringify({
+      type: "cursor",
+      params: {
+        data: params,
+      },
+    });
+    console.log(data)
+    rooms.forEach((userId) => {
+      if (userId != `${this.ws.userId}`) {
+        clients.forEach((client) => {
+          // console.log(client.room);
+          // console.log(client.userId);
+          // console.log(client.readyState);
+          // console.log(websocket.OPEN);
+
+          // console.log("========");
+          // console.log(client.userId == userId);
+          // console.log(client.readyState === websocket.OPEN);
+          if (client.readyState === websocket.OPEN && client.userId == userId) {
+            console.log("Manda os dadso");
+            client.send(data);
+          }
+        });
+      }
+    });
+  }
+
   async addUser(room, user) {
     await redis.lpush(`room_${room}`, user);
   }
