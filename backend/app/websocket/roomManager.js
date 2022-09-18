@@ -15,11 +15,11 @@ class RoomManager {
   }
 
   async message(params, clients, websocket) {
-    // const room = params.room;
+    const roomId = this.ws.room
     // console.log(`params ${params}`);
     // console.log(`params.room ${params.room}`);
     // console.log(room);
-    const rooms = await this.getRoom(params.room);
+    const userIdsInRoom = await this.getRoom(roomId);
     // console.log("Rooms", rooms);
     // console.log(this.ws.userId);
     // console.log(params);
@@ -32,7 +32,7 @@ class RoomManager {
         data: params.data,
       },
     });
-    rooms.forEach((userId) => {
+    userIdsInRoom.forEach((userId) => {
       if (userId != `${this.ws.userId}`) {
         clients.forEach((client) => {
           if (client.readyState === websocket.OPEN && client.userId == userId) {
