@@ -1,4 +1,5 @@
 import Quill from 'quill';
+import QuillCursors from 'quill-cursors';
 
 const CustomHeart = () => {
 	return <span>♥</span>;
@@ -83,11 +84,12 @@ Font.whitelist = [
 	'lucida',
 ];
 Quill.register(Font, true);
-
+Quill.register('modules/cursors', QuillCursors);
 /*
  * Editor component with custom toolbar and content containers
  */
 const modules = {
+	cursors: true,
 	toolbar: {
 		container: '#toolbar',
 		handlers: {

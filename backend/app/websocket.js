@@ -48,6 +48,9 @@ module.exports = (server) => {
           case "message":
             await roomManager.message(params, wss.clients, WebSocket);
             break;
+          case "cursor":
+            await roomManager.msgCursor(params, wss.clients, WebSocket);
+            break;
           default:
             console.warn(`Type: ${type} unknown`);
             break;
