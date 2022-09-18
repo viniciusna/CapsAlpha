@@ -42,9 +42,9 @@ function Editor() {
       );
     }
 
-    // return () => {
-    //   s.close()
-    // }
+    return () => {
+      s.close()
+    }
   }, [])
 
   useEffect(() => {
@@ -83,7 +83,7 @@ function Editor() {
     return () => {
       socket.close()
     }
-  }, [socket, quill, quillCursors])
+  }, [socket])
 
   useEffect(() => {
     if (socket == null || quill == null) return

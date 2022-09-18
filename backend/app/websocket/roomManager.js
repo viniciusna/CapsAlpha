@@ -7,6 +7,7 @@ const redis = new Redis({
   host: config.redis.host,
   password: config.redis.password,
 });
+
 class RoomManager {
   constructor(ws, rooms) {
     this.ws = ws;
@@ -14,10 +15,10 @@ class RoomManager {
   }
 
   async message(params, clients, websocket) {
-    const room = params.room;
-    console.log(`params ${params}`);
-    console.log(`params.room ${params.room}`);
-    console.log(room);
+    // const room = params.room;
+    // console.log(`params ${params}`);
+    // console.log(`params.room ${params.room}`);
+    // console.log(room);
     const rooms = await this.getRoom(params.room);
     // console.log("Rooms", rooms);
     // console.log(this.ws.userId);
@@ -35,7 +36,7 @@ class RoomManager {
       if (userId != `${this.ws.userId}`) {
         clients.forEach((client) => {
           if (client.readyState === websocket.OPEN && client.userId == userId) {
-            console.log("Manda os dados");
+            // console.log("Manda os dados");
             client.send(data);
           }
         });
@@ -51,7 +52,7 @@ class RoomManager {
         data: params,
       },
     });
-    console.log(data)
+    // console.log(data)
     rooms.forEach((userId) => {
       if (userId != `${this.ws.userId}`) {
         clients.forEach((client) => {
@@ -64,7 +65,7 @@ class RoomManager {
           // console.log(client.userId == userId);
           // console.log(client.readyState === websocket.OPEN);
           if (client.readyState === websocket.OPEN && client.userId == userId) {
-            console.log("Manda os dadso");
+            // console.log("Manda os dadso");
             client.send(data);
           }
         });
@@ -87,17 +88,19 @@ class RoomManager {
   async deleteRoom(room) {
     await redis.del(`room_${room}`);
   }
+
   async saveRelation(documentId, userId) {
     const relationExist = await new UserDocument().find(userId, documentId);
     if (!relationExist) {
       await new UserDocument().set(userId, documentId);
     }
   }
+
   async join(params) {
     const roomId = params.documentId;
     const room = await this.getRoom(roomId);
 
-    console.log("ROOM", room);
+    // console.log("ROOM", room);
     if (room.includes(`${this.ws.userId}`)) {
       console.warn(`Room ${roomId} already have this user`);
       return;
@@ -128,7 +131,7 @@ class RoomManager {
     );
   }
 
-  async leave(params) {
+  async leave() {
     const roomId = this.ws.room;
 
     await this.removeUser(roomId, this.ws.userId);
