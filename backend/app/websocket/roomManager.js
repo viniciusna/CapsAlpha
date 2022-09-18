@@ -35,7 +35,7 @@ class RoomManager {
       if (userId != `${this.ws.userId}`) {
         clients.forEach((client) => {
           if (client.readyState === websocket.OPEN && client.userId == userId) {
-            console.log("Manda os dadso");
+            console.log("Manda os dados");
             client.send(data);
           }
         });
@@ -73,15 +73,15 @@ class RoomManager {
   }
 
   async addUser(room, user) {
-    await redis.lpush(`room_${room}`, user);
+    await redis.sadd(`room_${room}`, user);
   }
 
   async getRoom(room) {
-    return await redis.lrange(`room_${room}`, 0, -1);
+    return await redis.smembers(`room_${room}`);
   }
 
-  async removeUser(room, user) {
-    await redis.lrem(`room_${room}`, 5, user);
+  async removeUser(room, userId) {
+    await redis.srem(`room_${room}`, userId);
   }
 
   async deleteRoom(room) {
