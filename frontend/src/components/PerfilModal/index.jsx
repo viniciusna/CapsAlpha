@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { Context } from "../../context/Context";
 import ButtonModal from "../Button/ButtonModal";
 import { useNavigate } from "react-router-dom";
+import { deleteCookie } from '../../utils/cookie'
 const HoverableDiv = ({ handleMouseOver, handleMouseOut }) => {
   return (
     <S.img onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>
@@ -20,6 +21,7 @@ const HoverText = ({name, handleMouseOver,handleMouseOut}) => {
     function handleClickExit(){
         setUser('')
         setDocuments('')
+        deleteCookie('token')
         navigate("/home")
     }
   return (

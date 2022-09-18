@@ -125,7 +125,7 @@ class Document extends PostgresDB {
       if (result.rows.length == 0) {
         return false;
       }
-      return result.rows;
+      return result.rows[0];
     } catch (e) {
       console.log(e);
       throw new InternalServerError("Service temporarily unavailable");

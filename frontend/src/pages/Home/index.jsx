@@ -18,6 +18,7 @@ import ButtonNewDocument from "./ButtonNewDocument.jsx";
 
 function Home() {  
   const [value, setValue] = useState('')
+  const [documentLoaded, setDocumentLoaded] = useState(false)
   const { user, setUser, documents, setDocuments} = useContext(Context);
   const navigate = useNavigate()
  
@@ -27,7 +28,7 @@ function Home() {
   }
 
   useEffect(()=>{
-    if(!user) return 
+    if(!user || documentLoaded) return 
 
     fetch('http://localhost:3001/document/my', {
       method: 'GET',  
@@ -45,29 +46,13 @@ function Home() {
           return null
         }
         setDocuments(res.data.documents)
-        console.log(res)
       })
       .catch(err => console.log(err));
-  },[])
+      setDocumentLoaded(true)
+  },[user])
  
-  function handleClickLinkDocument(event){
-    fetch(`http://localhost:3001/document/${documentCode}`, {
-      method: "GET",
-      credentials: "include",
-      headers: new Headers({
-        "Content-Type": "application/json",
-      }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        if (res.message !== "Success") {
-          setError(res.message);
-          return null;
-        }
-        navigate("/Editor");
-      })
-      .catch((err) => console.log(err));
+  function handleClickLinkDocument(){
+    navigate(`/Editor/${value}`)
   }
   function handleClickCreateDocument(event) {
     fetch("http://localhost:3001/document/", {
@@ -129,7 +114,7 @@ function Home() {
               <InputDocumentCode handleChange={handleChange}/>
             </div>
             {value ? (
-              <S.search onClick={() => navigate(`/Editor/${value}`)}>
+              <S.search onClick={handleClickLinkDocument}>
                 Join
               </S.search>
             ) : (

@@ -18,9 +18,21 @@ class DocumentManager {
   setDocumentId(documentId) {
     this.documentId = documentId;
   }
-
+  clearAttribute(deltaFull) {
+    const delta = deltaFull?.ops;
+    if (Array.isArray(delta)) {
+      return delta.map((op) => {
+        delete op.attributes;
+        return op;
+      });
+    } else {
+      delete delta.attributes;
+      return delta;
+    }
+  }
   async update(delta) {
-    const deltaNew = new Delta().compose(delta);
+    const clearDelta = new Delta(this.clearAttribute(delta));
+    const deltaNew = new Delta().compose(clearDelta);
     const text = await this.getText();
     const deltaOld = new Delta().insert(text);
     const dataDocument = deltaOld.compose(deltaNew);
@@ -38,24 +50,6 @@ class DocumentManager {
 
   async setText(text) {
     return await redis.set(`document_${this.documentId}`, text);
-  }
-
-  async getDocument() {
-    const redisText = await this.getText();
-    if (redisText != "") {
-      return redisText;
-    }
-
-    const postgresText = await new Document().get(this.room);
-    console.log(postgresText);
-    if (!postgresText) {
-      console.log("Document don't exist ");
-      await this.setText("");
-      return postgresText;
-    } else {
-      await this.setText(postgresText);
-      return postgresText;
-    }
   }
 
   toPlaintext(delta) {

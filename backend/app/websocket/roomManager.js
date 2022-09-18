@@ -86,7 +86,6 @@ class RoomManager {
     await this.addUser(roomId, this.ws.userId);
 
     this.documentManager.setDocumentId(roomId);
-    const document = await this.documentManager.getDocument();
     this.ws.room = roomId;
 
     this.ws.send(
@@ -94,9 +93,7 @@ class RoomManager {
         type: "join",
         status: "Success",
         message: `Joined in room ${roomId}`,
-        params: {
-          data: document,
-        },
+        params: {},
       })
     );
   }

@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 
-import React from "react";
+import React, { useState } from "react";
 import Home from "../pages/Home";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
@@ -8,14 +8,13 @@ import MyProjects from "../pages/MyProjects";
 import Editor from "../pages/Editor";
 import Profile from "../pages/Profile";
 import ProtectedRoute from '../routes/protectedRoute'
-import getCookie from "../utils/getCookie";
+import { getCookie } from "../utils/cookie";
 import { useContext, useEffect } from "react";
 import { Context } from "../context/Context";
 function Router() {
   const { user, setUser} = useContext(Context);
-
+  const [userToken, setUserToken] = useState(getCookie("token"))
   useEffect(()=>{
-    const userToken = getCookie("token");
     if(userToken && !user){
       fetch('http://localhost:3001/user/me', {
         method: 'GET',  
@@ -45,25 +44,25 @@ function Router() {
           <Home />
        } />
       <Route path="/MyProjects" element={
-        <ProtectedRoute user={user}>
+        <ProtectedRoute user={userToken}>
           <MyProjects />
         </ProtectedRoute>
       }/>
-        <Route path="/Profile" element={
-        // <ProtectedRoute user={user}>
+      <Route path="/Profile" element={
+        <ProtectedRoute user={userToken}>
           <Profile />
-        // </ProtectedRoute>
+        </ProtectedRoute>
       }/>
    
       <Route path="/Editor" element={
-        // <ProtectedRoute user={user}>
+        <ProtectedRoute user={userToken}>
           <Editor />
-        // </#ProtectedRoute>
+        </ProtectedRoute>
       } />
       <Route path="Editor/:documentId" element={
-        //  <ProtectedRoute user={user}>
+        <ProtectedRoute user={userToken}>
           <Editor /> 
-        //  </ProtectedRoute>
+        </ProtectedRoute>
       }/>
     </Routes>
   );

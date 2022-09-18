@@ -1,6 +1,6 @@
-import Styled from "styled-components";
+import Styled from 'styled-components';
 
-export const div = Styled.p`
+export const div = Styled.div`
     padding: 10px;
     z-index: 5;
     position: absolute;

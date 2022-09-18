@@ -40,9 +40,9 @@ function Editor() {
       );
     }
 
-    // return () => {
-    //   s.close()
-    // }
+     return () => {
+       s.close()
+     }
   }, [])
 
   useEffect(() => {
@@ -54,18 +54,36 @@ function Editor() {
         document.getElementById("textBox").innerText
       );
     }
-    const handlerJoin = text => {
-      console.log(text)
-      quill.setText(text)
-      document.getElementById("textPreview").innerHTML = marked.parse(
-        document.getElementById("textBox").innerText
-      );
+  
+    const handlerJoin = (data) => {
+      if(data.status != 'Success') return
+
+      fetch(`http://localhost:3001/document/${documentId}`, {
+        method: 'GET',  
+        credentials: 'include',
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        }),
+      })
+        .then(res => res.json())
+        .then(res => {
+          console.log(res);
+          if(res.message !== 'Success') {
+            alert(res.message)
+            return null
+          }
+          quill.setText(res.data.document.content)
+          document.getElementById("textPreview").innerHTML = marked.parse(
+            document.getElementById("textBox").innerText
+          );
+        })
+        .catch(err => console.log(err));
     }
 
     socket.onmessage =  (event) =>  {
       const data = JSON.parse(event.data)
       if(data.type == 'message') handler(data.params.data)
-      if(data.type == 'join') handlerJoin(data.params.data)
+      if(data.type == 'join') handlerJoin(data)
     };
 
     return () => {
@@ -122,14 +140,19 @@ function Editor() {
     // q.setText("Loading...")
     setQuill(q)
   }, [])
-
+  function leaveDocument(){
+    socket.send(JSON.stringify({type: "leave",params: {room: documentId }}))
+  }
   function saveDocument(){
     socket.send(JSON.stringify({type: "save",params: {room: documentId }}))
   }
 
   return (
     <>
-      <Header onClick={() => navigate("/Home")}>
+      <Header onClick={() => {
+        leaveDocument()
+        navigate("/Home")
+      }}>
         <HeadersButtons gap="2rem">
           <HeadersButtons gap="0.2rem">
             {users.map((user, i) => (
