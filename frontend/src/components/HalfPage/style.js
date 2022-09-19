@@ -8,6 +8,6 @@ gap: ${(props) => props.gap};
 align-items: center;
 height:${(props) => props.height};
 width:50%;
-// border:1px solid red;
+// border:1px solid green;
 overflow: hidden;
 `;

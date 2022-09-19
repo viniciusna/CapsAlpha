@@ -12,6 +12,7 @@ import { marked } from "marked";
 import { useParams } from "react-router-dom";
 import { modules } from './customToolbar'
 import { CustomToolbar } from "./customToolbar";
+import PerfilModal from "../../components/PerfilModal/index.jsx";
 function Editor() {
   const { navigate, user, setUser, users, setUsers, addUser, usersColors } =
     useContext(Context);
@@ -170,7 +171,7 @@ function Editor() {
               </UserIdentifier>
             ))}
           </HeadersButtons>
-          <CgProfile size={38} />
+          <PerfilModal />
         </HeadersButtons>
       </Header>
       <div className="divv">
