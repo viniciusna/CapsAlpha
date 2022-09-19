@@ -12,6 +12,7 @@ import { marked } from "marked";
 import { useParams } from "react-router-dom";
 import { modules } from './customToolbar'
 import { CustomToolbar } from "./customToolbar";
+
 function Editor() {
   const { navigate, user, setUser, users, setUsers, addUser, usersColors } =
     useContext(Context);
@@ -111,7 +112,6 @@ function Editor() {
 
     const cursorHandler = function(range, oldRange, source) {
       if (range) {
-        // console.log(JSON.stringify({type: "cursor", params: {cursor: range}}))
         socket.send(JSON.stringify({type: "cursor", params: {cursor: range, userId: `${user.id}`, name: user.name}}))
       }
     }
