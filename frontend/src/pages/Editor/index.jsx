@@ -54,7 +54,7 @@ function Editor() {
     const handlerDelta = delta => {
       quill.updateContents(delta)
       document.getElementById("textPreview").innerHTML = marked.parse(
-        document.getElementById("textBox").innerText
+        document.getElementsByClassName("ql-editor")[0].innerText
       );
     }
 
@@ -95,8 +95,9 @@ function Editor() {
     const handler = (delta, oldDelta, source) => {
       if (source !== "user") return
       document.getElementById("textPreview").innerHTML = marked.parse(
-        document.getElementById("textBox").innerText
+        document.getElementsByClassName("ql-editor")[0].innerText
       );
+
       socket.send(JSON.stringify({type: "message",params: { data: delta}}))
     }
 
