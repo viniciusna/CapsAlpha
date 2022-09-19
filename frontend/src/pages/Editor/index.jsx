@@ -5,11 +5,29 @@ import UserIdentifier from '../../components/UserIdentifier/UserIdentifier.jsx';
 import HeadersButtons from '../../components/HeadersButtons/headerButton';
 import { CgProfile } from 'react-icons/cg';
 import Button from '../../components/Button/Button.jsx';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.bubble.css';
-import { marked } from 'marked';
+import * as DOMPurify from 'dompurify';
+import { marked, use } from 'marked';
 import { useParams } from 'react-router-dom';
+
+marked.setOptions({
+	renderer: new marked.Renderer(),
+	highlight: function (code, lang) {
+		const hljs = require('highlight.js');
+		const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+		return hljs.highlight(code, { language }).value;
+	},
+	langPrefix: 'hljs language-', // highlight.js css expects a top-level 'hljs' class.
+	pedantic: false,
+	gfm: true,
+	breaks: false,
+	sanitize: false,
+	smartLists: true,
+	smartypants: false,
+	xhtml: false,
+});
 
 function Editor() {
 	const { navigate, user, setUser, users, setUsers, addUser, usersColors } =
@@ -19,6 +37,9 @@ function Editor() {
 	const [connect, setConnect] = useState(false);
 	const { documentId } = useParams();
 	const logo = '/src/images/logo.svg';
+
+	const [textBox, setTextBox] = useState();
+	const textPreviewRef = useRef();
 
 	// Inicia o socket
 	useEffect(() => {
@@ -43,11 +64,14 @@ function Editor() {
 		// }
 	}, []);
 
+	// message socket Quill
+
 	useEffect(() => {
 		if (socket == null || quill == null) return;
 
 		const handler = (delta) => {
 			quill.updateContents(delta);
+			console.log(textBox);
 		};
 
 		socket.onmessage = (event) => {
@@ -63,6 +87,8 @@ function Editor() {
 		};
 	}, [socket, quill]);
 
+	// onchange Quill
+
 	useEffect(() => {
 		if (socket == null || quill == null) return;
 
@@ -75,6 +101,8 @@ function Editor() {
 					params: { data: delta, room: documentId },
 				})
 			);
+
+			setTextBox(quill.getText());
 		};
 
 		quill.on('text-change', handler);
@@ -83,6 +111,8 @@ function Editor() {
 			quill.off('text-change', handler);
 		};
 	}, [socket, quill]);
+
+	// Start QUill
 
 	const wrapperRef = useCallback((wrapper) => {
 		if (wrapper == null) return;
@@ -102,6 +132,11 @@ function Editor() {
 		// q.setText("Loading...")
 		setQuill(q);
 	}, []);
+
+	function abacate() {
+		if (textBox == null) return { __html: '' };
+		return { __html: marked.parse(textBox) };
+	}
 
 	return (
 		<>
@@ -132,9 +167,16 @@ function Editor() {
 				<HalfPage gap="0em" height="92vh">
 					<div
 						id="textPreview"
-						style={{ height: '100%', width: '100%', border: '1px solid black' }}
-					>
-					</div>
+						ref={textPreviewRef}
+						style={{
+							height: '100%',
+							width: '100%',
+							border: '1px solid black',
+							padding: '25px',
+							overflow: 'scroll',
+						}}
+						dangerouslySetInnerHTML={abacate()}
+					></div>
 				</HalfPage>
 			</div>
 		</>
