@@ -50,33 +50,36 @@ function Editor() {
   useEffect(() => {
     if (socket == null || quill == null) return
 
-    const handler = delta => {
+    const handlerDelta = delta => {
       quill.updateContents(delta)
       document.getElementById("textPreview").innerHTML = marked.parse(
         document.getElementById("textBox").innerText
       );
+    }
 
+    const handlerCursor = (cursor, userId, name) => {
+      const cursors = quillCursors.cursors()
+
+      const cursorExist = cursors.filter( cursor => cursor.id == userId ).length > 0
+
+      if(cursorExist) {
+        quillCursors.moveCursor(userId, cursor)
+      } else {
+        quillCursors.createCursor(userId, name, cursorColors[cursors.length])
+      }
     }
 
     socket.onmessage =  (event) =>  {
-      // console.log('Recebeu')
-      // console.log(event.data)
       const data = JSON.parse(event.data)
-      // console.log(data)
+
       if(data.type == 'message') {
-        handler(data.params.data)
+        handlerDelta(data.params.data)
+      } else if(data.type == 'cursor') {
+        const { cursor, userId, name } = data.params.data
+
+        handlerCursor(cursor, userId, name)
       } else {
-        const { cursor, name } = data.params.data
-        console.log(quillCursors)
-        const cursors = quillCursors.cursors()
-
-        const cursorExist = cursors.filter( cursor => cursor.name === name ).length > 0
-
-        if(cursorExist) {
-          quillCursors.moveCursor(name, cursor)
-        } else {
-          quillCursors.createCursor(name, name, cursorColors[cursors.length])
-        }
+        quillCursors.removeCursor(`${data.userIdExiting}`)
       }
     };
 
@@ -109,7 +112,7 @@ function Editor() {
     const cursorHandler = function(range, oldRange, source) {
       if (range) {
         // console.log(JSON.stringify({type: "cursor", params: {cursor: range}}))
-        socket.send(JSON.stringify({type: "cursor", params: {cursor: range, room: documentId, name: user.name}}))
+        socket.send(JSON.stringify({type: "cursor", params: {cursor: range, userId: `${user.id}`, name: user.name}}))
       }
     }
 
