@@ -37,7 +37,7 @@ class RoomManager {
   }
 
   async msgCursor(params, clients, websocket) {
-    const rooms = await this.getRoom(params.room);
+    const rooms = await this.getRoom(this.ws.room);
     const data = JSON.stringify({
       type: "cursor",
       params: {
@@ -113,13 +113,13 @@ class RoomManager {
     );
   }
 
-  async leave() {
+  async leave(clients, websocket) {
     const roomId = this.ws.room;
+    const userIdExiting = this.ws.userId
 
-    await this.removeUser(roomId, this.ws.userId);
+    await this.removeUser(roomId, userIdExiting);
 
     this.ws["room"] = undefined;
-    if (this.getRoom(roomId).length == 0) this.close(room);
     this.ws.send(
       JSON.stringify({
         type: "leave",
@@ -128,6 +128,27 @@ class RoomManager {
         params: {},
       })
     );
+
+    if (this.getRoom(roomId).length == 0) {
+      this.close(room)
+      return
+    };
+
+    const userIdsInRoom = await this.getRoom(roomId);
+    const data = JSON.stringify({
+      type: "leave",
+      userIdExiting: userIdExiting
+    })
+
+    userIdsInRoom.forEach((userId) => {
+      if (userId != `${userIdExiting}`) {
+        clients.forEach((client) => {
+          if (client.readyState === websocket.OPEN && client.userId == userId) {
+            client.send(data);
+          }
+        });
+      }
+    });
   }
 
   async close(room) {
