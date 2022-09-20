@@ -127,10 +127,10 @@ function Home() {
           </div>
         </HalfPage>
 
-        <HalfPage gap="0.5em" height="84vh">
+        <HalfPage gap="0.5em" height="84vh" padding="50%">
           {documents ? (
             documents.map((document, index) => {
-              if (index > 4) return 
+              if (index > 15) return 
               return (
                 <CardDocuments
                   title={document.title}
