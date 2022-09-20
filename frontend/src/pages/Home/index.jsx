@@ -101,8 +101,8 @@ function Home() {
             <>
               <Button
                 onClick={() => navigate("/Login")}
-                colorbg="black"
-                colorfnt="white"
+                colorbg="white"
+                colorfnt="black"
                 value="Entrar"
                 height="5vh"
                 width="9vw"

@@ -1,26 +1,27 @@
 import Styled from "styled-components";
 
-export const div = Styled.p`
-    padding: 10px;
-    z-index: 5;
-    position: absolute;
-    margin-top: -10px;
-    margin-left: -5vw;
-    width: 120px;
-    height: 100px;
+export const div = Styled.div`
     display: flex;
     flex-direction: column;
-    align-itens: center;
+    align-items: center;
     justify-content: center;
-    border-radius: 5px;
-    border: solid 2px black;
-    background-color: white;
+    z-index: 10;
+    position: absolute;
+    right: 0.2rem;
+    top: 3.2rem;
+    width: 7.5vw;
+    height: 11vh;
+    border-radius: 0.5rem;
+    // border:1px solid red;
+    background-color: unset;
+    box-shadow: 3px 3px 15px 3px rgba(0,0,0,0.2);
 `;
 
 export const name = Styled.p`
     text-align: center;
-    width: 90%;
+    width: 100%;
     border-bottom: solid 2px black;
+
 `;
 
 export const img = Styled.div`

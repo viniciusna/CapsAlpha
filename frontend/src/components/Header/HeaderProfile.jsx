@@ -11,7 +11,7 @@ export default function HeaderProfile() {
 
     return (
     <Header onClick={() => navigate("/")}>
-      <HeadersButtons>
+      <HeadersButtons gap="2em">
         {user ? (
           <PerfilModal />
         ) : (
