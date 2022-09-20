@@ -8,9 +8,6 @@ class DocumentUpdateTitleController {
         titleUpdated: data,
       },
     });
-    console.log("data no Controller")
-    console.log(data)
-    console.log("Final do processo")
   }
 }
 
