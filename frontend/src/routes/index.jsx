@@ -13,8 +13,8 @@ import { useContext, useEffect } from "react";
 import { Context } from "../context/Context";
 function Router() {
   const { user, setUser} = useContext(Context);
-  const [userToken, setUserToken] = useState(getCookie("token"))
   useEffect(()=>{
+    const userToken = getCookie("token")
     if(userToken && !user){
       fetch('http://localhost:3001/user/me', {
         method: 'GET',  
@@ -44,23 +44,23 @@ function Router() {
           <Home />
        } />
       <Route path="/MyProjects" element={
-        <ProtectedRoute user={userToken}>
+        <ProtectedRoute user={getCookie("token")}>
           <MyProjects />
         </ProtectedRoute>
       }/>
       <Route path="/Profile" element={
-        <ProtectedRoute user={userToken}>
+        <ProtectedRoute user={getCookie("token")}>
           <Profile />
         </ProtectedRoute>
       }/>
    
       <Route path="/Editor" element={
-        <ProtectedRoute user={userToken}>
+        <ProtectedRoute user={getCookie("token")}>
           <Editor />
         </ProtectedRoute>
       } />
       <Route path="Editor/:documentId" element={
-        <ProtectedRoute user={userToken}>
+        <ProtectedRoute user={getCookie("token")}>
           <Editor /> 
         </ProtectedRoute>
       }/>
