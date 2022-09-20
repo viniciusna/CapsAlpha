@@ -47,6 +47,7 @@ quill.on('text-change', (delta, oldDelta, source) => {
     if (source == 'user') {
         console.log(delta)
         ws.send(JSON.stringify({ ops: delta, cursor: 1 }))
+        document.getElementById('viewBox').innerHTML = marked.parse(quill.getText())
     }
 });
 
