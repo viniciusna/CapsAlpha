@@ -14,38 +14,16 @@ class RoomManager {
     this.rooms = rooms;
   }
 
-  async message(params, clients, websocket) {
+  async message(params, clients, websocket, type) {
     const roomId = this.ws.room
     const userIdsInRoom = await this.getRoom(roomId);
     const data = JSON.stringify({
-      type: "message",
-      status: "Success",
-      message: "Send data",
+      type: type,
       params: {
         data: params.data,
       },
     });
     userIdsInRoom.forEach((userId) => {
-      if (userId != `${this.ws.userId}`) {
-        clients.forEach((client) => {
-          if (client.readyState === websocket.OPEN && client.userId == userId) {
-            client.send(data);
-          }
-        });
-      }
-    });
-  }
-
-  async msgCursor(params, clients, websocket) {
-    const rooms = await this.getRoom(this.ws.room);
-    const data = JSON.stringify({
-      type: "cursor",
-      params: {
-        data: params,
-      },
-    });
-
-    rooms.forEach((userId) => {
       if (userId != `${this.ws.userId}`) {
         clients.forEach((client) => {
           if (client.readyState === websocket.OPEN && client.userId == userId) {
