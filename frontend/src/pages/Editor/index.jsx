@@ -16,7 +16,7 @@ import axios from "axios"
 import PerfilModal from "../../components/PerfilModal/index.jsx";
 
 function Editor() {
-  const { navigate, user, setUser, users, setUsers, addUser, usersColors, documents } =
+  const { navigate, user, setUser, users, setUsers, setDocuments, addUser, usersColors, documents } =
     useContext(Context);
   const [socket, setSocket] = useState()
   const [quill, setQuill] = useState();
@@ -46,10 +46,27 @@ function Editor() {
       );
     }
 
-    const thisDoc = documents.filter(doc => doc.id == documentId)
-    document.getElementById("title").value = thisDoc[0].title
-    setTitle(document.getElementById("title").value)
+    
+    fetch('http://localhost:3001/document/my', {
+      method: 'GET',  
+      credentials: 'include',
 
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+    })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res);
+        if(res.message !== 'Success') {
+          return null
+        }
+        setDocuments(res.data.documents)
+        const thisDoc = res.data.documents.filter(doc => doc.id == documentId)
+        document.getElementById("title").value = thisDoc[0].title
+        setTitle(document.getElementById("title").value)    
+      })
+      .catch(err => console.log(err));
     return () => {
       s.close()
     }
@@ -198,6 +215,7 @@ function Editor() {
     socket.send(JSON.stringify({type: "leave",params: {room: documentId }}))
   }
   function saveDocument(){
+    updateTitle()
     socket.send(JSON.stringify({type: "save",params: {room: documentId }}))
   }
 
@@ -237,7 +255,7 @@ function Editor() {
       }}>
         <HeadersButtons gap="2rem">
           <input id="title" value={title} onInput={(event => setTitle(event.target.value))}/>
-          <Button onClick={() => updateTitle()} >Salvar</Button>
+          <Button onClick={() => saveDocument()} >Salvar</Button>
           <Button onClick={() => download(`${title}.md`, document.getElementsByClassName("ql-editor")[0].innerText) }>Download</Button>
           <HeadersButtons gap="0.2rem">
             {users.map((user, i) => (
@@ -256,7 +274,6 @@ function Editor() {
       <CustomToolbar />
       <div className="divv">
         <HalfPage gap="0em" height="92vh">
-          <button onClick={saveDocument}>Salvar</button>
           <div
             id="textBox"
             ref={wrapperRef}

@@ -12,7 +12,7 @@ import { getCookie } from "../utils/cookie";
 import { useContext, useEffect } from "react";
 import { Context } from "../context/Context";
 function Router() {
-  const { user, setUser} = useContext(Context);
+  const { user, setUser, documents, setDocuments} = useContext(Context);
   useEffect(()=>{
     const userToken = getCookie("token")
     if(userToken && !user){
