@@ -170,20 +170,20 @@ function Editor() {
     const q = new Quill(editor, {
       modules: modules,
       formats: [
-        "header",
-        "font",
-        "size",
-        "bold",
-        "italic",
-        "underline",
-        "strike",
-        "blockquote",
-        "list",
-        "bullet",
-        "indent",
-        "link",
-        "image",
-        "color"
+       // "header",
+        // "font",
+        // "size",
+        // "bold",
+        // "italic",
+        // "underline",
+        // "strike",
+        // "blockquote",
+        // "list",
+        // "bullet",
+        // "indent",
+        // "link",
+        // "image",
+        // "color"
       ],  
       theme: 'snow',
     });
@@ -237,9 +237,9 @@ function Editor() {
           <PerfilModal />
         </HeadersButtons>
       </Header>
+      <CustomToolbar />
       <div className="divv">
         <HalfPage gap="0em" height="92vh">
-          <CustomToolbar />
           <button onClick={saveDocument}>Salvar</button>
           <div
             id="textBox"

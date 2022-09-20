@@ -1,5 +1,8 @@
 import Quill from 'quill';
 import QuillCursors from 'quill-cursors';
+import * as S from './style'
+
+import {AiOutlineBold,AiOutlineItalic} from 'react-icons/ai'
 
 const CustomHeart = () => {
 	return <span>♥</span>;
@@ -8,14 +11,14 @@ const CustomH1 = () => {
 	return <span><strong>H1</strong></span>;
 };
 const CustomH2 = () => {
-	return <span><strong>H2</strong></span>;
+	return <span><strong>H2</strong></span>;p
 };
-function insertHeart() {
-	const cursorPosition = this.quill.getSelection().index;
-	this.quill.insertText(cursorPosition, '♥');
-	this.quill.setSelection(cursorPosition + 1);
+const CustomBold = () =>{
+	return <AiOutlineBold size={17}/>
 }
-
+const CustomItalic = () =>{
+	return <AiOutlineItalic size={17}/>
+}
 function insertH1() {
 	const cursorPosition = this.quill.getSelection().index;
 	this.quill.insertText(cursorPosition, '# ');
@@ -28,12 +31,24 @@ function insertH2() {
 	this.quill.setSelection(cursorPosition + 3);
 }
 
+function insertBold() {
+	const cursorPosition = this.quill.getSelection().index;
+	this.quill.insertText(cursorPosition, '****');
+	this.quill.setSelection(cursorPosition + 2);
+}
+
+function insertItalic() {
+	const cursorPosition = this.quill.getSelection().index;
+	this.quill.insertText(cursorPosition, '****');
+	this.quill.setSelection(cursorPosition + 2);
+}
+
 /*
  * Custom toolbar component including the custom heart button and dropdowns
  */
 const CustomToolbar = () => (
-	<div id="toolbar">
-		<select className="ql-font">
+	<S.Toolbar id="toolbar">
+		{/* <select className="ql-font">
 			<option value="arial" default>
 				Arial
 			</option>
@@ -54,10 +69,9 @@ const CustomToolbar = () => (
 		<select className="ql-align" />
 		<select className="ql-color" />
 		<select className="ql-background" />
-		<button className="ql-clean" />
-		<button
-		 className="ql-insertHeart">
-			<CustomHeart />
+		<button className="ql-clean" /> */}
+		<button className='ql-insertBold'>
+			<CustomBold />
 		</button>
 		<button className="ql-insertH1">
 			<CustomH1 />
@@ -65,25 +79,28 @@ const CustomToolbar = () => (
 		<button className="ql-insertH2">
 			<CustomH2 />
 		</button>
-	</div>
+		<button className="ql-insertItalic">
+			<CustomItalic />
+		</button>
+	</S.Toolbar>
 );
 
 // Add sizes to whitelist and register them
-const Size = Quill.import('formats/size');
-Size.whitelist = ['extra-small', 'small', 'medium', 'large'];
-Quill.register(Size, true);
+// const Size = Quill.import('formats/size');
+// Size.whitelist = ['extra-small', 'small', 'medium', 'large'];
+// Quill.register(Size, true);
 
 // Add fonts to whitelist and register them
-const Font = Quill.import('formats/font');
-Font.whitelist = [
-	'arial',
-	'comic-sans',
-	'courier-new',
-	'georgia',
-	'helvetica',
-	'lucida',
-];
-Quill.register(Font, true);
+// const Font = Quill.import('formats/font');
+// Font.whitelist = [
+// 	'arial',
+// 	'comic-sans',
+// 	'courier-new',
+// 	'georgia',
+// 	'helvetica',
+// 	'lucida',
+// ];
+// Quill.register(Font, true);
 Quill.register('modules/cursors', QuillCursors);
 /*
  * Editor component with custom toolbar and content containers
@@ -93,9 +110,9 @@ const modules = {
 	toolbar: {
 		container: '#toolbar',
 		handlers: {
-			insertHeart: insertHeart,
 			insertH1: insertH1,
-			insertH2: insertH2
+			insertH2: insertH2,
+			insertBold: insertBold
 		},
 	},
 };
