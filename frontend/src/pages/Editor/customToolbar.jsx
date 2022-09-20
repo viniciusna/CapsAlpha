@@ -2,7 +2,7 @@ import Quill from 'quill';
 import QuillCursors from 'quill-cursors';
 import * as S from './style'
 
-import {AiOutlineBold,AiOutlineItalic,AiOutlineStrikethrough,AiOutlineUnorderedList,AiOutlineOrderedList} from 'react-icons/ai'
+import {AiTwotoneSave, AiOutlineBold,AiOutlineItalic,AiOutlineStrikethrough,AiOutlineUnorderedList,AiOutlineOrderedList} from 'react-icons/ai'
 import {MdChecklist} from 'react-icons/md'
 
 const CustomH1 = () => {
@@ -32,6 +32,7 @@ const CustomOrderedList = ({color})=>{
 const CustomCheckList = ({color})=>{
 	return <MdChecklist color={color} size={25}/>
 }
+
 function insertH1() {
 	const cursorPosition = this.quill.getSelection().index;
 	this.quill.insertText(cursorPosition, '# ');
@@ -87,7 +88,7 @@ function insertCheckList(){
 /*
  * Custom toolbar component including the custom heart button and dropdowns
  */
-const CustomToolbar = () => (
+const CustomToolbar = ({handleSave}) => (
 	<S.Toolbar id="toolbar">
 		<S.Elements>
 			<button className='ql-insertBold'>
@@ -117,6 +118,9 @@ const CustomToolbar = () => (
 			<button className='ql-insertCheckList'>
 				<CustomCheckList color={'#b9b9b9'}/>
 			</button>
+      <button className='ql-save'>
+        <AiTwotoneSave onClick={handleSave} color={'#b9b9b9'} size={20}/>
+      </button>
 		</S.Elements>
 	</S.Toolbar>
 );

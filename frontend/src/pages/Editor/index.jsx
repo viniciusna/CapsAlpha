@@ -285,10 +285,9 @@ function Editor() {
 					<PerfilModal />
 				</HeadersButtons>
 			</Header>
+      <CustomToolbar handleSave={saveDocument} />
 			<div className="divv">
 				<HalfPage gap="0em" height="92vh">
-					<CustomToolbar />
-					<button onClick={saveDocument}>Salvar</button>
 					<div
 						id="textBox"
 						ref={wrapperRef}
