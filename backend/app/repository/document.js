@@ -29,6 +29,7 @@ class Document extends PostgresDB {
       throw new InternalServerError("Service temporarily unavailable");
     }
   }
+
   async delete(userId, documentId) {
     try {
       const client = await this.pool.connect();
@@ -89,6 +90,28 @@ class Document extends PostgresDB {
     }
   }
 
+  async updateContent(documentId, content) {
+    try {
+      const client = await this.pool.connect();
+      const query = `                          
+        UPDATE documents 
+        SET content = $2 , updated_at = now()
+        WHERE id = $1
+        RETURNING *;
+        `;
+      const values = [documentId, content];
+      const result = await client.query(query, values);
+      client.release();
+      if (result.rows.length == 0) {
+        return false;
+      }
+      return result.rows[0];
+    } catch (e) {
+      console.log(e);
+      throw new InternalServerError("Service temporarily unavailable");
+    }
+  }
+
   async get(id) {
     try {
       const client = await this.pool.connect();
@@ -102,7 +125,30 @@ class Document extends PostgresDB {
       if (result.rows.length == 0) {
         return false;
       }
-      return result.rows;
+      return result.rows[0];
+    } catch (e) {
+      console.log(e);
+      throw new InternalServerError("Service temporarily unavailable");
+    }
+  }
+
+  async updateTitle(documentId, title) {
+    console.log('Repository')
+    try {
+      const client = await this.pool.connect();
+      const query = `                          
+        UPDATE documents 
+        SET title = $2, updated_at = now()
+        WHERE id = $1
+        RETURNING *;
+        `;
+      const values = [documentId, title];
+      const result = await client.query(query, values);
+      client.release();
+      if (result.rows.length == 0) {
+        return false;
+      }
+      return true;
     } catch (e) {
       console.log(e);
       throw new InternalServerError("Service temporarily unavailable");

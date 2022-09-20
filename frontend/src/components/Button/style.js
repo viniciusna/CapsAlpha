@@ -14,11 +14,6 @@ export const button = Styled.div`
   align-items: center;
   gap: 1.5rem;
   
-  &:hover{
-    background-color: ${(props) =>
-			props.colorbg == 'white' ? 'black' : 'white'};
-    color: ${(props) => (props.colorfnt == 'white' ? 'black' : 'white')};
-  }
 `;
 
 export const buttonModal = Styled.div`
@@ -37,7 +32,7 @@ export const buttonModal = Styled.div`
 
   &:hover{
       background-color: ${(props) =>
-				props.colorbg == 'white' ? 'black' : 'white'};
-      color: ${(props) => (props.colorfnt == 'white' ? 'black' : 'white')};
+				props.colorfnt};
+      color: ${(props) => (props.colorbg)};
   }
 `;

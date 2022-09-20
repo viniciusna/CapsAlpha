@@ -3,8 +3,8 @@ CREATE TABLE users(
 	name varchar(60) not null,
 	email varchar(60) not null,
 	password varchar(100) not null,
-	created_at date not null default now(),
-	updated_at date not null default now(),
+	created_at TIMESTAMP  not null default now(),
+	updated_at TIMESTAMP  not null default now(),
 	PRIMARY KEY (id)
 );
   
@@ -15,8 +15,8 @@ CREATE TABLE documents(
 	owner integer not null,
 	content text not null default ' ',
 	private boolean,
-	created_at date not null default now(),
-	updated_at date not null default now(),
+	created_at TIMESTAMP  not null default now(),
+	updated_at TIMESTAMP  not null default now(),
 	FOREIGN KEY (owner) REFERENCES users (id)
 );
 

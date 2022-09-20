@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { Context } from "../../context/Context";
 import ButtonModal from "../Button/ButtonModal";
 import { useNavigate } from "react-router-dom";
+import { deleteCookie } from '../../utils/cookie'
 const HoverableDiv = ({ handleMouseOver, handleMouseOut }) => {
   return (
     <S.img onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>
@@ -19,6 +20,8 @@ const HoverText = ({name, handleMouseOver,handleMouseOut}) => {
   
     function handleClickExit(){
         setUser('')
+        setDocuments('')
+        deleteCookie('token')
         navigate("/home")
     }
   return (
@@ -28,19 +31,19 @@ const HoverText = ({name, handleMouseOver,handleMouseOut}) => {
         </S.name>
         <ButtonModal
             onClick={()=> navigate("/profile")}
-            colorbg="black"
-            colorfnt="white"
-            value="Profile"
-            height="40px"
-            width="80px"
+            colorbg="white"
+            colorfnt="black"
+            value="Perfil"
+            height="2rem"
+            width="4rem"
         />
         <ButtonModal
             onClick={handleClickExit}
             colorbg="white"
             colorfnt="black"
-            value="Exit"
-            height="40px"
-            width="80px"
+            value="Sair"
+            height="2rem"
+            width="4rem"
         />
     </S.div>
   );

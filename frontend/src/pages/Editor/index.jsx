@@ -5,26 +5,42 @@ import UserIdentifier from '../../components/UserIdentifier/UserIdentifier.jsx';
 import HeadersButtons from '../../components/HeadersButtons/headerButton';
 import { CgProfile } from 'react-icons/cg';
 import Button from '../../components/Button/Button.jsx';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useState, useRef } from 'react';
 import Quill from 'quill';
-import 'quill/dist/quill.bubble.css';
+import 'quill/dist/quill.snow.css';
+import { marked } from 'marked';
 import dompurify from 'dompurify';
-import { marked, use } from 'marked';
 import { useParams } from 'react-router-dom';
+import { modules } from './customToolbar';
+import { CustomToolbar } from './customToolbar';
+import axios from 'axios';
+import PerfilModal from '../../components/PerfilModal/index.jsx';
 
 function Editor() {
-	const { navigate, user, setUser, users, setUsers, addUser, usersColors } =
-		useContext(Context);
+	const {
+		navigate,
+		user,
+		setUser,
+		users,
+		setUsers,
+		addUser,
+		usersColors,
+		documents,
+	} = useContext(Context);
 	const [socket, setSocket] = useState();
 	const [quill, setQuill] = useState();
+	const [quillCursors, setQuillCursors] = useState();
 	const [connect, setConnect] = useState(false);
+	const [title, setTitle] = useState();
 	const { documentId } = useParams();
 	const logo = '/src/images/logo.svg';
+	const cursorColors = ['blue', 'red', 'green', 'yellow'];
 
 	const [textBox, setTextBox] = useState();
 	const textPreviewRef = useRef();
 
 	// Inicia o socket
+
 	useEffect(() => {
 		const s = new WebSocket('ws://localhost:3001');
 		setSocket(s);
@@ -42,48 +58,98 @@ function Editor() {
 			);
 		};
 
-		// return () => {
-		//   s.close()
-		// }
+		const thisDoc = documents.filter((doc) => doc.id == documentId);
+		document.getElementById('title').value = thisDoc[0].title;
+		setTitle(document.getElementById('title').value);
+
+		return () => {
+			s.close();
+		};
 	}, []);
 
-	// message socket Quill
+	// receive message socket Quill
 
 	useEffect(() => {
 		if (socket == null || quill == null) return;
 
-		const handler = (delta) => {
+		const handlerDelta = (delta) => {
 			quill.updateContents(delta);
-			console.log(textBox);
+			setTextBox(quill.getText());
+		};
+
+		const handlerJoin = (data) => {
+			if (data.status != 'Success') return;
+
+			fetch(`http://localhost:3001/document/${documentId}`, {
+				method: 'GET',
+				credentials: 'include',
+				headers: new Headers({
+					'Content-Type': 'application/json',
+				}),
+			})
+				.then((res) => res.json())
+				.then((res) => {
+					console.log(res);
+					if (res.message !== 'Success') {
+						alert(res.message);
+						return null;
+					}
+					quill.setText(res.data.document.content);
+					document.getElementById('textPreview').innerHTML = marked.parse(
+						document.getElementById('textBox').innerText
+					);
+				})
+				.catch((err) => console.log(err));
+		};
+
+		const handlerCursor = (cursor, userId, name) => {
+			const cursors = quillCursors.cursors();
+
+			const cursorExist =
+				cursors.filter((cursor) => cursor.id == userId).length > 0;
+
+			if (cursorExist) {
+				quillCursors.moveCursor(userId, cursor);
+			} else {
+				quillCursors.createCursor(userId, name, cursorColors[cursors.length]);
+			}
 		};
 
 		socket.onmessage = (event) => {
-			console.log('Recebeu');
-			console.log(event.data);
 			const data = JSON.parse(event.data);
-			console.log(event);
-			if (data.type == 'message') handler(data.params.data);
+			const type = data.type;
+
+			if (type == 'message') {
+				handlerDelta(data.params.data);
+			} else if (type == 'cursor') {
+				const { cursor, userId, name } = data.params.data;
+				handlerCursor(cursor, userId, name);
+			} else if (type == 'title') {
+				setTitle(data.params.data);
+			} else if (type == 'join') {
+				handlerJoin(data);
+			} else {
+				quillCursors.removeCursor(`${data.userIdExiting}`);
+			}
 		};
 
 		return () => {
 			socket.close();
 		};
-	}, [socket, quill]);
+	}, [socket]);
 
-	// onchange Quill
+	// send message socket Quill / onchange quill
 
 	useEffect(() => {
 		if (socket == null || quill == null) return;
 
 		const handler = (delta, oldDelta, source) => {
 			if (source !== 'user') return;
-			console.log(delta);
-			socket.send(
-				JSON.stringify({
-					type: 'message',
-					params: { data: delta, room: documentId },
-				})
+			document.getElementById('textPreview').innerHTML = marked.parse(
+				document.getElementsByClassName('ql-editor')[0].innerText
 			);
+
+			socket.send(JSON.stringify({ type: 'message', params: { data: delta } }));
 
 			setTextBox(quill.getText());
 		};
@@ -95,7 +161,30 @@ function Editor() {
 		};
 	}, [socket, quill]);
 
-	// Start QUill
+	// onchange Quill cursor position
+
+	useEffect(() => {
+		if (socket == null || quill == null) return;
+
+		const cursorHandler = function (range, oldRange, source) {
+			if (range) {
+				socket.send(
+					JSON.stringify({
+						type: 'cursor',
+						params: {
+							data: { cursor: range, userId: `${user.id}`, name: user.name },
+						},
+					})
+				);
+			}
+		};
+
+		quill.on('selection-change', cursorHandler);
+
+		return () => {
+			quill.off('selection-change', cursorHandler);
+		};
+	}, [socket, quill]);
 
 	const wrapperRef = useCallback((wrapper) => {
 		if (wrapper == null) return;
@@ -103,20 +192,67 @@ function Editor() {
 		wrapper.innerHTML = '';
 		const editor = document.createElement('div');
 		wrapper.append(editor);
+
 		const q = new Quill(editor, {
-			modules: {
-				toolbar: false,
-				syntax: false,
-			},
+			modules: modules,
 			formats: [],
-			theme: 'bubble',
+			theme: 'snow',
 		});
+
+		const qc = q.getModule('cursors');
 		// q.disable()
 		// q.setText("Loading...")
 		setQuill(q);
+		setQuillCursors(qc);
 	}, []);
 
-	function abacate() {
+	function leaveDocument() {
+		socket.send(
+			JSON.stringify({ type: 'leave', params: { room: documentId } })
+		);
+	}
+
+	function saveDocument() {
+		socket.send(JSON.stringify({ type: 'save', params: { room: documentId } }));
+	}
+
+	function download(filename, text) {
+		var element = document.createElement('a');
+		element.setAttribute(
+			'href',
+			'data:text/plain;charset=utf-8,' + encodeURIComponent(text)
+		);
+		element.setAttribute('download', filename);
+
+		element.style.display = 'none';
+		document.body.appendChild(element);
+
+		element.click();
+
+		document.body.removeChild(element);
+	}
+
+	function updateTitle() {
+		axios
+			.post(
+				'http://localhost:3001/document/title',
+				{
+					documentId: documentId,
+					title: title,
+				},
+				{ withCredentials: true }
+			)
+			.then(function (response) {
+				console.log(response);
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+
+		socket.send(JSON.stringify({ type: 'title', params: { data: title } }));
+	}
+
+	function render() {
 		if (textBox == null) return { __html: '' };
 		return {
 			__html: dompurify.sanitize(marked.parse(textBox)),
@@ -125,8 +261,29 @@ function Editor() {
 
 	return (
 		<>
-			<Header onClick={() => navigate('/Home')}>
+			<Header
+				onClick={() => {
+					leaveDocument();
+					navigate('/Home');
+				}}
+			>
 				<HeadersButtons gap="2rem">
+					<input
+						id="title"
+						value={title}
+						onInput={(event) => setTitle(event.target.value)}
+					/>
+					<Button onClick={() => updateTitle()}>Salvar</Button>
+					<Button
+						onClick={() =>
+							download(
+								`${title}.md`,
+								document.getElementsByClassName('ql-editor')[0].innerText
+							)
+						}
+					>
+						Download
+					</Button>
 					<HeadersButtons gap="0.2rem">
 						{users.map((user, i) => (
 							<UserIdentifier
@@ -138,15 +295,17 @@ function Editor() {
 							</UserIdentifier>
 						))}
 					</HeadersButtons>
-					<CgProfile size={38} />
+					<PerfilModal />
 				</HeadersButtons>
 			</Header>
 			<div className="divv">
 				<HalfPage gap="0em" height="92vh">
+					<CustomToolbar />
+					<button onClick={saveDocument}>Salvar</button>
 					<div
 						id="textBox"
 						ref={wrapperRef}
-						style={{ height: '100%', width: '100%', border: '1px solid black' }}
+						style={{ height: '100%', width: '100%' }}
 					></div>
 				</HalfPage>
 				<HalfPage gap="0em" height="92vh">
@@ -160,7 +319,7 @@ function Editor() {
 							padding: '25px',
 							'overflow-y': 'scroll',
 						}}
-						dangerouslySetInnerHTML={abacate()}
+						dangerouslySetInnerHTML={render()}
 					></div>
 				</HalfPage>
 			</div>

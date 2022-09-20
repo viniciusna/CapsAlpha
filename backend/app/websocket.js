@@ -28,7 +28,7 @@ module.exports = (server) => {
     });
 
     ws.on("close", async () => {
-      await roomManager.leave();
+      await roomManager.leave(wss.clients, WebSocket);
       console.log("Socket Client Disconnected");
     });
 
@@ -43,10 +43,19 @@ module.exports = (server) => {
             await roomManager.join(params);
             break;
           case "leave":
-            await roomManager.leave(params);
+            await roomManager.leave(wss.clients, WebSocket);
             break;
           case "message":
-            await roomManager.message(params, wss.clients, WebSocket);
+            await roomManager.message(params, wss.clients, WebSocket, type);
+            break;
+          case "cursor":
+            await roomManager.message(params, wss.clients, WebSocket, type);
+            break;
+          case "title":
+            await roomManager.message(params, wss.clients, WebSocket, type);
+            break;
+          case "save":
+            await roomManager.save(params);
             break;
           default:
             console.warn(`Type: ${type} unknown`);

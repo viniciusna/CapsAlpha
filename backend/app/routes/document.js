@@ -3,6 +3,7 @@ const DocumentCreateController = require("../controllers/documentCreate");
 const DocumentDeleteController = require("../controllers/documentDelete");
 const DocumentGetController = require("../controllers/documentGet");
 const DocumentUpdateController = require("../controllers/documentUpdate");
+const DocumentUpdateTitleController = require("../controllers/documentUpdateTitle");
 const UserDocumentGetController = require("../controllers/userDocumentsGet");
 
 router
@@ -27,6 +28,12 @@ router
   .route("/")
   .put(
     new DocumentUpdateController().handler.bind(new DocumentUpdateController())
+  );
+
+router
+  .route("/title")
+  .post(
+    new DocumentUpdateTitleController().handler.bind(new DocumentUpdateTitleController())
   );
 
 router
