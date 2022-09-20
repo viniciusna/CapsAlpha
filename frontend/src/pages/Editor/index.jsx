@@ -87,7 +87,6 @@ function Editor() {
 
         handlerCursor(cursor, userId, name)
       } else if(type == 'title') {
-        console.log(data)
         setTitle(data.params.data)
       } else {
         quillCursors.removeCursor(`${data.userIdExiting}`)
