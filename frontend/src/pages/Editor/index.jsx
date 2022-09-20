@@ -15,6 +15,9 @@ import { modules } from './customToolbar';
 import { CustomToolbar } from './customToolbar';
 import axios from 'axios';
 import PerfilModal from '../../components/PerfilModal/index.jsx';
+import DocTitle from "../../components/DocTitle/DocTitle.jsx";
+import { FiDownload } from 'react-icons/fi';
+
 
 function Editor() {
 	const {
