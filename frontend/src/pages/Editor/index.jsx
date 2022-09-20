@@ -8,7 +8,7 @@ import Button from '../../components/Button/Button.jsx';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.bubble.css';
-import * as DOMPurify from 'dompurify';
+import dompurify from 'dompurify';
 import { marked, use } from 'marked';
 import { useParams } from 'react-router-dom';
 
@@ -118,7 +118,9 @@ function Editor() {
 
 	function abacate() {
 		if (textBox == null) return { __html: '' };
-		return { __html: marked.parse(textBox) };
+		return {
+			__html: dompurify.sanitize(marked.parse(textBox)),
+		};
 	}
 
 	return (
@@ -156,7 +158,7 @@ function Editor() {
 							width: '100%',
 							border: '1px solid black',
 							padding: '25px',
-							overflow: 'scroll',
+							'overflow-y': 'scroll',
 						}}
 						dangerouslySetInnerHTML={abacate()}
 					></div>
