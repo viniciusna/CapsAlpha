@@ -204,7 +204,6 @@ function Editor() {
     socket.send(JSON.stringify({type: "leave",params: {room: documentId }}))
   }
   function saveDocument(){
-    updateTitle()
     socket.send(JSON.stringify({type: "save",params: {room: documentId }}))
   }
 
