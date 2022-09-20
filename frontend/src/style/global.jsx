@@ -15,6 +15,8 @@ export const GlobalStyle = createGlobalStyle`
     }
 .divv{
       display:flex;
+      justify-content:center;
+      align-items:center;
       height:92vh;
       width:100%;
     }
