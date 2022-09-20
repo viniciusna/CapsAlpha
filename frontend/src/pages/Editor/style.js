@@ -1,9 +1,10 @@
 import Styled from 'styled-components';
 
 export const Toolbar = Styled.div`
+    margin:0;
     display: flex;
     width: 100%;
-    height: 3rem;
+    height: 6vh;
     background-color: rgba(0,0,0,.75);
     
     span{
