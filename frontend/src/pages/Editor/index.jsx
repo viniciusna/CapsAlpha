@@ -169,6 +169,19 @@ function Editor() {
     setQuillCursors(qc)
   }, [])
 
+  function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+  
+    element.style.display = 'none';
+    document.body.appendChild(element);
+  
+    element.click();
+  
+    document.body.removeChild(element);
+  }
+
   return (
     <>
       <Header onClick={() => navigate("/Home")}>
@@ -188,6 +201,9 @@ function Editor() {
 
             socket.send(JSON.stringify({type: "title", params: {data: title}}))
           }} >Salvar</button>
+          <button onClick={() => {
+            download(`${title}.md`, document.getElementsByClassName("ql-editor")[0].innerText)
+          }}>Download</button>
           <HeadersButtons gap="0.2rem">
             {users.map((user, i) => (
               <UserIdentifier
