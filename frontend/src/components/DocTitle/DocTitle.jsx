@@ -6,7 +6,7 @@ import { useContext } from "react";
 function DocInput(props) {
   let {} = useContext(Context);
   return (
-    <S.Input>
+    <S.Input id={props.id} onInput={props.onInput} value={props.value} onBlur={props.onBlur} onClick={props.onClick}>
     </S.Input>
   );
 }

@@ -14,6 +14,8 @@ import { modules } from './customToolbar'
 import { CustomToolbar } from "./customToolbar";
 import axios from "axios"
 import PerfilModal from "../../components/PerfilModal/index.jsx";
+import DocTitle from "../../components/DocTitle/DocTitle.jsx";
+import { FiDownload } from 'react-icons/fi';
 
 function Editor() {
   const { navigate, user, setUser, users, setUsers, setDocuments, addUser, usersColors, documents } =
@@ -248,44 +250,64 @@ function Editor() {
   }
 
   return (
-    <>
-      <Header onClick={() => {
-        leaveDocument()
-        navigate("/Home")
-      }}>
-        <HeadersButtons gap="2rem">
-          <input id="title" value={title} onInput={(event => setTitle(event.target.value))}/>
-          <Button onClick={() => saveDocument()} >Salvar</Button>
-          <Button onClick={() => download(`${title}.md`, document.getElementsByClassName("ql-editor")[0].innerText) }>Download</Button>
-          <HeadersButtons gap="0.2rem">
-            {users.map((user, i) => (
-              <UserIdentifier
-                key={i}
-                colorbg={usersColors[i][0]}
-                colorfnt={usersColors[i][1]}
-              >
-                {user.toString().charAt(0)}
-              </UserIdentifier>
-            ))}
-          </HeadersButtons>
-          <PerfilModal />
-        </HeadersButtons>
-      </Header>
-      <CustomToolbar />
-      <div className="divv">
-        <HalfPage gap="0em" height="92vh">
-          <div
-            id="textBox"
-            ref={wrapperRef}
-            style={{ height: "100%", width: "100%" }}
-          ></div>
-        </HalfPage>
-        <HalfPage gap="0em" height="92vh">
-          <div id="textPreview">{}</div>
-        </HalfPage>
-      </div>
-    </>
-  );
+		<>
+			<Header
+				onClick={() => {
+					leaveDocument();
+					navigate('/Home');
+				}}
+			>
+				<HeadersButtons gap="2rem">
+					<DocTitle
+						id="title"
+						value={title}
+						onInput={(event) => setTitle(event.target.value)}
+						onBlur={() => updateTitle()}
+					/>
+					<Button
+						colorbg="white"
+						colorfnt="black"
+						height="1.8rem"
+						width="6rem"
+						value={'Download'}
+						onClick={() =>
+							download(
+								`${title}.md`,
+								document.getElementsByClassName('ql-editor')[0].innerText
+							)
+						}
+					>
+					</Button>
+					<HeadersButtons gap="0.2rem">
+						{users.map((user, i) => (
+							<UserIdentifier
+								key={i}
+								colorbg={usersColors[i][0]}
+								colorfnt={usersColors[i][1]}
+							>
+								{user.toString().charAt(0)}
+							</UserIdentifier>
+						))}
+					</HeadersButtons>
+					<PerfilModal />
+				</HeadersButtons>
+			</Header>
+			<div className="divv">
+				<HalfPage gap="0em" height="92vh">
+					<CustomToolbar />
+					<button onClick={saveDocument}>Salvar</button>
+					<div
+						id="textBox"
+						ref={wrapperRef}
+						style={{ height: '100%', width: '100%' }}
+					></div>
+				</HalfPage>
+				<HalfPage gap="0em" height="92vh">
+					<div id="textPreview">{}</div>
+				</HalfPage>
+			</div>
+		</>
+	);
 }
 
 export default Editor;
