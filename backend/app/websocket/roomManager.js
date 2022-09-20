@@ -26,7 +26,9 @@ class RoomManager {
         data: params.data,
       },
     });
-    await this.documentManager.update(params.data);
+
+    if (type == "message") await this.documentManager.update(params.data);
+
     userIdsInRoom.forEach((userId) => {
       if (userId != `${this.ws.userId}`) {
         clients.forEach((client) => {
