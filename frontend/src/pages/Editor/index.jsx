@@ -12,14 +12,17 @@ import { marked } from "marked";
 import { useParams } from "react-router-dom";
 import { modules } from './customToolbar'
 import { CustomToolbar } from "./customToolbar";
+import axios from "axios"
 import PerfilModal from "../../components/PerfilModal/index.jsx";
+
 function Editor() {
-  const { navigate, user, setUser, users, setUsers, addUser, usersColors } =
+  const { navigate, user, setUser, users, setUsers, addUser, usersColors, documents } =
     useContext(Context);
   const [socket, setSocket] = useState()
   const [quill, setQuill] = useState();
   const [quillCursors, setQuillCursors] = useState();
   const [connect, setConnect] = useState(false)
+  const [title, setTitle] = useState()
   const { documentId } = useParams()
   const logo = "/src/images/logo.svg";
   const cursorColors = ["blue", "red", "green", "yellow"]
@@ -42,6 +45,10 @@ function Editor() {
         )
       );
     }
+
+    const thisDoc = documents.filter(doc => doc.id == documentId)
+    document.getElementById("title").value = thisDoc[0].title
+    setTitle(document.getElementById("title").value)
 
     return () => {
       s.close()
@@ -72,13 +79,16 @@ function Editor() {
 
     socket.onmessage =  (event) =>  {
       const data = JSON.parse(event.data)
+      const type = data.type
 
-      if(data.type == 'message') {
+      if(type == 'message') {
         handlerDelta(data.params.data)
-      } else if(data.type == 'cursor') {
+      } else if(type == 'cursor') {
         const { cursor, userId, name } = data.params.data
 
         handlerCursor(cursor, userId, name)
+      } else if(type == 'title') {
+        setTitle(data.params.data)
       } else {
         quillCursors.removeCursor(`${data.userIdExiting}`)
       }
@@ -113,7 +123,7 @@ function Editor() {
 
     const cursorHandler = function(range, oldRange, source) {
       if (range) {
-        socket.send(JSON.stringify({type: "cursor", params: {cursor: range, userId: `${user.id}`, name: user.name}}))
+        socket.send(JSON.stringify({type: "cursor", params: {data: {cursor: range, userId: `${user.id}`, name: user.name}}}))
       }
     }
 
@@ -163,6 +173,21 @@ function Editor() {
     <>
       <Header onClick={() => navigate("/Home")}>
         <HeadersButtons gap="2rem">
+          <input id="title" value={title} onInput={(event => setTitle(event.target.value))}/>
+          <button onClick={() => {
+            axios.post("http://localhost:3001/document/title", {
+              documentId: documentId,
+              title: title,
+            }, { withCredentials: true })
+            .then(function (response) {
+              console.log(response);
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+
+            socket.send(JSON.stringify({type: "title", params: {data: title}}))
+          }} >Salvar</button>
           <HeadersButtons gap="0.2rem">
             {users.map((user, i) => (
               <UserIdentifier
