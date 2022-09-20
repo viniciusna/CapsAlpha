@@ -14,6 +14,7 @@ import { modules } from './customToolbar'
 import { CustomToolbar } from "./customToolbar";
 import axios from "axios"
 import PerfilModal from "../../components/PerfilModal/index.jsx";
+import DocTitle from "../../components/DocTitle/DocTitle.jsx";
 
 function Editor() {
   const { navigate, user, setUser, users, setUsers, addUser, usersColors, documents } =
@@ -173,7 +174,7 @@ function Editor() {
     <>
       <Header onClick={() => navigate("/Home")}>
         <HeadersButtons gap="2rem">
-          <input id="title" value={title} onInput={(event => setTitle(event.target.value))}/>
+          <DocTitle id="title" value={title} onInput={(event => setTitle(event.target.value))} onBlur={""}/>
           <button onClick={() => {
             axios.post("http://localhost:3001/document/title", {
               documentId: documentId,
