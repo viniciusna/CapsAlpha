@@ -20,176 +20,167 @@ import { FiDownload } from 'react-icons/fi';
 
 
 function Editor() {
-	const {
-		navigate,
-		user,
-		setUser,
-		users,
-		setUsers,
-		addUser,
-		usersColors,
-		documents,
-	} = useContext(Context);
-	const [socket, setSocket] = useState();
-	const [quill, setQuill] = useState();
-	const [quillCursors, setQuillCursors] = useState();
-	const [connect, setConnect] = useState(false);
-	const [title, setTitle] = useState();
-	const { documentId } = useParams();
-	const logo = '/src/images/logo.svg';
-	const cursorColors = ['blue', 'red', 'green', 'yellow'];
+  const { navigate, user, setUser, users, setUsers, setDocuments, addUser, usersColors, documents } =
+    useContext(Context);
+  const [socket, setSocket] = useState()
+  const [quill, setQuill] = useState();
+  const [quillCursors, setQuillCursors] = useState();
+  const [connect, setConnect] = useState(false)
+  const [title, setTitle] = useState()
+  const { documentId } = useParams()
+  const logo = "/src/images/logo.svg";
+  const cursorColors = ["blue", "red", "green", "yellow"]
 
-	const [textBox, setTextBox] = useState();
+  const [textBox, setTextBox] = useState();
 	const textPreviewRef = useRef();
+  // Inicia o socket
+  useEffect(() => {
+    const s = new WebSocket("ws://localhost:3001")
+    setSocket(s)
 
-	// Inicia o socket
+    s.onopen = () =>{
+      setConnect(true)
+      s.send(JSON.stringify(
+        {
+          type: "join",
+          params: {
+            userId: 2,
+            documentId: documentId
+          }
+        }
+        )
+      );
+    }
 
-	useEffect(() => {
-		const s = new WebSocket('ws://localhost:3001');
-		setSocket(s);
 
-		s.onopen = () => {
-			setConnect(true);
-			s.send(
-				JSON.stringify({
-					type: 'join',
-					params: {
-						userId: user.id,
-						documentId: documentId,
-					},
-				})
-			);
-		};
+    fetch('http://localhost:3001/document/my', {
+      method: 'GET',
+      credentials: 'include',
 
-		const thisDoc = documents.filter((doc) => doc.id == documentId);
-		document.getElementById('title').value = thisDoc[0].title;
-		setTitle(document.getElementById('title').value);
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+    })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res);
+        if(res.message !== 'Success') {
+          return null
+        }
+        setDocuments(res.data.documents)
+        const thisDoc = res.data.documents.filter(doc => doc.id == documentId)
+        document.getElementById("title").value = thisDoc[0].title
+        setTitle(document.getElementById("title").value)
+      })
+      .catch(err => console.log(err));
+    return () => {
+      s.close()
+    }
+  }, [])
 
-		return () => {
-			s.close();
-		};
-	}, []);
+  useEffect(() => {
+    if (socket == null || quill == null) return
 
-	// receive message socket Quill
+    const handlerDelta = delta => {
+      quill.updateContents(delta)
+      setTextBox(quill.getText());
+    }
 
-	useEffect(() => {
-		if (socket == null || quill == null) return;
+    const handlerJoin = (data) => {
+      if(data.status != 'Success') return
 
-		const handlerDelta = (delta) => {
-			quill.updateContents(delta);
-			setTextBox(quill.getText());
-		};
+      fetch(`http://localhost:3001/document/${documentId}`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        }),
+      })
+        .then(res => res.json())
+        .then(res => {
+          console.log(res);
+          if(res.message !== 'Success') {
+            alert(res.message)
+            return null
+          }
+          quill.setText(res.data.document.content)
+          document.getElementById("textPreview").innerHTML = marked.parse(
+            document.getElementById("textBox").innerText
+          );
+        })
+        .catch(err => console.log(err));
+    }
 
-		const handlerJoin = (data) => {
-			if (data.status != 'Success') return;
+    const handlerCursor = (cursor, userId, name) => {
+      const cursors = quillCursors.cursors()
 
-			fetch(`http://localhost:3001/document/${documentId}`, {
-				method: 'GET',
-				credentials: 'include',
-				headers: new Headers({
-					'Content-Type': 'application/json',
-				}),
-			})
-				.then((res) => res.json())
-				.then((res) => {
-					console.log(res);
-					if (res.message !== 'Success') {
-						alert(res.message);
-						return null;
-					}
-					quill.setText(res.data.document.content);
-					document.getElementById('textPreview').innerHTML = marked.parse(
-						document.getElementById('textBox').innerText
-					);
-				})
-				.catch((err) => console.log(err));
-		};
+      const cursorExist = cursors.filter( cursor => cursor.id == userId ).length > 0
 
-		const handlerCursor = (cursor, userId, name) => {
-			const cursors = quillCursors.cursors();
+      if(cursorExist) {
+        quillCursors.moveCursor(userId, cursor)
+      } else {
+        quillCursors.createCursor(userId, name, cursorColors[cursors.length])
+      }
+    }
 
-			const cursorExist =
-				cursors.filter((cursor) => cursor.id == userId).length > 0;
+    socket.onmessage =  (event) =>  {
+      const data = JSON.parse(event.data)
+      const type = data.type
 
-			if (cursorExist) {
-				quillCursors.moveCursor(userId, cursor);
-			} else {
-				quillCursors.createCursor(userId, name, cursorColors[cursors.length]);
-			}
-		};
+      if(type == 'message') {
+        handlerDelta(data.params.data)
+      } else if(type == 'cursor') {
+        const { cursor, userId, name } = data.params.data
+        handlerCursor(cursor, userId, name)
+      } else if(type == 'title') {
+        setTitle(data.params.data)
+      } else if(type == 'join') {
+        handlerJoin(data)
+      } else {
+        quillCursors.removeCursor(`${data.userIdExiting}`)
+      }
+    };
 
-		socket.onmessage = (event) => {
-			const data = JSON.parse(event.data);
-			const type = data.type;
+    return () => {
+      socket.close()
+    }
+  }, [socket])
 
-			if (type == 'message') {
-				handlerDelta(data.params.data);
-			} else if (type == 'cursor') {
-				const { cursor, userId, name } = data.params.data;
-				handlerCursor(cursor, userId, name);
-			} else if (type == 'title') {
-				setTitle(data.params.data);
-			} else if (type == 'join') {
-				handlerJoin(data);
-			} else {
-				quillCursors.removeCursor(`${data.userIdExiting}`);
-			}
-		};
+  useEffect(() => {
+    if (socket == null || quill == null) return
 
-		return () => {
-			socket.close();
-		};
-	}, [socket]);
+    const handler = (delta, oldDelta, source) => {
+      if (source !== "user") return
+      document.getElementById("textPreview").innerHTML = marked.parse(
+        document.getElementsByClassName("ql-editor")[0].innerText
+      );
 
-	// send message socket Quill / onchange quill
+      socket.send(JSON.stringify({type: "message",params: { data: delta}}))
+    }
 
-	useEffect(() => {
-		if (socket == null || quill == null) return;
+    quill.on("text-change", handler)
 
-		const handler = (delta, oldDelta, source) => {
-			if (source !== 'user') return;
-			document.getElementById('textPreview').innerHTML = marked.parse(
-				document.getElementsByClassName('ql-editor')[0].innerText
-			);
+    return () => {
+      quill.off("text-change", handler)
+    }
+  }, [socket, quill])
 
-			socket.send(JSON.stringify({ type: 'message', params: { data: delta } }));
+  useEffect(() => {
+    if (socket == null || quill == null) return
 
-			setTextBox(quill.getText());
-		};
+    const cursorHandler = function(range, oldRange, source) {
+      if (range) {
+        socket.send(JSON.stringify({type: "cursor", params: {data: {cursor: range, userId: `${user.id}`, name: user.name}}}))
+      }
+    }
 
-		quill.on('text-change', handler);
+    quill.on('selection-change', cursorHandler)
 
-		return () => {
-			quill.off('text-change', handler);
-		};
-	}, [socket, quill]);
-
-	// onchange Quill cursor position
-
-	useEffect(() => {
-		if (socket == null || quill == null) return;
-
-		const cursorHandler = function (range, oldRange, source) {
-			if (range) {
-				socket.send(
-					JSON.stringify({
-						type: 'cursor',
-						params: {
-							data: { cursor: range, userId: `${user.id}`, name: user.name },
-						},
-					})
-				);
-			}
-		};
-
-		quill.on('selection-change', cursorHandler);
-
-		return () => {
-			quill.off('selection-change', cursorHandler);
-		};
-	}, [socket, quill]);
-
-	const wrapperRef = useCallback((wrapper) => {
+    return () => {
+      quill.off("selection-change", cursorHandler)
+    }
+  }, [socket, quill])
+  const wrapperRef = useCallback((wrapper) => {
 		if (wrapper == null) return;
 
 		wrapper.innerHTML = '';
@@ -209,60 +200,49 @@ function Editor() {
 		setQuillCursors(qc);
 	}, []);
 
-	function leaveDocument() {
-		socket.send(
-			JSON.stringify({ type: 'leave', params: { room: documentId } })
-		);
-	}
+  function leaveDocument(){
+    socket.send(JSON.stringify({type: "leave",params: {room: documentId }}))
+  }
+  function saveDocument(){
+    updateTitle()
+    socket.send(JSON.stringify({type: "save",params: {room: documentId }}))
+  }
 
-	function saveDocument() {
-		socket.send(JSON.stringify({ type: 'save', params: { room: documentId } }));
-	}
+  function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
 
-	function download(filename, text) {
-		var element = document.createElement('a');
-		element.setAttribute(
-			'href',
-			'data:text/plain;charset=utf-8,' + encodeURIComponent(text)
-		);
-		element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
 
-		element.style.display = 'none';
-		document.body.appendChild(element);
+    element.click();
 
-		element.click();
+    document.body.removeChild(element);
+  }
 
-		document.body.removeChild(element);
-	}
+  function updateTitle() {
+    axios.post("http://localhost:3001/document/title", {
+      documentId: documentId,
+      title: title,
+    }, { withCredentials: true })
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 
-	function updateTitle() {
-		axios
-			.post(
-				'http://localhost:3001/document/title',
-				{
-					documentId: documentId,
-					title: title,
-				},
-				{ withCredentials: true }
-			)
-			.then(function (response) {
-				console.log(response);
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
-
-		socket.send(JSON.stringify({ type: 'title', params: { data: title } }));
-	}
-
-	function render() {
+    socket.send(JSON.stringify({type: "title", params: {data: title}}))
+  }
+  function render() {
 		if (textBox == null) return { __html: '' };
 		return {
 			__html: dompurify.sanitize(marked.parse(textBox)),
 		};
 	}
 
-	return (
+  return (
 		<>
 			<Header
 				onClick={() => {
@@ -305,10 +285,9 @@ function Editor() {
 					<PerfilModal />
 				</HeadersButtons>
 			</Header>
+      <CustomToolbar handleSave={saveDocument} />
 			<div className="divv">
 				<HalfPage gap="0em" height="92vh">
-					<CustomToolbar />
-					<button onClick={saveDocument}>Salvar</button>
 					<div
 						id="textBox"
 						ref={wrapperRef}
