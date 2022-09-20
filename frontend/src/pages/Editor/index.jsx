@@ -29,8 +29,7 @@ function Editor() {
   const [title, setTitle] = useState()
   const { documentId } = useParams()
   const logo = "/src/images/logo.svg";
-  const cursorColors = ["blue", "red", "green", "yellow"]
-
+  const cursorColors = ["#6290c3", "#92BCCF", "#1A1B41", "#2F3052"]
   const [textBox, setTextBox] = useState();
 	const textPreviewRef = useRef();
   // Inicia o socket
@@ -44,7 +43,7 @@ function Editor() {
         {
           type: "join",
           params: {
-            userId: 2,
+            userId: user.id,
             documentId: documentId
           }
         }
@@ -120,6 +119,7 @@ function Editor() {
         quillCursors.moveCursor(userId, cursor)
       } else {
         quillCursors.createCursor(userId, name, cursorColors[cursors.length])
+        setUsers([...users, {name: name, id: userId, color:cursorColors[cursors.length] }])
       }
     }
 
@@ -138,6 +138,7 @@ function Editor() {
         handlerJoin(data)
       } else {
         quillCursors.removeCursor(`${data.userIdExiting}`)
+        setUsers(users.filter((user) => user.id == data.userIdExiting))
       }
     };
 
@@ -275,10 +276,10 @@ function Editor() {
 						{users.map((user, i) => (
 							<UserIdentifier
 								key={i}
-								colorbg={usersColors[i][0]}
-								colorfnt={usersColors[i][1]}
+								colorbg={user.color}
+								colorfnt={'white'}
 							>
-								{user.toString().charAt(0)}
+								{user.name.toString().charAt(0)}
 							</UserIdentifier>
 						))}
 					</HeadersButtons>

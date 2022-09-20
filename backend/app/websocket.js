@@ -49,7 +49,7 @@ module.exports = (server) => {
             await roomManager.message(params, wss.clients, WebSocket, type);
             break;
           case "cursor":
-            await roomManager.message(params, wss.clients, WebSocket, type);
+            await roomManager.cursor(params, wss.clients, WebSocket, type);
             break;
           case "title":
             await roomManager.message(params, wss.clients, WebSocket, type);
