@@ -201,6 +201,34 @@ function Editor() {
     socket.send(JSON.stringify({type: "save",params: {room: documentId }}))
   }
 
+  function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+  
+    element.style.display = 'none';
+    document.body.appendChild(element);
+  
+    element.click();
+  
+    document.body.removeChild(element);
+  }
+
+  function updateTitle() {
+    axios.post("http://localhost:3001/document/title", {
+      documentId: documentId,
+      title: title,
+    }, { withCredentials: true })
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+    socket.send(JSON.stringify({type: "title", params: {data: title}}))
+  }
+
   return (
     <>
       <Header onClick={() => {
@@ -209,20 +237,8 @@ function Editor() {
       }}>
         <HeadersButtons gap="2rem">
           <input id="title" value={title} onInput={(event => setTitle(event.target.value))}/>
-          <button onClick={() => {
-            axios.post("http://localhost:3001/document/title", {
-              documentId: documentId,
-              title: title,
-            }, { withCredentials: true })
-            .then(function (response) {
-              console.log(response);
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-
-            socket.send(JSON.stringify({type: "title", params: {data: title}}))
-          }} >Salvar</button>
+          <Button onClick={() => updateTitle()} >Salvar</Button>
+          <Button onClick={() => download(`${title}.md`, document.getElementsByClassName("ql-editor")[0].innerText) }>Download</Button>
           <HeadersButtons gap="0.2rem">
             {users.map((user, i) => (
               <UserIdentifier
