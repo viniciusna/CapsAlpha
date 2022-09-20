@@ -1,6 +1,9 @@
 const configWebSocket = require("./config");
 const Redis = require("ioredis");
+const Delta = require("quill-delta");
 const config = require("../config/index");
+const Document = require("../repository/document");
+
 const redis = new Redis({
   port: config.redis.port,
   host: config.redis.host,
@@ -8,26 +11,55 @@ const redis = new Redis({
 });
 
 class DocumentManager {
-  constructor(documentId) {
+  constructor() {
+    this.documentId = "";
+  }
+
+  setDocumentId(documentId) {
     this.documentId = documentId;
   }
-
-  async message() {
-    const quill = new Quill(editor, {
-      modules: {
-        toolbar: false,
-        syntax: false,
-      },
-      formats: [],
-    });
+  clearAttribute(deltaFull) {
+    const delta = deltaFull?.ops;
+    if (Array.isArray(delta)) {
+      return delta.map((op) => {
+        delete op.attributes;
+        return op;
+      });
+    } else {
+      delete delta.attributes;
+      return delta;
+    }
+  }
+  async update(delta) {
+    const clearDelta = new Delta(this.clearAttribute(delta));
+    const deltaNew = new Delta().compose(clearDelta);
     const text = await this.getText();
-    quill.setText(text);
-    quill.updateContents();
+    const deltaOld = new Delta().insert(text);
+    const dataDocument = deltaOld.compose(deltaNew);
+    const newDocument = this.toPlaintext(dataDocument);
+    await this.setText(newDocument);
   }
 
-  async getText(documentId) {
-    return await redis.lrange(`document_${this.ws.room}`);
+  async getText() {
+    const text = await redis.get(`document_${this.documentId}`);
+    if (!text) {
+      return "";
+    }
+    return text;
+  }
+
+  async setText(text) {
+    return await redis.set(`document_${this.documentId}`, text);
+  }
+
+  toPlaintext(delta) {
+    return delta.reduce(function (text, op) {
+      if (!op.insert)
+        throw new TypeError("only `insert` operations can be transformed!");
+      if (typeof op.insert !== "string") return text + " ";
+      return text + op.insert;
+    }, "");
   }
 }
 
-export default DocumentManager;
+module.exports = DocumentManager;

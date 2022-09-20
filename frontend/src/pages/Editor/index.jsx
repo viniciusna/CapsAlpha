@@ -38,7 +38,7 @@ function Editor() {
         {
           type: "join",
           params: {
-            userId: user.id,
+            userId: 2,
             documentId: documentId
           }
         }
@@ -64,7 +64,32 @@ function Editor() {
         document.getElementsByClassName("ql-editor")[0].innerText
       );
     }
+  
+    const handlerJoin = (data) => {
+      if(data.status != 'Success') return
 
+      fetch(`http://localhost:3001/document/${documentId}`, {
+        method: 'GET',  
+        credentials: 'include',
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        }),
+      })
+        .then(res => res.json())
+        .then(res => {
+          console.log(res);
+          if(res.message !== 'Success') {
+            alert(res.message)
+            return null
+          }
+          quill.setText(res.data.document.content)
+          document.getElementById("textPreview").innerHTML = marked.parse(
+            document.getElementById("textBox").innerText
+          );
+        })
+        .catch(err => console.log(err));
+    }
+    
     const handlerCursor = (cursor, userId, name) => {
       const cursors = quillCursors.cursors()
 
@@ -78,17 +103,18 @@ function Editor() {
     }
 
     socket.onmessage =  (event) =>  {
-      const data = JSON.parse(event.data)
+      const data = JSON.parse(event.data)      
       const type = data.type
 
       if(type == 'message') {
         handlerDelta(data.params.data)
       } else if(type == 'cursor') {
         const { cursor, userId, name } = data.params.data
-
         handlerCursor(cursor, userId, name)
       } else if(type == 'title') {
         setTitle(data.params.data)
+      } else if(type == 'join') {
+        handlerJoin(data)
       } else {
         quillCursors.removeCursor(`${data.userIdExiting}`)
       }
@@ -168,10 +194,19 @@ function Editor() {
     setQuill(q)
     setQuillCursors(qc)
   }, [])
+  function leaveDocument(){
+    socket.send(JSON.stringify({type: "leave",params: {room: documentId }}))
+  }
+  function saveDocument(){
+    socket.send(JSON.stringify({type: "save",params: {room: documentId }}))
+  }
 
   return (
     <>
-      <Header onClick={() => navigate("/Home")}>
+      <Header onClick={() => {
+        leaveDocument()
+        navigate("/Home")
+      }}>
         <HeadersButtons gap="2rem">
           <input id="title" value={title} onInput={(event => setTitle(event.target.value))}/>
           <button onClick={() => {
@@ -205,6 +240,7 @@ function Editor() {
       <div className="divv">
         <HalfPage gap="0em" height="92vh">
           <CustomToolbar />
+          <button onClick={saveDocument}>Salvar</button>
           <div
             id="textBox"
             ref={wrapperRef}

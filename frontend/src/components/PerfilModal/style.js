@@ -1,6 +1,13 @@
-import Styled from "styled-components";
+import Styled from 'styled-components';
 
 export const div = Styled.div`
+    padding: 10px;
+    z-index: 5;
+    position: absolute;
+    margin-top: -10px;
+    margin-left: -5vw;
+    width: 120px;
+    height: 100px;
     display: flex;
     flex-direction: column;
     align-items: center;

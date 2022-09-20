@@ -2,6 +2,8 @@ const configWebSocket = require("./config");
 const Redis = require("ioredis");
 const config = require("../config/index");
 const UserDocument = require("../repository/userDocuments");
+const DocumentManager = require("./documentManager");
+const Document = require("../repository/document");
 const redis = new Redis({
   port: config.redis.port,
   host: config.redis.host,
@@ -9,13 +11,14 @@ const redis = new Redis({
 });
 
 class RoomManager {
-  constructor(ws, rooms) {
+  constructor(ws) {
     this.ws = ws;
-    this.rooms = rooms;
+    this.room = "";
+    this.documentManager = new DocumentManager();
   }
 
   async message(params, clients, websocket, type) {
-    const roomId = this.ws.room
+    const roomId = this.ws.room;
     const userIdsInRoom = await this.getRoom(roomId);
     const data = JSON.stringify({
       type: type,
@@ -23,6 +26,7 @@ class RoomManager {
         data: params.data,
       },
     });
+    await this.documentManager.update(params.data);
     userIdsInRoom.forEach((userId) => {
       if (userId != `${this.ws.userId}`) {
         clients.forEach((client) => {
@@ -32,6 +36,13 @@ class RoomManager {
         });
       }
     });
+  }
+
+  async saveRelation(documentId, userId) {
+    const relationExist = await new UserDocument().find(userId, documentId);
+    if (!relationExist) {
+      await new UserDocument().set(userId, documentId);
+    }
   }
 
   async addUser(room, user) {
@@ -49,7 +60,6 @@ class RoomManager {
   async deleteRoom(room) {
     await redis.del(`room_${room}`);
   }
-
   async saveRelation(documentId, userId) {
     const relationExist = await new UserDocument().find(userId, documentId);
     if (!relationExist) {
@@ -60,6 +70,7 @@ class RoomManager {
   async join(params) {
     const roomId = params.documentId;
     const room = await this.getRoom(roomId);
+    this.room = roomId;
 
     if (room.includes(`${this.ws.userId}`)) {
       console.warn(`Room ${roomId} already have this user`);
@@ -79,7 +90,9 @@ class RoomManager {
     }
     await this.saveRelation(roomId, this.ws.userId);
     await this.addUser(roomId, this.ws.userId);
-    this.ws["room"] = roomId;
+
+    this.documentManager.setDocumentId(roomId);
+    this.ws.room = roomId;
 
     this.ws.send(
       JSON.stringify({
@@ -93,11 +106,12 @@ class RoomManager {
 
   async leave(clients, websocket) {
     const roomId = this.ws.room;
-    const userIdExiting = this.ws.userId
+    const userIdExiting = this.ws.userId;
 
     await this.removeUser(roomId, userIdExiting);
 
-    this.ws["room"] = undefined;
+    this.room = undefined;
+    if (this.getRoom(roomId).length == 0) this.close(this.room);
     this.ws.send(
       JSON.stringify({
         type: "leave",
@@ -108,15 +122,15 @@ class RoomManager {
     );
 
     if (this.getRoom(roomId).length == 0) {
-      this.close(room)
-      return
-    };
+      this.close(room);
+      return;
+    }
 
     const userIdsInRoom = await this.getRoom(roomId);
     const data = JSON.stringify({
       type: "leave",
-      userIdExiting: userIdExiting
-    })
+      userIdExiting: userIdExiting,
+    });
 
     userIdsInRoom.forEach((userId) => {
       if (userId != `${userIdExiting}`) {
@@ -131,6 +145,30 @@ class RoomManager {
 
   async close(room) {
     this.deleteRoom(room);
+  }
+
+  async save(params) {
+    const roomId = this.room;
+    const text = await this.documentManager.getText();
+    const result = await new Document().updateContent(roomId, text);
+    if (result) {
+      this.ws.send(
+        JSON.stringify({
+          type: "save",
+          status: "Success",
+          message: `Updated document ${roomId}`,
+          params: {},
+        })
+      );
+    }
+    this.ws.send(
+      JSON.stringify({
+        type: "save",
+        status: "Error",
+        message: `Document ${roomId} not updated`,
+        params: {},
+      })
+    );
   }
 }
 
