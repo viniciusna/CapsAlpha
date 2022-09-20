@@ -1,21 +1,23 @@
-import { Context } from "../../context/Context.jsx";
-import HalfPage from "../../components/HalfPage/HalfPage";
-import Header from "../../components/Header/Header.jsx";
-import UserIdentifier from "../../components/UserIdentifier/UserIdentifier.jsx";
-import HeadersButtons from "../../components/HeadersButtons/headerButton";
-import { CgProfile } from "react-icons/cg";
-import Button from "../../components/Button/Button.jsx";
-import { useCallback, useContext, useEffect, useState } from "react";
-import Quill from "quill";
-import "quill/dist/quill.snow.css";
-import { marked } from "marked";
-import { useParams } from "react-router-dom";
-import { modules } from './customToolbar'
-import { CustomToolbar } from "./customToolbar";
-import axios from "axios"
-import PerfilModal from "../../components/PerfilModal/index.jsx";
+import { Context } from '../../context/Context.jsx';
+import HalfPage from '../../components/HalfPage/HalfPage';
+import Header from '../../components/Header/Header.jsx';
+import UserIdentifier from '../../components/UserIdentifier/UserIdentifier.jsx';
+import HeadersButtons from '../../components/HeadersButtons/headerButton';
+import { CgProfile } from 'react-icons/cg';
+import Button from '../../components/Button/Button.jsx';
+import { useCallback, useContext, useEffect, useState, useRef } from 'react';
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css';
+import { marked } from 'marked';
+import dompurify from 'dompurify';
+import { useParams } from 'react-router-dom';
+import { modules } from './customToolbar';
+import { CustomToolbar } from './customToolbar';
+import axios from 'axios';
+import PerfilModal from '../../components/PerfilModal/index.jsx';
 import DocTitle from "../../components/DocTitle/DocTitle.jsx";
 import { FiDownload } from 'react-icons/fi';
+
 
 function Editor() {
   const { navigate, user, setUser, users, setUsers, setDocuments, addUser, usersColors, documents } =
@@ -29,6 +31,8 @@ function Editor() {
   const logo = "/src/images/logo.svg";
   const cursorColors = ["blue", "red", "green", "yellow"]
 
+  const [textBox, setTextBox] = useState();
+	const textPreviewRef = useRef();
   // Inicia o socket
   useEffect(() => {
     const s = new WebSocket("ws://localhost:3001")
@@ -48,9 +52,9 @@ function Editor() {
       );
     }
 
-    
+
     fetch('http://localhost:3001/document/my', {
-      method: 'GET',  
+      method: 'GET',
       credentials: 'include',
 
       headers: new Headers({
@@ -66,7 +70,7 @@ function Editor() {
         setDocuments(res.data.documents)
         const thisDoc = res.data.documents.filter(doc => doc.id == documentId)
         document.getElementById("title").value = thisDoc[0].title
-        setTitle(document.getElementById("title").value)    
+        setTitle(document.getElementById("title").value)
       })
       .catch(err => console.log(err));
     return () => {
@@ -79,16 +83,14 @@ function Editor() {
 
     const handlerDelta = delta => {
       quill.updateContents(delta)
-      document.getElementById("textPreview").innerHTML = marked.parse(
-        document.getElementsByClassName("ql-editor")[0].innerText
-      );
+      setTextBox(quill.getText());
     }
-  
+
     const handlerJoin = (data) => {
       if(data.status != 'Success') return
 
       fetch(`http://localhost:3001/document/${documentId}`, {
-        method: 'GET',  
+        method: 'GET',
         credentials: 'include',
         headers: new Headers({
           'Content-Type': 'application/json'
@@ -108,7 +110,7 @@ function Editor() {
         })
         .catch(err => console.log(err));
     }
-    
+
     const handlerCursor = (cursor, userId, name) => {
       const cursors = quillCursors.cursors()
 
@@ -122,7 +124,7 @@ function Editor() {
     }
 
     socket.onmessage =  (event) =>  {
-      const data = JSON.parse(event.data)      
+      const data = JSON.parse(event.data)
       const type = data.type
 
       if(type == 'message') {
@@ -178,41 +180,26 @@ function Editor() {
       quill.off("selection-change", cursorHandler)
     }
   }, [socket, quill])
+  const wrapperRef = useCallback((wrapper) => {
+		if (wrapper == null) return;
 
-  const wrapperRef = useCallback(wrapper => {
-    if (wrapper == null) return
+		wrapper.innerHTML = '';
+		const editor = document.createElement('div');
+		wrapper.append(editor);
 
-    wrapper.innerHTML = ""
-    const editor = document.createElement("div")
-    wrapper.append(editor)
+		const q = new Quill(editor, {
+			modules: modules,
+			formats: [],
+			theme: 'snow',
+		});
 
-    const q = new Quill(editor, {
-      modules: modules,
-      formats: [
-       // "header",
-        // "font",
-        // "size",
-        // "bold",
-        // "italic",
-        // "underline",
-        // "strike",
-        // "blockquote",
-        // "list",
-        // "bullet",
-        // "indent",
-        // "link",
-        // "image",
-        // "color"
-      ],  
-      theme: 'snow',
-    });
+		const qc = q.getModule('cursors');
+		// q.disable()
+		// q.setText("Loading...")
+		setQuill(q);
+		setQuillCursors(qc);
+	}, []);
 
-    const qc = q.getModule("cursors")
-    // q.disable()
-    // q.setText("Loading...")
-    setQuill(q)
-    setQuillCursors(qc)
-  }, [])
   function leaveDocument(){
     socket.send(JSON.stringify({type: "leave",params: {room: documentId }}))
   }
@@ -225,12 +212,12 @@ function Editor() {
     var element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
     element.setAttribute('download', filename);
-  
+
     element.style.display = 'none';
     document.body.appendChild(element);
-  
+
     element.click();
-  
+
     document.body.removeChild(element);
   }
 
@@ -248,6 +235,12 @@ function Editor() {
 
     socket.send(JSON.stringify({type: "title", params: {data: title}}))
   }
+  function render() {
+		if (textBox == null) return { __html: '' };
+		return {
+			__html: dompurify.sanitize(marked.parse(textBox)),
+		};
+	}
 
   return (
 		<>
@@ -303,7 +296,18 @@ function Editor() {
 					></div>
 				</HalfPage>
 				<HalfPage gap="0em" height="92vh">
-					<div id="textPreview">{}</div>
+					<div
+						id="textPreview"
+						ref={textPreviewRef}
+						style={{
+							height: '100%',
+							width: '100%',
+							border: '1px solid black',
+							padding: '25px',
+							'overflow-y': 'scroll',
+						}}
+						dangerouslySetInnerHTML={render()}
+					></div>
 				</HalfPage>
 			</div>
 		</>

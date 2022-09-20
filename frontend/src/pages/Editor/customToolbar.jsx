@@ -65,24 +65,24 @@ function insertItalic() {
 function insertStrikethrough(){
 	const cursorPosition = this.quill.getSelection().index;
 	this.quill.insertText(cursorPosition, '~~~~');
-	this.quill.setSelection(cursorPosition + 2);	
+	this.quill.setSelection(cursorPosition + 2);
 }
 function insertUnorderedList(){
 	const cursorPosition = this.quill.getSelection().index;
 	this.quill.insertText(cursorPosition, '- ');
-	this.quill.setSelection(cursorPosition + 2);	
+	this.quill.setSelection(cursorPosition + 2);
 }
 
 function insertOrderedList(){
 	const cursorPosition = this.quill.getSelection().index;
 	this.quill.insertText(cursorPosition, '1. ');
-	this.quill.setSelection(cursorPosition + 3);	
+	this.quill.setSelection(cursorPosition + 3);
 }
 
 function insertCheckList(){
 	const cursorPosition = this.quill.getSelection().index;
 	this.quill.insertText(cursorPosition, '- [ ] ');
-	this.quill.setSelection(cursorPosition + 6);	
+	this.quill.setSelection(cursorPosition + 6);
 }
 /*
  * Custom toolbar component including the custom heart button and dropdowns
