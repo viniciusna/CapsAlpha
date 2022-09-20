@@ -9,15 +9,31 @@ import { useCallback, useContext, useEffect, useState, useRef } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import { marked } from 'marked';
+import hljs from 'highlight.js';
 import dompurify from 'dompurify';
 import { useParams } from 'react-router-dom';
 import { modules } from './customToolbar';
 import { CustomToolbar } from './customToolbar';
 import axios from 'axios';
 import PerfilModal from '../../components/PerfilModal/index.jsx';
-import DocTitle from "../../components/DocTitle/DocTitle.jsx";
+import DocTitle from '../../components/DocTitle/DocTitle.jsx';
 import { FiDownload } from 'react-icons/fi';
 
+marked.setOptions({
+	renderer: new marked.Renderer(),
+	highlight: function (code, lang) {
+		const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+		return hljs.highlight(code, { language }).value;
+	},
+	langPrefix: 'hljs language-', // highlight.js css expects a top-level 'hljs' class.
+	pedantic: false,
+	gfm: true,
+	breaks: false,
+	sanitize: false,
+	smartLists: true,
+	smartypants: false,
+	xhtml: false,
+});
 
 function Editor() {
 	const {
@@ -289,8 +305,7 @@ function Editor() {
 								document.getElementsByClassName('ql-editor')[0].innerText
 							)
 						}
-					>
-					</Button>
+					></Button>
 					<HeadersButtons gap="0.2rem">
 						{users.map((user, i) => (
 							<UserIdentifier
