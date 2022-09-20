@@ -182,28 +182,28 @@ function Editor() {
     document.body.removeChild(element);
   }
 
+  function updateTitle() {
+    axios.post("http://localhost:3001/document/title", {
+      documentId: documentId,
+      title: title,
+    }, { withCredentials: true })
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+    socket.send(JSON.stringify({type: "title", params: {data: title}}))
+  }
+
   return (
     <>
       <Header onClick={() => navigate("/Home")}>
         <HeadersButtons gap="2rem">
           <input id="title" value={title} onInput={(event => setTitle(event.target.value))}/>
-          <button onClick={() => {
-            axios.post("http://localhost:3001/document/title", {
-              documentId: documentId,
-              title: title,
-            }, { withCredentials: true })
-            .then(function (response) {
-              console.log(response);
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-
-            socket.send(JSON.stringify({type: "title", params: {data: title}}))
-          }} >Salvar</button>
-          <button onClick={() => {
-            download(`${title}.md`, document.getElementsByClassName("ql-editor")[0].innerText)
-          }}>Download</button>
+          <Button onClick={() => updateTitle()} >Salvar</Button>
+          <Button onClick={() => download(`${title}.md`, document.getElementsByClassName("ql-editor")[0].innerText) }>Download</Button>
           <HeadersButtons gap="0.2rem">
             {users.map((user, i) => (
               <UserIdentifier
