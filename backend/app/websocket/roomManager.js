@@ -9,6 +9,7 @@ const redis = new Redis({
   host: config.redis.host,
   password: config.redis.password,
 });
+
 class RoomManager {
   constructor(ws) {
     this.ws = ws;
@@ -16,19 +17,17 @@ class RoomManager {
     this.documentManager = new DocumentManager();
   }
 
-  async message(params, clients, websocket) {
-    const room = params.room;
-    const rooms = await this.getRoom(params.room);
+  async message(params, clients, websocket, type) {
+    const roomId = this.ws.room;
+    const userIdsInRoom = await this.getRoom(roomId);
     const data = JSON.stringify({
-      type: "message",
-      status: "Success",
-      message: "Send data",
+      type: type,
       params: {
         data: params.data,
       },
     });
     await this.documentManager.update(params.data);
-    rooms.forEach((userId) => {
+    userIdsInRoom.forEach((userId) => {
       if (userId != `${this.ws.userId}`) {
         clients.forEach((client) => {
           if (client.readyState === websocket.OPEN && client.userId == userId) {
@@ -47,25 +46,32 @@ class RoomManager {
   }
 
   async addUser(room, user) {
-    await redis.lpush(`room_${room}`, user);
+    await redis.sadd(`room_${room}`, user);
   }
 
   async getRoom(room) {
-    return await redis.lrange(`room_${room}`, 0, -1);
+    return await redis.smembers(`room_${room}`);
   }
 
-  async removeUser(room, user) {
-    await redis.lrem(`room_${room}`, 5, user);
+  async removeUser(room, userId) {
+    await redis.srem(`room_${room}`, userId);
   }
 
   async deleteRoom(room) {
     await redis.del(`room_${room}`);
+  }
+  async saveRelation(documentId, userId) {
+    const relationExist = await new UserDocument().find(userId, documentId);
+    if (!relationExist) {
+      await new UserDocument().set(userId, documentId);
+    }
   }
 
   async join(params) {
     const roomId = params.documentId;
     const room = await this.getRoom(roomId);
     this.room = roomId;
+
     if (room.includes(`${this.ws.userId}`)) {
       console.warn(`Room ${roomId} already have this user`);
       return;
@@ -98,10 +104,11 @@ class RoomManager {
     );
   }
 
-  async leave() {
-    const roomId = this.room;
+  async leave(clients, websocket) {
+    const roomId = this.ws.room;
+    const userIdExiting = this.ws.userId;
 
-    await this.removeUser(roomId, this.ws.userId);
+    await this.removeUser(roomId, userIdExiting);
 
     this.room = undefined;
     if (this.getRoom(roomId).length == 0) this.close(this.room);
@@ -113,6 +120,27 @@ class RoomManager {
         params: {},
       })
     );
+
+    if (this.getRoom(roomId).length == 0) {
+      this.close(room);
+      return;
+    }
+
+    const userIdsInRoom = await this.getRoom(roomId);
+    const data = JSON.stringify({
+      type: "leave",
+      userIdExiting: userIdExiting,
+    });
+
+    userIdsInRoom.forEach((userId) => {
+      if (userId != `${userIdExiting}`) {
+        clients.forEach((client) => {
+          if (client.readyState === websocket.OPEN && client.userId == userId) {
+            client.send(data);
+          }
+        });
+      }
+    });
   }
 
   async close(room) {

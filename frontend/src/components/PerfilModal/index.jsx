@@ -31,19 +31,19 @@ const HoverText = ({name, handleMouseOver,handleMouseOut}) => {
         </S.name>
         <ButtonModal
             onClick={()=> navigate("/profile")}
-            colorbg="black"
-            colorfnt="white"
-            value="Profile"
-            height="40px"
-            width="80px"
+            colorbg="white"
+            colorfnt="black"
+            value="Perfil"
+            height="2rem"
+            width="4rem"
         />
         <ButtonModal
             onClick={handleClickExit}
             colorbg="white"
             colorfnt="black"
-            value="Exit"
-            height="40px"
-            width="80px"
+            value="Sair"
+            height="2rem"
+            width="4rem"
         />
     </S.div>
   );
