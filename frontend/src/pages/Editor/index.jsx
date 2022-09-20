@@ -205,7 +205,6 @@ function Editor() {
     socket.send(JSON.stringify({type: "leave",params: {room: documentId }}))
   }
   function saveDocument(){
-    updateTitle()
     socket.send(JSON.stringify({type: "save",params: {room: documentId }}))
   }
 
@@ -288,14 +287,14 @@ function Editor() {
 			</Header>
       <CustomToolbar handleSave={saveDocument} />
 			<div className="divv">
-				<HalfPage gap="0em" height="92vh">
+				<HalfPage gap="0em" height="86vh">
 					<div
 						id="textBox"
 						ref={wrapperRef}
 						style={{ height: '100%', width: '100%' }}
 					></div>
 				</HalfPage>
-				<HalfPage gap="0em" height="92vh">
+				<HalfPage gap="0em" height="86vh">
 					<div
 						id="textPreview"
 						ref={textPreviewRef}

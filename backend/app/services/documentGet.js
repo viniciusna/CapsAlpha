@@ -19,7 +19,6 @@ module.exports = class DocumentGet {
     const decoded = await checkTokenUser(token);
     const documentId = req.params.id;
     const userId = decoded.id;
-    console.log(documentId, userId);
     const document = await this.getDocument(documentId);
     if (!document) {
       throw new BadRequest("Document don't exist");

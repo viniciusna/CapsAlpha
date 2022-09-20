@@ -133,7 +133,6 @@ class Document extends PostgresDB {
   }
 
   async updateTitle(documentId, title) {
-    console.log('Repository')
     try {
       const client = await this.pool.connect();
       const query = `                          

@@ -16,7 +16,6 @@ module.exports = (server) => {
   });
 
   wss.on("connection", (ws, req) => {
-    console.log("Socket Client Connection");
     const roomManager = new RoomManager(ws);
 
     ws.on("error", (error) => {
@@ -29,16 +28,15 @@ module.exports = (server) => {
 
     ws.on("close", async () => {
       await roomManager.leave(wss.clients, WebSocket);
-      console.log("Socket Client Disconnected");
     });
 
     //wsStart(ws, req)
     ws.on("message", async (data) => {
       try {
         const { type, params } = JSON.parse(data);
-        // console.log(JSON.parse(data));
         switch (type) {
           case "join":
+            console.log(params)
             ws.userId = params.userId;
             await roomManager.join(params);
             break;
