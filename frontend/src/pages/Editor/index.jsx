@@ -268,13 +268,18 @@ function Editor() {
 				}}
 			>
 				<HeadersButtons gap="2rem">
-					<input
+					<DocTitle
 						id="title"
 						value={title}
 						onInput={(event) => setTitle(event.target.value)}
+						onBlur={() => updateTitle()}
 					/>
-					<Button onClick={() => updateTitle()}>Salvar</Button>
 					<Button
+						colorbg="white"
+						colorfnt="black"
+						height="1.8rem"
+						width="6rem"
+						value={'Download'}
 						onClick={() =>
 							download(
 								`${title}.md`,
@@ -282,7 +287,6 @@ function Editor() {
 							)
 						}
 					>
-						Download
 					</Button>
 					<HeadersButtons gap="0.2rem">
 						{users.map((user, i) => (
