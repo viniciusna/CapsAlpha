@@ -26,8 +26,28 @@ class RoomManager {
         data: params.data,
       },
     });
+    await this.documentManager.update(params.data);
 
-    if (type == "message") await this.documentManager.update(params.data);
+    userIdsInRoom.forEach((userId) => {
+      if (userId != `${this.ws.userId}`) {
+        clients.forEach((client) => {
+          if (client.readyState === websocket.OPEN && client.userId == userId) {
+            client.send(data);
+          }
+        });
+      }
+    });
+  }
+
+  async cursor(params, clients, websocket, type) {
+    const roomId = this.ws.room;
+    const userIdsInRoom = await this.getRoom(roomId);
+    const data = JSON.stringify({
+      type: type,
+      params: {
+        data: params.data,
+      },
+    });
 
     userIdsInRoom.forEach((userId) => {
       if (userId != `${this.ws.userId}`) {
@@ -61,12 +81,6 @@ class RoomManager {
 
   async deleteRoom(room) {
     await redis.del(`room_${room}`);
-  }
-  async saveRelation(documentId, userId) {
-    const relationExist = await new UserDocument().find(userId, documentId);
-    if (!relationExist) {
-      await new UserDocument().set(userId, documentId);
-    }
   }
 
   async join(params) {
