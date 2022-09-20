@@ -44,7 +44,7 @@ function Editor() {
         {
           type: "join",
           params: {
-            userId: 2,
+            userId: user.id,
             documentId: documentId
           }
         }
