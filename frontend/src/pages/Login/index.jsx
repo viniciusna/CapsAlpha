@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useLocation , useContext, useState } from "react";
+import { Img } from "./style.js";
 import InputBox from "../../components/InputBox/InputBox.jsx";
 import Input from "../../components/Input/Input";
 import HalfPage from "../../components/HalfPage/HalfPage.jsx";
@@ -13,6 +14,7 @@ const inputWidth = "30vw";
 
 function Login() {
   const [values, setValues] = useState({});
+  const [hover, setHover] = useState(false)
   const [error, setError] = useState("")
   const navigate = useNavigate();
   const { user, setUser, documents, setDocuments} = useContext(Context);
@@ -72,8 +74,10 @@ function Login() {
               />
               <Button
                 onClick={handleClick}
-                colorbg="black"
-                colorfnt="white"
+                onMouseOver={() => setHover(true)}
+					      onMouseOut={() => setHover(false)}
+					      colorbg={hover ? '#ffffff' : '#02040A'  }
+					      colorfnt={hover ? 'black' : 'white'}
                 value="Logar"
                 height="6vh"
                 width="31vw"
@@ -86,7 +90,7 @@ function Login() {
           </InputBox>
         </HalfPage>
         <HalfPage gap="0em" height="100vh">
-          <img onClick={() => navigate("/")} src={logo} alt="" />
+          <Img onClick={() => navigate("/")} src={logo} alt="" />
         </HalfPage>
       </div>
     </>
