@@ -102,7 +102,7 @@ function Register() {
             </p>
           </InputBox>
         </HalfPage>
-        <HalfPage gap="0em" height="100vh" widthMax="">
+        <HalfPage gap="0em" height="100vh" widthMax="" justifyContent="center">
           <Img onClick={() => navigate("/")} src={logo} alt="" />
         </HalfPage>
       </div>

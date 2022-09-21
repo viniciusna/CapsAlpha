@@ -9,6 +9,6 @@ align-items: center;
 height:${(props) => props.height};
 width:50%;
 // border:1px solid green;
-overflow-y: scroll;
+overflow-y: hidden;
 padding:${(props) => props.padding};
 `;
