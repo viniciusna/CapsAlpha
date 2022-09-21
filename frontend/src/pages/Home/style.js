@@ -8,7 +8,7 @@ export const button = Styled.div`
     &>div{
         display: flex;
         gap: 1rem;
-    }
+    }; 
 `;
 
 export const search = Styled.p`
@@ -38,5 +38,12 @@ export const SearchBar = Styled.input`
     border-radius:0.5rem;
     padding: 1rem 1rem 1rem 3.5rem;
     width: 100%;
-    font-size: 1rem
+    font-size: 1rem;
 `;
+
+export const div = Styled.div`
+    flex-direction: row;    
+    column-gap: 5px;
+
+`;
+
