@@ -1,5 +1,6 @@
 import { Context } from "../../context/Context.jsx";
 import { useContext, useState } from "react";
+import { Img } from "./style.js";
 import InputBox from "../../components/InputBox/InputBox.jsx"
 import Input from "../../components/Input/Input";
 import HalfPage from "../../components/HalfPage/HalfPage.jsx";
@@ -13,6 +14,7 @@ const inputWidth = "30vw"
 function Register() {
   const [values, setValues] = useState({});
   const [error, setError] = useState("")
+  const [hover, setHover] = useState(false)
   let { navigate } = useContext(Context);
 
   function handleChange (event) {
@@ -84,8 +86,10 @@ function Register() {
               placeholder="Confirme a sua senha"
             />
             <Button
-              colorbg="black"
-              colorfnt="white"
+              onMouseOver={() => setHover(true)}
+              onMouseOut={() => setHover(false)}
+              colorbg={hover ? '#ffffff' : '#02040A'  }
+              colorfnt={hover ? 'black' : 'white'}
               value="Cadastrar"
               height="6vh"
               width="31vw"
@@ -99,7 +103,7 @@ function Register() {
           </InputBox>
         </HalfPage>
         <HalfPage gap="0em" height="100vh" widthMax="">
-          <img onClick={() => navigate("/")} src={logo} alt="" />
+          <Img onClick={() => navigate("/")} src={logo} alt="" />
         </HalfPage>
       </div>
     </>

@@ -13,8 +13,10 @@ export default function ButtonNewDocument({handleClick}){
 				/>
 				<Button
 					onClick={handleClick}
-					colorbg="#02040A"
-					colorfnt="white"
+					onMouseOver={() => setHover(true)}
+					onMouseOut={() => setHover(false)}
+					colorbg={hover ? '#ffffff' : '#02040A'  }
+					colorfnt={hover ? 'black' : 'white'}
 					sizefnt=".9rem"
 					value="Novo Documento"
 					height="3rem"
