@@ -48,49 +48,49 @@ function Login() {
   }
 
   return (
-    <>
-      <div className="div">
-        <HalfPage gap="0em" height="100vh">
-          <InputBox title="Fazer Login" height="">
-              <Input
-                label="Email"
-                height={inputHeight}
-                width={inputWidth}
-                type="email"
-                name='email'
-                handleChange={handleChange}
-                placeholder="Seu email"
-              />
-              <Input
-                label="Senha"
-                name="password"
-                height={inputHeight}
-                width={inputWidth}
-                type="password"
-                handleChange={handleChange}
-                placeholder="Digite uma senha"
-              />
-              <Button
-                onClick={handleClick}
-                colorbg="black"
-                colorfnt="white"
-                value="Logar"
-                height="6vh"
-                width="31vw"
-              />
-            <Error error={error}/>
-            <p>
-              Crie sua conta.{" "}
-              <a onClick={() => navigate("/Register")}>Registrar-se</a>
-            </p>
-          </InputBox>
-        </HalfPage>
-        <HalfPage gap="0em" height="100vh">
-          <img onClick={() => navigate("/")} src={logo} alt="" />
-        </HalfPage>
-      </div>
-    </>
-  );
+		<>
+			<div className="div">
+				<HalfPage gap="0em" height="100vh" justifyContent="center">
+					<InputBox title="Fazer Login" height="">
+						<Input
+							label="Email"
+							height={inputHeight}
+							width={inputWidth}
+							type="email"
+							name="email"
+							handleChange={handleChange}
+							placeholder="Seu email"
+						/>
+						<Input
+							label="Senha"
+							name="password"
+							height={inputHeight}
+							width={inputWidth}
+							type="password"
+							handleChange={handleChange}
+							placeholder="Digite uma senha"
+						/>
+						<Button
+							onClick={handleClick}
+							colorbg="black"
+							colorfnt="white"
+							value="Logar"
+							height="6vh"
+							width="31vw"
+						/>
+						<Error error={error} />
+						<p>
+							Crie sua conta.{' '}
+							<a onClick={() => navigate('/Register')}>Registrar-se</a>
+						</p>
+					</InputBox>
+				</HalfPage>
+				<HalfPage gap="0em" height="100vh" justifyContent="center">
+					<img onClick={() => navigate('/')} src={logo} alt="" />
+				</HalfPage>
+			</div>
+		</>
+	);
 }
 
 export default Login;

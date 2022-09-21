@@ -3,13 +3,13 @@ import * as S from "./style";
 import { Context } from "../../context/Context.jsx";
 import { useContext } from "react";
 
-function HalfPage(props) {
+function DocList(props) {
   let { navigate } = useContext(Context);
   return (
-    <S.HalfPage className="halfpage" id={props.id} ref={props.abacate} gap={props.gap} height={props.height} justifyContent={props.justifyContent}>
+    <S.DocList className="halfpage" id={props.id} ref={props.abacate} gap={props.gap} height={props.height} justify>
       {props.children}
-    </S.HalfPage>
+    </S.DocList>
   );
 }
 
-export default HalfPage;
+export default DocList;
