@@ -37,7 +37,7 @@ function Editor() {
 	const [title, setTitle] = useState();
 	const { documentId } = useParams();
 	const logo = '/src/images/logo.svg';
-	const cursorColors = ['blue', 'red', 'green', 'yellow'];
+	const cursorColors = ['#6290c3', '#92BCCF', '#1A1B41', '#2F3052'];
 
 	const [textBox, setTextBox] = useState();
 	const textPreviewRef = useRef();
@@ -147,6 +147,7 @@ function Editor() {
 				handlerJoin(data);
 			} else {
 				quillCursors.removeCursor(`${data.userIdExiting}`);
+				setUsers(users.filter((user) => user.id == data.userIdExiting));
 			}
 		};
 
@@ -308,12 +309,8 @@ function Editor() {
 					></Button>
 					<HeadersButtons gap="0.2rem">
 						{users.map((user, i) => (
-							<UserIdentifier
-								key={i}
-								colorbg={usersColors[i][0]}
-								colorfnt={usersColors[i][1]}
-							>
-								{user.toString().charAt(0)}
+							<UserIdentifier key={i} colorbg={user.color} colorfnt={'white'}>
+								{user.name.toString().charAt(0)}
 							</UserIdentifier>
 						))}
 					</HeadersButtons>

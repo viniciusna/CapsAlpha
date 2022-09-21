@@ -12,6 +12,8 @@ function ButtonModal(props) {
       colorfnt={props.colorfnt}
       height={props.height}
       width={props.width}
+      onMouseOut={props.onMouseOut}
+      onMouseOver={props.onMouseOver}
     >
       {props.children}
       {props.value}

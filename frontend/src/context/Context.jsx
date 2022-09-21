@@ -7,9 +7,9 @@ export const Context = createContext({});
 export const Provider = (props) => {
 
     const [user, setUser] = useState();
-    const [users, setUsers] = useState(["Victor", "Victoria", "Vinicius","Vitor","Welligton","Yeté"]);
+    const [users, setUsers] = useState([]);
     const [documents, setDocuments] = useState();
- 
+
     const usersColors = [
       ["black", "white"],
       ["grey", "white"],
@@ -25,7 +25,7 @@ export const Provider = (props) => {
         allUsers.push(newUser);
         setUsers(allUsers);
 
-    }   
+    }
 
 
     const navigate = useNavigate();
