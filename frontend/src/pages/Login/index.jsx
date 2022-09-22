@@ -52,7 +52,7 @@ function Login() {
   return (
     <>
       <div className="div">
-        <HalfPage gap="0em" height="100vh">
+        <HalfPage gap="0em" height="100vh" justifyContent="center">
           <InputBox title="Fazer Login" height="">
               <Input
                 label="Email"
@@ -89,7 +89,7 @@ function Login() {
             </p>
           </InputBox>
         </HalfPage>
-        <HalfPage gap="0em" height="100vh">
+        <HalfPage gap="0em" height="100vh" justifyContent="center">
           <Img onClick={() => navigate("/")} src={logo} alt="" />
         </HalfPage>
       </div>

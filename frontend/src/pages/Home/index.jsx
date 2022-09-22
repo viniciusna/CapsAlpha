@@ -77,94 +77,92 @@ function Home() {
   }
 
   return (
-    <>
-      <Header onClick={() => navigate("/")}>
-        <HeadersButtons gap="2em">
-          {
-            user
-              ?
-              <PerfilModal />
-              :
-              <>
-                <Button
-                  onClick={() => navigate("/Login")} 
-                  onMouseOver={() => setHover(true)}
-					        onMouseOut={() => setHover(false)}
-                  colorbg={hover ? "black" : 'white'}
-                  colorfnt={hover ? "white" : 'black'}
-                  value="Entrar"
-                  height="5vh"
-                  width="9vw"
-                />
-                <Button
-                  onClick={() => navigate("/Register")}
-                  onMouseOver={() => setRegisterHover(true)}
-					        onMouseOut={() => setRegisterHover(false)}
-                  colorbg={registerHover ? "white" : 'black'}
-                  colorfnt={registerHover ? "black" : 'white'}
-                  value="Criar conta"
-                  height="5vh"
-                  width="9vw"
-                />
-              </>
-          }
-        </HeadersButtons>
-      </Header>
-      <div className="divv">
-        <HalfPage gap="3em" height="84vh">
-          <h1 className="h1-home">Documentos Simultâneos</h1>
-          <h3 className="h3-home">Faça aqui seu Mardown</h3>
-          <S.button>
-            <div>
-              <ButtonNewDocument handleClick={handleClickCreateDocument} />
-              <InputDocumentCode handleChange={handleChange} />
-            </div>
-            {value ? (
-              <S.search onClick={handleClickLinkDocument}>
-                Join
-              </S.search>
-            ) : (
-              ""
-            )}
-          </S.button>
-          <S.div className="hometrace">
-            Não tem uma conta?
-            <a onClick={() => navigate("/Register")}>
-               Comece agora
-            </a>
-          </S.div>
-        </HalfPage>
+		<>
+			<Header onClick={() => navigate('/')}>
+				<HeadersButtons gap="2em">
+					{user ? (
+						<PerfilModal />
+					) : (
+						<>
+							<Button
+								onClick={() => navigate('/Login')}
+								onMouseOver={() => setHover(true)}
+								onMouseOut={() => setHover(false)}
+								colorbg={hover ? '#2f3336' : 'white'}
+								colorfnt={hover ? 'white' : 'black'}
+								value="Entrar"
+								height="5vh"
+								width="9vw"
+							/>
+							<Button
+								onClick={() => navigate('/Register')}
+								onMouseOver={() => setRegisterHover(true)}
+								onMouseOut={() => setRegisterHover(false)}
+								colorbg={registerHover ? '#2f3336' : 'black'}
+								colorfnt={'white'}
+								value="Criar conta"
+								height="5vh"
+								width="9vw"
+							/>
+						</>
+					)}
+				</HeadersButtons>
+			</Header>
+			<div className="divv">
+				<HalfPage gap="3em" height="84vh" justifyContent="center">
+					<h1 className="h1-home">Documentos Simultâneos</h1>
+					<h3 className="h3-home">Faça aqui seu Mardown</h3>
+					<S.button>
+						<div>
+							<ButtonNewDocument handleClick={handleClickCreateDocument} />
+							<InputDocumentCode handleChange={handleChange} />
+						</div>
+						{value ? (
+							<S.search onClick={handleClickLinkDocument}>Join</S.search>
+						) : (
+							''
+						)}
+					</S.button>
+					<S.div className="hometrace">
+						Não tem uma conta?
+						<a onClick={() => navigate('/Register')}>Comece agora</a>
+					</S.div>
+				</HalfPage>
 
-        <HalfPage gap="0.5em" height="84vh" padding="50%">
-          {documents ? (
-            documents.map((document, index) => {
-              if (index > 15) return
-              return (
-                <CardDocuments
-                  title={document.title}
-                  key={document.id}
-                  updatedAt={document.updated_at}
-                  owner={document.owner}
-                  handleClick={() => navigate(`/Editor/${document.id}`)}
-                />
-              );
-            })
-          ) : (
-            <>
-              <img src={Note} alt="" srcSet="" />
-              <div className="text">
-                <h2 className="h2-home">Criar um link para compartilhar</h2>
-                <p className="p-home">
-                  Clique em Novo documento se quiser criar um link para enviar aos
-                  convidados
-                </p>
-              </div>
-            </>
-          )}
-
-        </HalfPage>
-      </div>
-    </>
-  );
+				<HalfPage
+					gap="0.5em"
+					height="84vh"
+					padding="50%"
+					justifyContent="flex-start"
+				>
+					{documents ? (
+						documents.map((document, index) => {
+							if (index > 15) return;
+							return (
+								<CardDocuments
+									title={document.title}
+									key={document.id}
+									updatedAt={document.updated_at}
+									owner={document.owner}
+									handleClick={() => navigate(`/Editor/${document.id}`)}
+								/>
+							);
+						})
+					) : (
+						<div className="home-display">
+							<img src={Note} alt="" srcSet="" />
+							<div className="text">
+								<h2 className="h2-home">Criar um link para compartilhar</h2>
+								<p className="p-home">
+									Clique em Novo documento se quiser criar um link para enviar
+									aos convidados
+								</p>
+							</div>
+						</div>
+					)}
+				</HalfPage>
+			</div>
+		</>
+	);
 }
 export default Home;
