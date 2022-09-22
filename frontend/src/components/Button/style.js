@@ -32,7 +32,7 @@ export const buttonModal = Styled.div`
 
   &:hover{
       background-color: ${(props) =>
-				props.colorfnt};
+    props.colorfnt};
       color: ${(props) => (props.colorbg)};
   }
 `;

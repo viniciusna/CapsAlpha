@@ -17,11 +17,11 @@ class RoomManager {
     this.documentManager = new DocumentManager();
   }
 
-  async message(params, clients, websocket, type) {
+  async messageEdition(params, clients, websocket) {
     const roomId = this.ws.room;
     const userIdsInRoom = await this.getRoom(roomId);
     const data = JSON.stringify({
-      type: type,
+      type: "message",
       params: {
         data: params.data,
       },
@@ -39,7 +39,7 @@ class RoomManager {
     });
   }
 
-  async cursor(params, clients, websocket, type) {
+  async messageChanges(params, clients, websocket, type) {
     const roomId = this.ws.room;
     const userIdsInRoom = await this.getRoom(roomId);
     const data = JSON.stringify({
