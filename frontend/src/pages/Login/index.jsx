@@ -1,100 +1,100 @@
-import { useNavigate } from "react-router-dom";
-import { useLocation , useContext, useState } from "react";
-import { Img } from "./style.js";
-import InputBox from "../../components/InputBox/InputBox.jsx";
-import Input from "../../components/Input/Input";
-import HalfPage from "../../components/HalfPage/HalfPage.jsx";
-import logo from "../../images/LogoVertical.svg";
-import Button from "../../components/Button/Button.jsx";
-import Error from '../../components/Error/Error'
-import { Context } from "../../context/Context.jsx";
+import { useNavigate } from 'react-router-dom';
+import { useLocation, useContext, useState } from 'react';
+import { Img } from './style.js';
+import InputBox from '../../components/InputBox/InputBox.jsx';
+import Input from '../../components/Input/Input';
+import HalfPage from '../../components/HalfPage/HalfPage.jsx';
+import logo from '../../images/LogoVertical.svg';
+import Button from '../../components/Button/Button.jsx';
+import Error from '../../components/Error/Error';
+import { Context } from '../../context/Context.jsx';
 
-const inputHeight = "6vh";
-const inputWidth = "30vw";
+const inputHeight = '6vh';
+const inputWidth = '30vw';
 
 function Login() {
-  const [values, setValues] = useState({});
-  const [hover, setHover] = useState(false)
-  const [error, setError] = useState("")
-  const navigate = useNavigate();
-  const { user, setUser, documents, setDocuments} = useContext(Context);
+	const [values, setValues] = useState({});
+	const [hover, setHover] = useState(false);
+	const [error, setError] = useState('');
+	const navigate = useNavigate();
+	const { user, setUser, documents, setDocuments } = useContext(Context);
 
-  function handleChange (event) {
-    const name = event.target.name;
-    const value = event.target.value;
-    setValues(values => ({...values, [name]: value}));
-  }
+	function handleChange(event) {
+		const name = event.target.name;
+		const value = event.target.value;
+		setValues((values) => ({ ...values, [name]: value }));
+	}
 
-  function handleClick (event) {
-    fetch('http://localhost:3001/user/login', {
-      method: 'POST',  
-      credentials: 'include',
+	function handleClick(event) {
+		fetch('http://localhost:3001/user/login', {
+			method: 'POST',
+			credentials: 'include',
 
-      body: JSON.stringify(values),
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      }),
-    })
-      .then(res => res.json())
-      .then(res => {
-        console.log(res);
-        if(res.message !== 'Success') {
-          setError(res.message)
-          return null
-        }
-        setUser(res.data.user)
-        setDocuments(res.data.documents)
-        navigate('/home')
-      })
-      .catch(err => console.log(err));
-  }
+			body: JSON.stringify(values),
+			headers: new Headers({
+				'Content-Type': 'application/json',
+			}),
+		})
+			.then((res) => res.json())
+			.then((res) => {
+				console.log(res);
+				if (res.message !== 'Success') {
+					setError(res.message);
+					return null;
+				}
+				setUser(res.data.user);
+				setDocuments(res.data.documents);
+				navigate('/home');
+			})
+			.catch((err) => console.log(err));
+	}
 
-  return (
-    <>
-      <div className="div">
-        <HalfPage gap="0em" height="100vh">
-          <InputBox title="Fazer Login" height="">
-              <Input
-                label="Email"
-                height={inputHeight}
-                width={inputWidth}
-                type="email"
-                name='email'
-                handleChange={handleChange}
-                placeholder="Seu email"
-              />
-              <Input
-                label="Senha"
-                name="password"
-                height={inputHeight}
-                width={inputWidth}
-                type="password"
-                handleChange={handleChange}
-                placeholder="Digite uma senha"
-              />
-              <Button
-                onClick={handleClick}
-                onMouseOver={() => setHover(true)}
-					      onMouseOut={() => setHover(false)}
-					      colorbg={hover ? '#ffffff' : '#02040A'  }
-					      colorfnt={hover ? 'black' : 'white'}
-                value="Logar"
-                height="6vh"
-                width="31vw"
-              />
-            <Error error={error}/>
-            <p>
-              Crie sua conta.{" "}
-              <a onClick={() => navigate("/Register")}>Registrar-se</a>
-            </p>
-          </InputBox>
-        </HalfPage>
-        <HalfPage gap="0em" height="100vh">
-          <Img onClick={() => navigate("/")} src={logo} alt="" />
-        </HalfPage>
-      </div>
-    </>
-  );
+	return (
+		<>
+			<div className="div">
+				<HalfPage gap="0em" height="100vh">
+					<InputBox title="Fazer Login" height="">
+						<Input
+							label="Email"
+							height={inputHeight}
+							width={inputWidth}
+							type="email"
+							name="email"
+							handleChange={handleChange}
+							placeholder="Seu email"
+						/>
+						<Input
+							label="Senha"
+							name="password"
+							height={inputHeight}
+							width={inputWidth}
+							type="password"
+							handleChange={handleChange}
+							placeholder="Digite uma senha"
+						/>
+						<Button
+							onClick={handleClick}
+							onMouseOver={() => setHover(true)}
+							onMouseOut={() => setHover(false)}
+							colorbg={hover ? '#ffffff' : '#02040A'}
+							colorfnt={hover ? 'black' : 'white'}
+							value="Logar"
+							height="6vh"
+							width="31vw"
+						/>
+						<Error error={error} />
+						<p>
+							Crie sua conta.{' '}
+							<a onClick={() => navigate('/Register')}>Registrar-se</a>
+						</p>
+					</InputBox>
+				</HalfPage>
+				<HalfPage gap="0em" height="100vh">
+					<Img onClick={() => navigate('/')} src={logo} alt="" />
+				</HalfPage>
+			</div>
+		</>
+	);
 }
 
 export default Login;

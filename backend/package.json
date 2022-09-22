@@ -1,23 +1,26 @@
 {
-   "type": "commonjs",
-   "scripts": {
-      "watch": "nodemon app/index.js",
-      "start": "nodemon app/index.js"
-   },
-   "dependencies": {
-      "bcrypt": "^5.0.1",
-      "cookie-parser": "^1.4.6",
-      "cors": "^2.8.5",
-      "dotenv": "^16.0.1",
-      "express": "^4.18.1",
-      "express-async-errors": "^3.1.1",
-      "ioredis": "^5.2.3",
-      "jsonwebtoken": "^8.5.1",
-      "pg": "^8.8.0",
-      "quill-delta": "^5.0.0",
-      "ws": "^8.8.1"
-   },
-   "devDependencies": {
-      "nodemon": "^2.0.19"
-   }
+  "type": "commonjs",
+  "scripts": {
+    "watch": "nodemon app/index.js",
+    "start": "nodemon app/index.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-async-errors": "^3.1.1",
+    "ioredis": "^5.2.3",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.8.0",
+    "quill-delta": "^5.0.0",
+    "ws": "^8.8.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.23.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "nodemon": "^2.0.19"
+  }
 }
