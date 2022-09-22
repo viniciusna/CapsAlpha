@@ -15,7 +15,7 @@ export default function ButtonNewDocument({handleClick}){
 					onClick={handleClick}
 					onMouseOver={() => setHover(true)}
 					onMouseOut={() => setHover(false)}
-					colorbg={hover ? '#2f3336' : '#02040A'}
+					colorbg={hover ? '#ffffff' : '#02040A'  }
 					colorfnt={hover ? 'black' : 'white'}
 					sizefnt=".9rem"
 					value="Novo Documento"

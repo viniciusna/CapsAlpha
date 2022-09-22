@@ -77,7 +77,6 @@ a{
   all:unset;
   font-weight:bold;
   cursor:pointer;
-  padding-left:0.2rem;
 }
 
 .prototype-title{
@@ -85,15 +84,5 @@ a{
   justify-content:center;
   align-items:center;
   height:12vh;
-}
-
-.home-display{
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  height:fit-content;
-  width:fit-content;
-  // border: solid 1px red;
 }
 `;

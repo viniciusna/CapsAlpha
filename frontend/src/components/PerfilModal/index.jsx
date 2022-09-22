@@ -22,7 +22,7 @@ const HoverText = ({name, handleMouseOver,handleMouseOut}) => {
         setUser('')
         setDocuments('')
         deleteCookie('token')
-        navigate("/")
+        navigate("/home")
     }
   return (
     <S.div onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>

@@ -47,7 +47,7 @@ function Register() {
   return (
     <>
       <div className="div">
-        <HalfPage gap="0em" height="100vh" justifyContent="center">
+        <HalfPage gap="0em" height="100vh">
           <InputBox title="Registre-se" height="">
             <Input
               label="Email"
@@ -102,7 +102,7 @@ function Register() {
             </p>
           </InputBox>
         </HalfPage>
-        <HalfPage gap="0em" height="100vh" widthMax="" justifyContent="center">
+        <HalfPage gap="0em" height="100vh" widthMax="">
           <Img onClick={() => navigate("/")} src={logo} alt="" />
         </HalfPage>
       </div>
