@@ -1,7 +1,5 @@
 -- Database: caps_alpha
-
 -- DROP DATABASE IF EXISTS caps_alpha;
-
 CREATE TABLE users (
 	id INTEGER PRIMARY KEY,
 	email VARCHAR(30),

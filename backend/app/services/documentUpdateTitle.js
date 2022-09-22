@@ -9,7 +9,7 @@ module.exports = class DocumentUpdateTitle {
     }
     const token = req.cookies["token"];
     await checkTokenUser(token);
-    const { documentId, title} = req.body;
+    const { documentId, title } = req.body;
 
     if (!documentId || !title) {
       throw new BadRequest("Missing data");

@@ -4,17 +4,17 @@ services:
     build: .
     restart: always
     environment:
-      -  PORT=3001
-      -  DB_HOST=db_caps
-      -  DB_PORT=5432
-      -  DB_USER=postgres
-      -  DB_PASSWORD=postgres
-      -  DB_NAME=postgres
-      -  DB_DATABASE=caps_alpha
-      -  JWT_SECRET=1231nsadnaj2i3j2iji2jii2j32j
-      -  REDIS_HOST=cache_redis_caps
-      -  REDIS_PORT=6379
-      -  REDIS_PASSWORD=password
+      - PORT=3001
+      - DB_HOST=db_caps
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=postgres
+      - DB_DATABASE=caps_alpha
+      - JWT_SECRET=1231nsadnaj2i3j2iji2jii2j32j
+      - REDIS_HOST=cache_redis_caps
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=password
     ports:
       - '3001:3001'
     depends_on:
@@ -22,22 +22,22 @@ services:
       - cache_redis_caps
     links:
       - db_caps
-      - cache_redis_caps 
+      - cache_redis_caps
     command: npm run watch
     volumes:
       - type: bind
-        source: ./app 
+        source: ./app
         target: /usr/caps_alpha/app
 
   cache_redis_caps:
-      image: redis:6.2-alpine
-      restart: always
-      ports:
-        - '6379:6379'
-      command: redis-server --save 20 1 --loglevel warning
-      # --requirepass password
-      volumes:
-        - redisData:/data
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+    # --requirepass password
+    volumes:
+      - redisData:/data
 
   db_caps:
     build: ./docker/db/
@@ -47,7 +47,7 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - '8002:5432'
-    volumes: 
+    volumes:
       - db:/var/lib/postgresql/data
 volumes:
   db:
