@@ -44,13 +44,13 @@ module.exports = (server) => {
             await roomManager.leave(wss.clients, WebSocket);
             break;
           case "message":
-            await roomManager.message(params, wss.clients, WebSocket, type);
+            await roomManager.messageEdition(params, wss.clients, WebSocket, type);
             break;
           case "cursor":
-            await roomManager.cursor(params, wss.clients, WebSocket, type);
+            await roomManager.messageChanges(params, wss.clients, WebSocket, type);
             break;
           case "title":
-            await roomManager.message(params, wss.clients, WebSocket, type);
+            await roomManager.messageChanges(params, wss.clients, WebSocket, type);
             break;
           case "save":
             await roomManager.save(params);
