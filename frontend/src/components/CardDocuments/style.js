@@ -2,10 +2,10 @@ import Styled from "styled-components";
 
 export const div = Styled.div`
     width: 70%;
-    height: 7em;
+    height: 14%;
     margin: 2%;
     border: solid 1px #ccc;
-    border-radius: 0.5rem;
+    border-radius: 10px;
     background-color: white;
     box-shadow: 5px 5px 5px #aaa;
     display: flex;

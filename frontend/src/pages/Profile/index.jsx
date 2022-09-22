@@ -45,7 +45,7 @@ function handleClick(event) {
 		<>
 			<HeaderProfile></HeaderProfile>
 			<div className="divv">
-				<HalfPage height="92vh" justifyContent="center">
+				<HalfPage height="92vh">
 					<InputBox title="Editar Perfil" height="80vh">
 						<Input
 							label="email"
