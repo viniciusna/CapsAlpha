@@ -89,6 +89,7 @@ class RoomManager {
     this.room = roomId;
 
     if (room.includes(`${this.ws.userId}`)) {
+      console.log("JOIN", room);
       console.warn(`Room ${roomId} already have this user`);
       return;
     }
@@ -121,13 +122,16 @@ class RoomManager {
   }
 
   async leave(clients, websocket) {
-    const roomId = this.ws.room;
+    const roomId = this.room;
     const userIdExiting = this.ws.userId;
 
-    await this.removeUser(roomId, userIdExiting);
-
+    await this.removeUser(roomId, `${userIdExiting}`);
+    console.log("ROOM ID: ", roomId);
+    console.log("BEFORE CLOSE: ", await this.getRoom(roomId));
+    console.log("USER CLOSE: ", userIdExiting);
+    console.log("CLOSE: ", await this.getRoom(roomId));
     this.room = undefined;
-    if (this.getRoom(roomId).length == 0) this.close(this.room);
+    if ((await this.getRoom(roomId).length) == 0) this.close(this.room);
     this.ws.send(
       JSON.stringify({
         type: "leave",

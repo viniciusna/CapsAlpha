@@ -9,7 +9,6 @@ import { useCallback, useContext, useEffect, useState, useRef } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import { marked } from 'marked';
-import hljs from 'highlight.js';
 import dompurify from 'dompurify';
 import { useParams } from 'react-router-dom';
 import { modules } from './customToolbar';
@@ -24,13 +23,13 @@ function Editor() {
 		navigate,
 		user,
 		setUser,
-		users,
-		setUsers,
 		setDocuments,
 		addUser,
 		usersColors,
 		documents,
 	} = useContext(Context);
+
+	const [users, setUsers] = useState([]);
 	const [socket, setSocket] = useState();
 	const [quill, setQuill] = useState();
 	const [quillCursors, setQuillCursors] = useState();
@@ -43,6 +42,7 @@ function Editor() {
 	const textPreviewRef = useRef();
 	// Inicia o socket
 	useEffect(() => {
+		if (!user) return;
 		const s = new WebSocket('ws://localhost:3001');
 		setSocket(s);
 
@@ -84,7 +84,7 @@ function Editor() {
 		return () => {
 			s.close();
 		};
-	}, []);
+	}, [user]);
 
 	useEffect(() => {
 		if (socket == null || quill == null) return;
@@ -129,10 +129,13 @@ function Editor() {
 				quillCursors.moveCursor(userId, cursor);
 			} else {
 				quillCursors.createCursor(userId, name, cursorColors[cursors.length]);
-				setUsers([
-					...users,
-					{ name: name, id: userId, color: cursorColors[cursors.length] },
-				]);
+
+				if (users.filter((user) => user.id === userId).length == 0)
+					setUsers([
+						...users,
+						{ name: name, id: userId, color: cursorColors[cursors.length] },
+					]);
+				console.log('USERS: ', users);
 			}
 		};
 
@@ -328,7 +331,7 @@ function Editor() {
 							width: '100%',
 							border: '1px solid black',
 							padding: '25px',
-							'overflow-y': 'scroll',
+							overflowY: 'scroll',
 						}}
 						dangerouslySetInnerHTML={render()}
 					></div>
