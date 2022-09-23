@@ -90,10 +90,7 @@ function Editor() {
 
 		const handlerDelta = (delta) => {
 			quill.updateContents(delta);
-			// setTextBox(quill.getText());
-			document.getElementById('textPreview').innerHTML = marked.parse(
-				document.getElementsByClassName('ql-editor')[0].innerText
-			);
+			setTextBox(quill.getText());
 		};
 
 		const handlerJoin = (data) => {
@@ -167,10 +164,8 @@ function Editor() {
 
 		const handler = (delta, oldDelta, source) => {
 			if (source !== 'user') return;
-			document.getElementById('textPreview').innerHTML = marked.parse(
-				document.getElementsByClassName('ql-editor')[0].innerText
-			);
 
+			setTextBox(quill.getText());
 			socket.send(JSON.stringify({ type: 'message', params: { data: delta } }));
 		};
 
@@ -269,9 +264,6 @@ function Editor() {
 	}
 	function render() {
 		if (textBox == null) return { __html: '' };
-		console.log(textBox)
-		console.log(marked.parse(textBox))
-		console.log(dompurify.sanitize(marked.parse(textBox)))
 		return {
 			__html: dompurify.sanitize(marked.parse(textBox)),
 		};
