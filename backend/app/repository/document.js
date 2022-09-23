@@ -153,6 +153,23 @@ class Document extends PostgresDB {
       throw new InternalServerError("Service temporarily unavailable");
     }
   }
+
+  async getTitle(documentId) {
+    try {
+      const client = await this.pool.connect();
+      const query = `                          
+        SELECT title FROM documents
+        WHERE id = $1
+        `;
+      const values = [documentId];
+      const result = await client.query(query, values);
+      client.release();
+      return result.rows[0].title;
+    } catch (e) {
+      console.log(e);
+      throw new InternalServerError("Service temporarily unavailable");
+    }
+  }
 }
 
 module.exports = Document;

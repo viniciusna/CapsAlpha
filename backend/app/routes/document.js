@@ -5,6 +5,7 @@ const DocumentGetController = require("../controllers/documentGet");
 const DocumentUpdateController = require("../controllers/documentUpdate");
 const DocumentUpdateTitleController = require("../controllers/documentUpdateTitle");
 const UserDocumentGetController = require("../controllers/userDocumentsGet");
+const DocumentGetTitleController = require("../controllers/documentGetTitle");
 
 router
   .route("/")
@@ -41,5 +42,9 @@ router
   .delete(
     new DocumentDeleteController().handler.bind(new DocumentDeleteController())
   );
+
+router
+  .route("/get-title/:id")
+  .get(new DocumentGetTitleController().handler.bind(new DocumentGetTitleController()));
 
 module.exports = router;
