@@ -9,7 +9,6 @@ import { useCallback, useContext, useEffect, useState, useRef } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import { marked } from 'marked';
-import hljs from 'highlight.js';
 import dompurify from 'dompurify';
 import { useParams } from 'react-router-dom';
 import { modules } from './customToolbar';
@@ -91,7 +90,10 @@ function Editor() {
 
 		const handlerDelta = (delta) => {
 			quill.updateContents(delta);
-			setTextBox(quill.getText());
+			// setTextBox(quill.getText());
+			document.getElementById('textPreview').innerHTML = marked.parse(
+				document.getElementsByClassName('ql-editor')[0].innerText
+			);
 		};
 
 		const handlerJoin = (data) => {
@@ -267,6 +269,9 @@ function Editor() {
 	}
 	function render() {
 		if (textBox == null) return { __html: '' };
+		console.log(textBox)
+		console.log(marked.parse(textBox))
+		console.log(dompurify.sanitize(marked.parse(textBox)))
 		return {
 			__html: dompurify.sanitize(marked.parse(textBox)),
 		};
