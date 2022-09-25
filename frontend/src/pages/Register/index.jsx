@@ -7,14 +7,17 @@ import HalfPage from '../../components/HalfPage/HalfPage.jsx';
 import logo from '../../images/LogoVertical.svg';
 import Button from '../../components/Button/Button.jsx';
 import Error from '../../components/Error/Error';
+import Validate from '../../validator/ValidateRegister.js';
 
 const inputHeight = '6vh';
 const inputWidth = '30vw';
 
 function Register() {
 	const [values, setValues] = useState({});
-	const [error, setError] = useState('');
 	const [hover, setHover] = useState(false);
+	const [serverError, setServerError] = useState(false);
+	const [formErrors, setFormErrors] = useState({});
+
 	let { navigate } = useContext(Context);
 
 	function handleChange(event) {
@@ -24,6 +27,12 @@ function Register() {
 	}
 
 	function handleClick(event) {
+		const errors = Validate(values);
+		setFormErrors(errors);
+
+		if (Object.keys(errors).length !== 0) return;
+		setServerError(false);
+
 		fetch('http://localhost:3001/user/register', {
 			method: 'POST',
 			credentials: 'include',
@@ -36,7 +45,7 @@ function Register() {
 			.then((res) => {
 				console.log(res);
 				if (res.message !== 'Success') {
-					setError(res.message);
+					setServerError(res.message);
 					return null;
 				}
 				navigate('/login');
@@ -53,6 +62,7 @@ function Register() {
 							label="Email"
 							height={inputHeight}
 							width={inputWidth}
+							error={formErrors.email}
 							placeholder="Seu email"
 							type="email"
 							name="email"
@@ -60,6 +70,7 @@ function Register() {
 						/>
 						<Input
 							label="Usuário"
+							error={formErrors.name}
 							height={inputHeight}
 							width={inputWidth}
 							type="text"
@@ -69,6 +80,7 @@ function Register() {
 						/>
 						<Input
 							label="Senha"
+							error={formErrors.password}
 							height={inputHeight}
 							width={inputWidth}
 							type="password"
@@ -78,6 +90,7 @@ function Register() {
 						/>
 						<Input
 							label="Confirmar Senha"
+							error={formErrors.passwordConfirm}
 							height={inputHeight}
 							width={inputWidth}
 							type="password"
@@ -95,7 +108,7 @@ function Register() {
 							width="31vw"
 							onClick={handleClick}
 						/>
-						<Error error={error} />
+						<Error error={serverError} />
 						<p>
 							Você já tem uma conta?{' '}
 							<a onClick={() => navigate('/Login')}>Fazer login</a>

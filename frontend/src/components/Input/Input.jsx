@@ -17,6 +17,7 @@ function Input(props) {
 				height={props.height}
 				width={props.width}
 			/>
+			{props.error && <S.error>{props.error}</S.error>}
 		</S.div>
 	);
 }
