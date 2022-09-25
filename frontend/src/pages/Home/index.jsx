@@ -2,6 +2,7 @@ import Header from '../../components/Header/Header.jsx';
 import HeadersButtons from '../../components/HeadersButtons/headerButton';
 import Button from '../../components/Button/Button.jsx';
 import HalfPage from '../../components/HalfPage/HalfPage.jsx';
+import Snackbar from '../../components/Snackbar/Snackbar.jsx';
 import Note from '../../images/notes.svg';
 import Doc from '../../images/document.svg';
 import { BsFillFileEarmarkTextFill } from 'react-icons/bs';
@@ -23,7 +24,7 @@ function Home() {
 	const [registerHover, setRegisterHover] = useState(false);
 	const [documentLoaded, setDocumentLoaded] = useState(false);
 	const [deletedDocumentId, setDeletedDocumentId] = useState("");
-	const { user, setUser, documents, setDocuments } = useContext(Context);
+	const { user, setUser, documents, setDocuments,showSnackbar,snackbarMessage,setSnackbarMessage} = useContext(Context);
 	const navigate = useNavigate();
 
 	function handleChange(event) {
@@ -109,7 +110,7 @@ function Home() {
 					) : (
 						<>
 							<Button
-								onClick={() => navigate('/Login')}
+								onClick={showSnackbar}
 								onMouseOver={() => setHover(true)}
 								onMouseOut={() => setHover(false)}
 								colorbg={hover ? 'black' : 'white'}
@@ -166,8 +167,11 @@ function Home() {
 										owner={document.owner}
 										handleClick={() => navigate(`/Editor/${document.id}`)}
 									/>
-									<button onClick={ async () => setDeletedDocumentId(document.id)
-									}>DEL</button>
+									<button
+										onClick={async () => setDeletedDocumentId(document.id)}
+									>
+										DEL
+									</button>
 								</>
 							);
 						})
@@ -184,6 +188,7 @@ function Home() {
 						</>
 					)}
 				</HalfPage>
+			<id id="snackbar">{snackbarMessage}</id>
 			</div>
 		</>
 	);

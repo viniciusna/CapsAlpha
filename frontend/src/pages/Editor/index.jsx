@@ -383,6 +383,7 @@ function Editor() {
 						dangerouslySetInnerHTML={render()}
 					></div>
 				</HalfPage>
+				<id id="snackbar">{snackbarMessage}</id>
 			</div>
 		</>
 	);
