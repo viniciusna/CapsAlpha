@@ -38,8 +38,19 @@ class Document extends PostgresDB {
       `;
       const valuesExist = [documentId, userId];
       const resultExist = await client.query(queryExist, valuesExist);
+
       if (resultExist.rows.length == 0) {
-        return false;
+        const queryDelUserDocuments = `                          
+        DELETE FROM users_documents WHERE document_id = $1 AND user_id = $2
+        RETURNING document_id;
+      `;
+      const valuesUserDocuments = [documentId, userId];
+      const resultDelUserDocuments = await client.query(
+        queryDelUserDocuments,
+        valuesUserDocuments
+      );
+
+      return resultDelUserDocuments.rows[0].id;
       }
 
       const queryUserDocuments = `                          
