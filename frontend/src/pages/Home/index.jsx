@@ -87,7 +87,13 @@ function Home() {
 			{ withCredentials: true }
 		)
 		.then(function (response) {
-			window.location.reload();
+			console.log(response)
+			if (response.data.message === "Success") {
+				setDocuments(documents.filter((doc) => doc.id != deletedDocumentId))
+			} else {
+				console.log("Internal error")
+				console.log(response)
+			}
 		})
 		.catch(function (error) {
 			console.log(error);
