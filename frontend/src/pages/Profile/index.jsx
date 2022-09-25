@@ -1,5 +1,5 @@
 import { Context } from '../../context/Context.jsx';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import HeaderProfile from '../../components/Header/HeaderProfile.jsx';
 import HalfPage from '../../components/HalfPage/HalfPage.jsx';
 import InputBox from '../../components/InputBox/InputBox.jsx';
@@ -23,6 +23,10 @@ function Profile() {
 		const value = event.target.value;
 		setValues((values) => ({ ...values, [name]: value }));
 	}
+
+	useEffect(() => {
+		setValues({ name: user?.name, email: user?.email });
+	}, [user]);
 
 	function handleClick(event) {
 		fetch('http://localhost:3001/user', {
@@ -55,10 +59,9 @@ function Profile() {
 							name="email"
 							height={inputHeight}
 							width={inputWidth}
-							type="text"
-							value={user?.email}
-							//handleChange={handleChange}
-							onInput={(event) => setEmail(event.target.value)}
+							type="email"
+							value={values.email}
+							handleChange={handleChange}
 							placeholder="Seu email"
 						></Input>
 						<Input
@@ -67,9 +70,9 @@ function Profile() {
 							height={inputHeight}
 							width={inputWidth}
 							type="text"
-							value={user?.name}
+							value={values.name}
 							//handleChange={handleChange}
-							onInput={(event) => setUsername(event.target.value)}
+							handleChange={handleChange}
 							placeholder="Seu nome de usuário"
 						></Input>
 						<Input
@@ -78,17 +81,16 @@ function Profile() {
 							height={inputHeight}
 							width={inputWidth}
 							type="password"
-							//handleChange={handleChange}
+							handleChange={handleChange}
 							placeholder="Digite uma senha"
 						></Input>
 						<Input
 							label="Confirme sua senha"
-							name="password"
+							name="confirmPassword"
 							height={inputHeight}
 							width={inputWidth}
 							type="password"
-							on
-							//handleChange={handleChange}
+							handleChange={handleChange}
 							placeholder="Confirme a sua senha"
 						></Input>
 						<Button
@@ -97,6 +99,7 @@ function Profile() {
 							value="Atualizar Perfil"
 							height="6vh"
 							width="31vw"
+							onClick={handleClick}
 						/>
 					</InputBox>
 				</HalfPage>
