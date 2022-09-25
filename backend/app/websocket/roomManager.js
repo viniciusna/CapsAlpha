@@ -68,29 +68,63 @@ class RoomManager {
   }
 
   async addUser(room, user) {
-    await redis.sadd(`room_${room}`, user);
+    await redis.rpush(`room_${room}`, user);
   }
 
   async getRoom(room) {
-    return await redis.smembers(`room_${room}`);
+    return await redis.lrange(`room_${room}`, 0, -1);
   }
 
   async removeUser(room, userId) {
-    await redis.srem(`room_${room}`, userId);
+    if (!userId) return;
+    await redis.lrem(`room_${room}`, 0, userId);
   }
 
   async deleteRoom(room) {
     await redis.del(`room_${room}`);
   }
 
+  async documentExist(documentId) {
+    const document = await new Document().get(documentId);
+    if (!document) {
+      return false;
+    }
+    return true;
+  }
+
   async join(params) {
     const roomId = params.documentId;
+
+    if (!(await this.documentExist(roomId))) {
+      console.warn(`Document ${roomId} does not exist`);
+      this.ws.send(
+        JSON.stringify({
+          type: "join",
+          status: "Error",
+          message: `Document ${roomId} does not exist`,
+          params: {},
+        })
+      );
+      return;
+    }
+
     const room = await this.getRoom(roomId);
     this.room = roomId;
+    console.log("JOIN ROOM ID: ", roomId);
+    console.log("JOIN USER: ", this.ws.userId);
+    console.log("JOIN ROOM: ", room);
+    console.log("=======================================");
 
     if (room.includes(`${this.ws.userId}`)) {
-      console.log("JOIN", room);
       console.warn(`Room ${roomId} already have this user`);
+      this.ws.send(
+        JSON.stringify({
+          type: "join",
+          status: "Error",
+          message: `Room ${roomId} already have this user`,
+          params: {},
+        })
+      );
       return;
     }
     if (room.length >= configWebSocket.maxUsers) {
@@ -125,11 +159,13 @@ class RoomManager {
     const roomId = this.room;
     const userIdExiting = this.ws.userId;
 
+    console.log("LEAVE ROOM ID: ", roomId);
+    console.log("BEFORE LEAVE: ", await this.getRoom(roomId));
+    console.log("USER LEAVE: ", userIdExiting);
     await this.removeUser(roomId, `${userIdExiting}`);
-    console.log("ROOM ID: ", roomId);
-    console.log("BEFORE CLOSE: ", await this.getRoom(roomId));
-    console.log("USER CLOSE: ", userIdExiting);
-    console.log("CLOSE: ", await this.getRoom(roomId));
+    console.log("AFTER LEAVE: ", await this.getRoom(roomId));
+    console.log("=========================================");
+
     this.room = undefined;
     if ((await this.getRoom(roomId).length) == 0) this.close(this.room);
     this.ws.send(

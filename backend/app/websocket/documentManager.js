@@ -8,7 +8,7 @@ const redis = new Redis({
   port: config.redis.port,
   host: config.redis.host,
   password: config.redis.password,
-  connectTimeout: 10000
+  connectTimeout: 10000,
 });
 
 class DocumentManager {

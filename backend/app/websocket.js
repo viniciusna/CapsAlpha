@@ -75,6 +75,7 @@ module.exports = (server) => {
             break;
         }
       } catch (e) {
+        console.log(e);
         console.log(
           "WS-MESSAGE ERROR: message(fn) --> received non-parsable DATA --> " +
             e

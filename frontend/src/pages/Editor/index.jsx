@@ -33,7 +33,7 @@ function Editor() {
 	const [socket, setSocket] = useState();
 	const [quill, setQuill] = useState();
 	const [quillCursors, setQuillCursors] = useState();
-	const [connect, setConnect] = useState(false);
+	const [connectRoom, setConnectRoom] = useState(false);
 	const [title, setTitle] = useState();
 	const { documentId } = useParams();
 	const logo = '/src/images/logo.svg';
@@ -47,7 +47,7 @@ function Editor() {
 		setSocket(s);
 
 		s.onopen = () => {
-			setConnect(true);
+			if (connectRoom) return;
 			s.send(
 				JSON.stringify({
 					type: 'join',
@@ -81,6 +81,7 @@ function Editor() {
 				setTitle(document.getElementById('title').value);
 			})
 			.catch((err) => console.log(err));
+
 		return () => {
 			s.close();
 		};
@@ -97,6 +98,7 @@ function Editor() {
 		const handlerJoin = (data) => {
 			if (data.status != 'Success') return;
 
+			setConnectRoom(true);
 			fetch(`http://localhost:3001/document/${documentId}`, {
 				method: 'GET',
 				credentials: 'include',
@@ -108,7 +110,6 @@ function Editor() {
 				.then((res) => {
 					console.log(res);
 					if (res.message !== 'Success') {
-						alert(res.message);
 						return null;
 					}
 					quill.setText(res.data.document.content);
@@ -129,15 +130,33 @@ function Editor() {
 				quillCursors.moveCursor(userId, cursor);
 			} else {
 				quillCursors.createCursor(userId, name, cursorColors[cursors.length]);
-
-				if (users.filter((user) => user.id === userId).length == 0)
-					setUsers([
+				console.log({
+					name: name,
+					id: userId,
+					color: cursorColors[cursors.length],
+				});
+				if (users.filter((u) => u.id == userId).length == 0) {
+					console.log({
+						name: name,
+						id: userId,
+						color: cursorColors[cursors.length],
+					});
+					setUsers((users) => [
 						...users,
-						{ name: name, id: userId, color: cursorColors[cursors.length] },
+						{
+							name: name,
+							id: userId,
+							color: cursorColors[cursors.length],
+						},
 					]);
-				console.log('USERS: ', users);
+					console.log(users);
+				}
 			}
 		};
+
+		function handlerLeave() {
+			setConnectRoom(false);
+		}
 
 		socket.onmessage = (event) => {
 			const data = JSON.parse(event.data);
@@ -152,6 +171,8 @@ function Editor() {
 				setTitle(data.params.data);
 			} else if (type == 'join') {
 				handlerJoin(data);
+			} else if (type == 'leave') {
+				handlerLeave(data);
 			} else {
 				quillCursors.removeCursor(`${data.userIdExiting}`);
 				setUsers(users.filter((user) => user.id == data.userIdExiting));
@@ -204,6 +225,7 @@ function Editor() {
 			quill.off('selection-change', cursorHandler);
 		};
 	}, [socket, quill]);
+
 	const wrapperRef = useCallback((wrapper) => {
 		if (wrapper == null) return;
 
@@ -218,8 +240,6 @@ function Editor() {
 		});
 
 		const qc = q.getModule('cursors');
-		// q.disable()
-		// q.setText("Loading...")
 		setQuill(q);
 		setQuillCursors(qc);
 	}, []);
@@ -229,6 +249,7 @@ function Editor() {
 			JSON.stringify({ type: 'leave', params: { room: documentId } })
 		);
 	}
+
 	function saveDocument() {
 		socket.send(JSON.stringify({ type: 'save', params: { room: documentId } }));
 	}
@@ -268,6 +289,7 @@ function Editor() {
 
 		socket.send(JSON.stringify({ type: 'title', params: { data: title } }));
 	}
+
 	function render() {
 		if (textBox == null) return { __html: '' };
 		return {
