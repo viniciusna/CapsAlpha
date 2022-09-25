@@ -36,7 +36,6 @@ module.exports = (server) => {
         const { type, params } = JSON.parse(data);
         switch (type) {
           case "join":
-            console.log(type);
             ws.userId = params.userId;
             await roomManager.join(params);
             break;

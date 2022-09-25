@@ -14,3 +14,8 @@ export const div = Styled.div`
     gap:0.5rem;
     flex-direction:column;
 `;
+
+export const error = Styled.label`
+  font-size: 1rem;
+  color: #FF5959;
+`;
