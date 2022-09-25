@@ -103,8 +103,6 @@ function Editor() {
 		};
 
 		const handlerJoin = (data) => {
-			if (data.status != 'Success') return;
-
 			setConnectRoom(true);
 			fetch(`http://localhost:3001/document/${documentId}`, {
 				method: 'GET',
@@ -176,6 +174,9 @@ function Editor() {
 			} else if (type == 'title') {
 				setTitle(data.params.data);
 			} else if (type == 'join') {
+				if (data.status != 'Success') {
+					alert(`Status: ${data.status}, ${data.message}`) ? navigate("/Home") : navigate("/Home")
+				}
 				handlerJoin(data);
 			} else if (type == 'leave') {
 				handlerLeave(data);
