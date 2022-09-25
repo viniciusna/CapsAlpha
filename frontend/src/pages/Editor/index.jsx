@@ -23,17 +23,17 @@ function Editor() {
 		navigate,
 		user,
 		setUser,
-		users,
-		setUsers,
 		setDocuments,
 		addUser,
 		usersColors,
 		documents,
 	} = useContext(Context);
+
+	const [users, setUsers] = useState([]);
 	const [socket, setSocket] = useState();
 	const [quill, setQuill] = useState();
 	const [quillCursors, setQuillCursors] = useState();
-	const [connect, setConnect] = useState(false);
+	const [connectRoom, setConnectRoom] = useState(false);
 	const [title, setTitle] = useState();
 	const { documentId } = useParams();
 	const logo = '/src/images/logo.svg';
@@ -42,11 +42,12 @@ function Editor() {
 	const textPreviewRef = useRef();
 	// Inicia o socket
 	useEffect(() => {
+		if (!user) return;
 		const s = new WebSocket('ws://localhost:3001');
 		setSocket(s);
 
 		s.onopen = () => {
-			setConnect(true);
+			if (connectRoom) return;
 			s.send(
 				JSON.stringify({
 					type: 'join',
@@ -91,7 +92,7 @@ function Editor() {
 		return () => {
 			s.close();
 		};
-	}, []);
+	}, [user]);
 
 	useEffect(() => {
 		if (socket == null || quill == null) return;
@@ -104,6 +105,7 @@ function Editor() {
 		const handlerJoin = (data) => {
 			if (data.status != 'Success') return;
 
+			setConnectRoom(true);
 			fetch(`http://localhost:3001/document/${documentId}`, {
 				method: 'GET',
 				credentials: 'include',
@@ -114,7 +116,6 @@ function Editor() {
 				.then((res) => res.json())
 				.then((res) => {
 					if (res.message !== 'Success') {
-						alert(res.message);
 						return null;
 					}
 					quill.setText(res.data.document.content);
@@ -135,12 +136,33 @@ function Editor() {
 				quillCursors.moveCursor(userId, cursor);
 			} else {
 				quillCursors.createCursor(userId, name, cursorColors[cursors.length]);
-				setUsers([
-					...users,
-					{ name: name, id: userId, color: cursorColors[cursors.length] },
-				]);
+				console.log({
+					name: name,
+					id: userId,
+					color: cursorColors[cursors.length],
+				});
+				if (users.filter((u) => u.id == userId).length == 0) {
+					console.log({
+						name: name,
+						id: userId,
+						color: cursorColors[cursors.length],
+					});
+					setUsers((users) => [
+						...users,
+						{
+							name: name,
+							id: userId,
+							color: cursorColors[cursors.length],
+						},
+					]);
+					console.log(users);
+				}
 			}
 		};
+
+		function handlerLeave() {
+			setConnectRoom(false);
+		}
 
 		socket.onmessage = (event) => {
 			const data = JSON.parse(event.data);
@@ -155,6 +177,8 @@ function Editor() {
 				setTitle(data.params.data);
 			} else if (type == 'join') {
 				handlerJoin(data);
+			} else if (type == 'leave') {
+				handlerLeave(data);
 			} else {
 				quillCursors.removeCursor(`${data.userIdExiting}`);
 				setUsers(users.filter((user) => user.id == data.userIdExiting));
@@ -220,8 +244,6 @@ function Editor() {
 		});
 
 		const qc = q.getModule('cursors');
-		// q.disable()
-		// q.setText("Loading...")
 		setQuill(q);
 		setQuillCursors(qc);
 	}, []);
@@ -355,7 +377,7 @@ function Editor() {
 							width: '100%',
 							border: '1px solid black',
 							padding: '25px',
-							'overflow-y': 'scroll',
+							overflowY: 'scroll',
 						}}
 						dangerouslySetInnerHTML={render()}
 					></div>

@@ -142,7 +142,7 @@ function Home() {
 							<InputDocumentCode handleChange={handleChange} />
 						</div>
 						{value ? (
-							<S.search onClick={handleClickLinkDocument}>Join</S.search>
+							<S.search onClick={handleClickLinkDocument}>Juntar-se</S.search>
 						) : (
 							''
 						)}
