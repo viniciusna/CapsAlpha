@@ -69,10 +69,14 @@ function Editor() {
 		})
 			.then((res) => res.json())
 			.then((res) => {
-				console.log(res);
 				if (res.message !== 'Success') {
 					return null;
 				}
+
+				if (!res.data.documents) {
+					return getTitle()
+				}
+
 				setDocuments(res.data.documents);
 				const thisDoc = res.data.documents.filter(
 					(doc) => doc.id == documentId
@@ -134,17 +138,7 @@ function Editor() {
 				quillCursors.moveCursor(userId, cursor);
 			} else {
 				quillCursors.createCursor(userId, name, cursorColors[cursors.length]);
-				console.log({
-					name: name,
-					id: userId,
-					color: cursorColors[cursors.length],
-				});
 				if (users.filter((u) => u.id == userId).length == 0) {
-					console.log({
-						name: name,
-						id: userId,
-						color: cursorColors[cursors.length],
-					});
 					setUsers((users) => [
 						...users,
 						{
@@ -153,7 +147,6 @@ function Editor() {
 							color: cursorColors[cursors.length],
 						},
 					]);
-					console.log(users);
 				}
 			}
 		};
@@ -180,9 +173,10 @@ function Editor() {
 				handlerJoin(data);
 			} else if (type == 'leave') {
 				handlerLeave(data);
-			} else {
 				quillCursors.removeCursor(`${data.userIdExiting}`);
 				setUsers(users.filter((user) => user.id == data.userIdExiting));
+			} else {
+				console.log("type não existe")
 			}
 		};
 
@@ -286,7 +280,7 @@ function Editor() {
 				{ withCredentials: true }
 			)
 			.then(function (response) {
-				console.log(response);
+				return
 			})
 			.catch(function (error) {
 				console.log(error);
