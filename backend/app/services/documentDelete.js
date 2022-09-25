@@ -13,10 +13,7 @@ module.exports = class DocumentDelete {
     const userId = decoded.id;
     console.log(req.params);
     const documentId = req.params.id;
-    const deleted = await new Document().delete(userId, documentId);
-    if (!deleted) {
-      throw new BadRequest("You don't have access to delete this document");
-    }
+    await new Document().delete(userId, documentId);
     return {
       documentId,
     };
