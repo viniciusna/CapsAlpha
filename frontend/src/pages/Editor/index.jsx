@@ -173,9 +173,10 @@ function Editor() {
 				handlerJoin(data);
 			} else if (type == 'leave') {
 				handlerLeave(data);
-			} else {
 				quillCursors.removeCursor(`${data.userIdExiting}`);
 				setUsers(users.filter((user) => user.id == data.userIdExiting));
+			} else {
+				console.log("type não existe")
 			}
 		};
 
