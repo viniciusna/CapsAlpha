@@ -66,7 +66,7 @@ function Profile() {
 						></Input>
 						<Input
 							label="Nome de usuário"
-							name="username"
+							name="name"
 							height={inputHeight}
 							width={inputWidth}
 							type="text"
