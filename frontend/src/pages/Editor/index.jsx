@@ -205,6 +205,7 @@ function Editor() {
 			quill.off('selection-change', cursorHandler);
 		};
 	}, [socket, quill]);
+
 	const wrapperRef = useCallback((wrapper) => {
 		if (wrapper == null) return;
 
@@ -230,6 +231,7 @@ function Editor() {
 			JSON.stringify({ type: 'leave', params: { room: documentId } })
 		);
 	}
+
 	function saveDocument() {
 		socket.send(JSON.stringify({ type: 'save', params: { room: documentId } }));
 	}
@@ -269,6 +271,7 @@ function Editor() {
 
 		socket.send(JSON.stringify({ type: 'title', params: { data: title } }));
 	}
+
 	function render() {
 		if (textBox == null) return { __html: '' };
 		return {
