@@ -38,8 +38,19 @@ class Document extends PostgresDB {
       `;
       const valuesExist = [documentId, userId];
       const resultExist = await client.query(queryExist, valuesExist);
+
       if (resultExist.rows.length == 0) {
-        return false;
+        const queryDelUserDocuments = `                          
+        DELETE FROM users_documents WHERE document_id = $1 AND user_id = $2
+        RETURNING document_id;
+      `;
+      const valuesUserDocuments = [documentId, userId];
+      const resultDelUserDocuments = await client.query(
+        queryDelUserDocuments,
+        valuesUserDocuments
+      );
+
+      return resultDelUserDocuments.rows[0].id;
       }
 
       const queryUserDocuments = `                          
@@ -148,6 +159,23 @@ class Document extends PostgresDB {
         return false;
       }
       return true;
+    } catch (e) {
+      console.log(e);
+      throw new InternalServerError("Service temporarily unavailable");
+    }
+  }
+
+  async getTitle(documentId) {
+    try {
+      const client = await this.pool.connect();
+      const query = `                          
+        SELECT title FROM documents
+        WHERE id = $1
+        `;
+      const values = [documentId];
+      const result = await client.query(query, values);
+      client.release();
+      return result.rows[0].title;
     } catch (e) {
       console.log(e);
       throw new InternalServerError("Service temporarily unavailable");

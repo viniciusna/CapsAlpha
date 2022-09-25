@@ -77,10 +77,17 @@ function Editor() {
 				const thisDoc = res.data.documents.filter(
 					(doc) => doc.id == documentId
 				);
-				document.getElementById('title').value = thisDoc[0].title;
-				setTitle(document.getElementById('title').value);
+
+				if(thisDoc[0]?.title) {
+					document.getElementById('title').value = thisDoc[0].title;
+					setTitle(document.getElementById('title').value);
+				} else {
+					getTitle()
+				}
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => {
+				console.log(err)
+			});
 
 		return () => {
 			s.close();
@@ -108,7 +115,6 @@ function Editor() {
 			})
 				.then((res) => res.json())
 				.then((res) => {
-					console.log(res);
 					if (res.message !== 'Success') {
 						return null;
 					}
@@ -189,10 +195,8 @@ function Editor() {
 
 		const handler = (delta, oldDelta, source) => {
 			if (source !== 'user') return;
-			document.getElementById('textPreview').innerHTML = marked.parse(
-				document.getElementsByClassName('ql-editor')[0].innerText
-			);
 
+			setTextBox(quill.getText());
 			socket.send(JSON.stringify({ type: 'message', params: { data: delta } }));
 		};
 
@@ -295,6 +299,26 @@ function Editor() {
 		return {
 			__html: dompurify.sanitize(marked.parse(textBox)),
 		};
+	}
+
+	function getTitle() {
+		fetch(`http://localhost:3001/document/get-title/${documentId}`, {
+			method: 'GET',
+			credentials: 'include',
+
+			headers: new Headers({
+				'Content-Type': 'application/json',
+			}),
+		})
+			.then((res) => res.json())
+			.then((res) => {
+				if (res.message !== 'Success') {
+					return null;
+				}
+				document.getElementById('title').value = res.data.title;
+				setTitle(document.getElementById('title').value);
+			})
+			.catch((err) => console.log(err));
 	}
 
 	return (

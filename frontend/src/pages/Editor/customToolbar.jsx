@@ -1,7 +1,6 @@
 import Quill from 'quill';
 import QuillCursors from 'quill-cursors';
 import * as S from './style';
-
 import {
 	AiTwotoneSave,
 	AiOutlineBold,
@@ -11,6 +10,8 @@ import {
 	AiOutlineOrderedList,
 } from 'react-icons/ai';
 import { MdChecklist } from 'react-icons/md';
+import Tooltip from '@mui/material/Tooltip';
+import { React, useState } from 'react';
 
 const CustomH1 = () => {
 	return (
@@ -74,7 +75,7 @@ function insertH3() {
 
 function insertBold() {
 	const cursorPosition = this.quill.getSelection().index;
-	this.quill.insertText(cursorPosition, '****');
+	this.quill.insertText(cursorPosition, '**');
 	this.quill.setSelection(cursorPosition + 2);
 }
 
@@ -86,7 +87,7 @@ function insertItalic() {
 
 function insertStrikethrough() {
 	const cursorPosition = this.quill.getSelection().index;
-	this.quill.insertText(cursorPosition, '~~~~');
+	this.quill.insertText(cursorPosition, '~~');
 	this.quill.setSelection(cursorPosition + 2);
 }
 function insertUnorderedList() {
@@ -106,42 +107,69 @@ function insertCheckList() {
 	this.quill.insertText(cursorPosition, '- [ ] ');
 	this.quill.setSelection(cursorPosition + 6);
 }
+
 /*
  * Custom toolbar component including the custom heart button and dropdowns
  */
-const CustomToolbar = ({ handleSave }) => (
+
+const CustomToolbar = ({ props, handleSave }) => (
 	<S.Toolbar id="toolbar">
 		<S.Elements>
-			<button className="ql-insertBold">
-				<CustomBold color={'#b9b9b9'} />
-			</button>
-			<button className="ql-insertItalic">
-				<CustomItalic color={'#b9b9b9'} />
-			</button>
-			<button className="ql-insertStrikethrough">
-				<CustomStrikethrough color={'#b9b9b9'} />
-			</button>
-			<button className="ql-insertH1">
-				<CustomH1 />
-			</button>
-			<button className="ql-insertH2">
-				<CustomH2 />
-			</button>
-			<button className="ql-insertH3">
-				<CustomH3 />
-			</button>
-			<button className="ql-insertUnorderedList">
-				<CustomUnorderedList color={'#b9b9b9'} />
-			</button>
-			<button className="ql-insertOrderedList">
-				<CustomOrderedList color={'#b9b9b9'} />
-			</button>
-			<button className="ql-insertCheckList">
-				<CustomCheckList color={'#b9b9b9'} />
-			</button>
-			<button className="ql-save">
-				<AiTwotoneSave onClick={handleSave} color={'#b9b9b9'} size={20} />
-			</button>
+			<Tooltip title="Bold">
+				<button className="ql-insertBold">
+					<CustomBold color={'#b9b9b9'} />
+				</button>
+			</Tooltip>
+			<Tooltip title="Italic">
+				<button className="ql-insertItalic">
+					<CustomItalic color={'#b9b9b9'} />
+				</button>
+			</Tooltip>
+			<Tooltip title="Cross Out Text">
+				<button className="ql-insertStrikethrough">
+					<CustomStrikethrough color={'#b9b9b9'} />
+				</button>
+			</Tooltip>
+			<Tooltip title="First Heading">
+				<button className="ql-insertH1">
+					<CustomH1 />
+				</button>
+			</Tooltip>
+			<Tooltip title="Second Heading">
+				<button className="ql-insertH2">
+					<CustomH2 />
+				</button>
+			</Tooltip>
+			<Tooltip title="Third Heading">
+				<button className="ql-insertH3">
+					<CustomH3 />
+				</button>
+			</Tooltip>
+			<Tooltip title="Unordered List">
+				<button className="ql-insertUnorderedList">
+					<CustomUnorderedList color={'#b9b9b9'} />
+				</button>
+			</Tooltip>
+			<Tooltip title="Ordered list">
+				<button className="ql-insertOrderedList">
+					<CustomOrderedList color={'#b9b9b9'} />
+				</button>
+			</Tooltip>
+			<Tooltip title="Check List">
+				<button className="ql-insertCheckList">
+					<CustomCheckList color={'#b9b9b9'} />
+				</button>
+			</Tooltip>
+			<Tooltip title="Save">
+				<button
+					onClick={() => {
+						alert('Your File has Been Saved!');
+					}}
+					className="ql-save"
+				>
+					<AiTwotoneSave onClick={handleSave} color={'#b9b9b9'} size={20} />
+				</button>
+			</Tooltip>
 		</S.Elements>
 	</S.Toolbar>
 );

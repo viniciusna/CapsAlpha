@@ -15,12 +15,14 @@ import { useContext } from 'react';
 import PerfilModal from '../../components/PerfilModal/index';
 import InputDocumentCode from './InputDocumentCode.jsx';
 import ButtonNewDocument from './ButtonNewDocument.jsx';
+import axios from "axios"
 
 function Home() {
 	const [value, setValue] = useState('');
 	const [hover, setHover] = useState(false);
 	const [registerHover, setRegisterHover] = useState(false);
 	const [documentLoaded, setDocumentLoaded] = useState(false);
+	const [deletedDocumentId, setDeletedDocumentId] = useState("");
 	const { user, setUser, documents, setDocuments } = useContext(Context);
 	const navigate = useNavigate();
 
@@ -75,6 +77,28 @@ function Home() {
 			})
 			.catch((err) => console.log(err));
 	}
+
+	useEffect(() => {
+		if (!deletedDocumentId) return;
+
+		axios
+		.delete(
+			'http://localhost:3001/document/' + deletedDocumentId,
+			{ withCredentials: true }
+		)
+		.then(function (response) {
+			console.log(response)
+			if (response.data.message === "Success") {
+				setDocuments(documents.filter((doc) => doc.id != deletedDocumentId))
+			} else {
+				console.log("Internal error")
+				console.log(response)
+			}
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
+	}, [deletedDocumentId])
 
 	return (
 		<>
@@ -134,13 +158,17 @@ function Home() {
 						documents.map((document, index) => {
 							if (index > 15) return;
 							return (
-								<CardDocuments
-									title={document.title}
-									key={document.id}
-									updatedAt={document.updated_at}
-									owner={document.owner}
-									handleClick={() => navigate(`/Editor/${document.id}`)}
-								/>
+								<>
+									<CardDocuments
+										title={document.title}
+										key={document.id}
+										updatedAt={document.updated_at}
+										owner={document.owner}
+										handleClick={() => navigate(`/Editor/${document.id}`)}
+									/>
+									<button onClick={ async () => setDeletedDocumentId(document.id)
+									}>DEL</button>
+								</>
 							);
 						})
 					) : (

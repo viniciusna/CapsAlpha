@@ -2,20 +2,18 @@ const Document = require("../repository/document");
 const { checkTokenUser } = require("../utils/jwt");
 const { Unauthorized, BadRequest } = require("../error/errors");
 
-module.exports = class DocumentDelete {
+module.exports = class DocumentGetTitle {
   async execute(req) {
-    //Apenas o owner pode deletar o documento
     if (!("token" in req?.cookies)) {
       throw new Unauthorized("Access denied");
     }
     const token = req.cookies["token"];
-    const decoded = await checkTokenUser(token);
-    const userId = decoded.id;
-    console.log(req.params);
-    const documentId = req.params.id;
-    await new Document().delete(userId, documentId);
+    await checkTokenUser(token);
+
+    const documentId = req.params.id
+    const title = await new Document().getTitle(documentId);
     return {
-      documentId,
+      title,
     };
   }
 };
