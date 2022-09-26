@@ -8,7 +8,7 @@ export const Provider = (props) => {
 	const [user, setUser] = useState();
 	const [users, setUsers] = useState([]);
 	const [documents, setDocuments] = useState();
-	const [snackbarMessage, setSnackbarMessage] = useState("hello hello");
+	const [snackbarMessage, setSnackbarMessage] = useState('');
 
 	const usersColors = [
 		['black', 'white'],
@@ -19,11 +19,13 @@ export const Provider = (props) => {
 		['white', 'black'],
 	];
 
-function showSnackbar() {
-  let snackbar = document.getElementById("snackbar");
-  snackbar.className = "show";
-  setTimeout(function(){ snackbar.className = snackbar.className.replace("show", ""); }, 3000);
-}
+	function showSnackbar() {
+		let snackbar = document.getElementById('snackbar');
+		snackbar.className = 'show';
+		setTimeout(function () {
+			snackbar.className = snackbar.className.replace('show', '');
+		}, 3000);
+	}
 
 	function addUser(event) {
 		const newUser = user;
