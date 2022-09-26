@@ -8,7 +8,9 @@ import Button from '../../components/Button/Button.jsx';
 import { useCallback, useContext, useEffect, useState, useRef } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
-import { marked } from 'marked';
+import { Converter, extension, helper } from 'showdown';
+import 'highlight.js/styles/github.css';
+import showdownHighlight from 'showdown-highlight';
 import dompurify from 'dompurify';
 import { useParams } from 'react-router-dom';
 import { modules } from './customToolbar';
@@ -17,6 +19,16 @@ import axios from 'axios';
 import PerfilModal from '../../components/PerfilModal/index.jsx';
 import DocTitle from '../../components/DocTitle/DocTitle.jsx';
 import { FiDownload } from 'react-icons/fi';
+
+const converter = new Converter({
+	extensions: [
+		showdownHighlight({
+			pre: true,
+			auto_detection: true,
+		}),
+	],
+});
+converter.setFlavor('github');
 
 function Editor() {
 	const {
@@ -77,15 +89,15 @@ function Editor() {
 					(doc) => doc.id == documentId
 				);
 
-				if(thisDoc[0]?.title) {
+				if (thisDoc[0]?.title) {
 					document.getElementById('title').value = thisDoc[0].title;
 					setTitle(document.getElementById('title').value);
 				} else {
-					getTitle()
+					getTitle();
 				}
 			})
 			.catch((err) => {
-				console.log(err)
+				console.log(err);
 			});
 
 		return () => {
@@ -275,7 +287,7 @@ function Editor() {
 	function render() {
 		if (textBox == null) return { __html: '' };
 		return {
-			__html: dompurify.sanitize(marked.parse(textBox)),
+			__html: dompurify.sanitize(converter.makeHtml(textBox)),
 		};
 	}
 
@@ -349,6 +361,7 @@ function Editor() {
 				<HalfPage gap="0em" height="86vh">
 					<div
 						id="textPreview"
+						className="markdown-body"
 						ref={textPreviewRef}
 						style={{
 							height: '100%',
