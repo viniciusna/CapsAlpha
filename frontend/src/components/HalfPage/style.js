@@ -10,5 +10,5 @@ height:${(props) => props.height};
 width:50%;
 // border:1px solid green;
 overflow:scroll;
-padding:${(props) => props.padding};
+padding-top:${(props) => props.paddingTop};
 `;

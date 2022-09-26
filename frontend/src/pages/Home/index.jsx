@@ -154,7 +154,7 @@ function Home() {
 					</S.div>
 				</HalfPage>
 
-				<HalfPage gap="1.5em" height="84vh" padding="">
+				<HalfPage gap="1.5em" height="84vh" paddingTop="2em">
 					{documents ? (
 						documents.map((document, index) => {
 							if (index > 15) return;
