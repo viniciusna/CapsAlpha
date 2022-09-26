@@ -1,6 +1,6 @@
 import React from 'react';
 import * as S from './style';
-import logo from '../../images/logo.svg';
+import logo from '../../images/logo-h.svg';
 import { Context } from '../../context/Context.jsx';
 import { useContext } from 'react';
 

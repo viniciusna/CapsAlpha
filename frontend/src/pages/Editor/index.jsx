@@ -27,6 +27,9 @@ function Editor() {
 		addUser,
 		usersColors,
 		documents,
+		snackbarMessage,
+		setSnackbarMessage,
+		showSnackbar,
 	} = useContext(Context);
 
 	const [users, setUsers] = useState([]);
@@ -331,6 +334,21 @@ function Editor() {
 				}}
 			>
 				<HeadersButtons gap="2rem">
+					<Button
+						colorbg="white"
+						colorfnt="black"
+						height="1.8rem"
+						width="7rem"
+						value={'Compartilhar'}
+						onClick={() => {
+							let url = window.location.href;
+							navigator.clipboard.writeText(url.slice(-36));
+							console.log('Compartilhar', url.slice(-36));
+							let message = "Código do documento copiado para clipboard"
+							setSnackbarMessage(message);
+							showSnackbar();
+						}}
+						/>
 					<DocTitle
 						id="title"
 						value={title}
@@ -357,8 +375,8 @@ function Editor() {
 							</UserIdentifier>
 						))}
 					</HeadersButtons>
-					<PerfilModal />
 				</HeadersButtons>
+				<PerfilModal />
 			</Header>
 			<CustomToolbar handleSave={saveDocument} />
 			<div className="divv">

@@ -1,9 +1,8 @@
 import Styled from "styled-components";
 
 export const div = Styled.div`
-    width: 70%;
-    height: 14%;
-    margin: 2%;
+    width: 38vw;
+    height: 10vh;
     border: solid 1px #ccc;
     border-radius: 10px;
     background-color: white;

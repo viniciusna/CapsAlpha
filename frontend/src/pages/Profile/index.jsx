@@ -52,7 +52,7 @@ function Profile() {
 		<>
 			<HeaderProfile></HeaderProfile>
 			<div className="divv">
-				<HalfPage height="92vh">
+				<HalfPage height="92vh" justifyContent="center">
 					<InputBox title="Editar Perfil" height="80vh">
 						<Input
 							label="email"

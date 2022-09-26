@@ -9,12 +9,15 @@ export const header = Styled.header`
     width: 100%;
     background-color: white;
     color: black;
-    padding:1%;
+    padding:0 1%;
 `;
 
 export const logo = Styled.img`
 
     height: 8vh;
     cursor: pointer;
+    //border: 1px solid red;
+    overflow: hidden;
+
 
 `;

@@ -5,7 +5,7 @@ import HalfPage from '../../components/HalfPage/HalfPage.jsx';
 import Snackbar from '../../components/Snackbar/Snackbar.jsx';
 import Note from '../../images/notes.svg';
 import Doc from '../../images/document.svg';
-import { BsFillFileEarmarkTextFill } from 'react-icons/bs';
+import { BsTrashFill } from 'react-icons/bs';
 import Input from '../../components/InputHome/InputHome';
 import CardDocuments from '../../components/CardDocuments/CardDocuments.jsx';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -134,7 +134,7 @@ function Home() {
 				</HeadersButtons>
 			</Header>
 			<div className="divv">
-				<HalfPage gap="3em" height="84vh">
+				<HalfPage gap="3em" height="84vh" justifyContent='center'>
 					<h1 className="h1-home">Documentos Simultâneos</h1>
 					<h3 className="h3-home">Faça aqui seu Mardown</h3>
 					<S.button>
@@ -154,12 +154,12 @@ function Home() {
 					</S.div>
 				</HalfPage>
 
-				<HalfPage gap="0.5em" height="84vh" padding="50%">
+				<HalfPage gap="1.5em" height="84vh" padding="">
 					{documents ? (
 						documents.map((document, index) => {
 							if (index > 15) return;
 							return (
-								<>
+								<div className='showcase'>
 									<CardDocuments
 										title={document.title}
 										key={document.id}
@@ -170,9 +170,9 @@ function Home() {
 									<button
 										onClick={async () => setDeletedDocumentId(document.id)}
 									>
-										DEL
+										<BsTrashFill size={20}/>
 									</button>
-								</>
+								</div>
 							);
 						})
 					) : (
