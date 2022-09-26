@@ -12,6 +12,8 @@ function HalfPage(props) {
 			ref={props.abacate}
 			gap={props.gap}
 			height={props.height}
+			justifyContent={props.justifyContent}
+			paddingTop={props.paddingTop}
 		>
 			{props.children}
 		</S.HalfPage>

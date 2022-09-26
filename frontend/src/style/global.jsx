@@ -125,5 +125,25 @@ a{
   from {bottom: 30px; opacity: 1;}
   to {bottom: 0; opacity: 0;}
 }
+
+button{
+  all:unset;
+  cursor:pointer;
+  &:hover {
+        color:red;  
+  
+      }
+
+}
+
+.showcase{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height:20vh;
+  width:45vw;
+  gap:2em;
+  // border:red solid 1px;
+}
 `;
 
