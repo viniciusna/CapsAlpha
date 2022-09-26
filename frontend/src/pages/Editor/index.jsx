@@ -35,17 +35,20 @@ function Editor() {
 		navigate,
 		user,
 		setUser,
-		users,
-		setUsers,
 		setDocuments,
 		addUser,
 		usersColors,
 		documents,
+		snackbarMessage,
+		setSnackbarMessage,
+		showSnackbar,
 	} = useContext(Context);
+
+	const [users, setUsers] = useState([]);
 	const [socket, setSocket] = useState();
 	const [quill, setQuill] = useState();
 	const [quillCursors, setQuillCursors] = useState();
-	const [connect, setConnect] = useState(false);
+	const [connectRoom, setConnectRoom] = useState(false);
 	const [title, setTitle] = useState();
 	const { documentId } = useParams();
 	const logo = '/src/images/logo.svg';
@@ -54,11 +57,12 @@ function Editor() {
 	const textPreviewRef = useRef();
 	// Inicia o socket
 	useEffect(() => {
+		if (!user) return;
 		const s = new WebSocket('ws://localhost:3001');
 		setSocket(s);
 
 		s.onopen = () => {
-			setConnect(true);
+			if (connectRoom) return;
 			s.send(
 				JSON.stringify({
 					type: 'join',
@@ -80,10 +84,14 @@ function Editor() {
 		})
 			.then((res) => res.json())
 			.then((res) => {
-				console.log(res);
 				if (res.message !== 'Success') {
 					return null;
 				}
+
+				if (!res.data.documents) {
+					return getTitle()
+				}
+
 				setDocuments(res.data.documents);
 				const thisDoc = res.data.documents.filter(
 					(doc) => doc.id == documentId
@@ -103,7 +111,7 @@ function Editor() {
 		return () => {
 			s.close();
 		};
-	}, []);
+	}, [user]);
 
 	useEffect(() => {
 		if (socket == null || quill == null) return;
@@ -114,8 +122,7 @@ function Editor() {
 		};
 
 		const handlerJoin = (data) => {
-			if (data.status != 'Success') return;
-
+			setConnectRoom(true);
 			fetch(`http://localhost:3001/document/${documentId}`, {
 				method: 'GET',
 				credentials: 'include',
@@ -126,7 +133,6 @@ function Editor() {
 				.then((res) => res.json())
 				.then((res) => {
 					if (res.message !== 'Success') {
-						alert(res.message);
 						return null;
 					}
 					quill.setText(res.data.document.content);
@@ -147,12 +153,22 @@ function Editor() {
 				quillCursors.moveCursor(userId, cursor);
 			} else {
 				quillCursors.createCursor(userId, name, cursorColors[cursors.length]);
-				setUsers([
-					...users,
-					{ name: name, id: userId, color: cursorColors[cursors.length] },
-				]);
+				if (users.filter((u) => u.id == userId).length == 0) {
+					setUsers((users) => [
+						...users,
+						{
+							name: name,
+							id: userId,
+							color: cursorColors[cursors.length],
+						},
+					]);
+				}
 			}
 		};
+
+		function handlerLeave() {
+			setConnectRoom(false);
+		}
 
 		socket.onmessage = (event) => {
 			const data = JSON.parse(event.data);
@@ -166,10 +182,16 @@ function Editor() {
 			} else if (type == 'title') {
 				setTitle(data.params.data);
 			} else if (type == 'join') {
+				if (data.status != 'Success') {
+					alert(`Status: ${data.status}, ${data.message}`) ? navigate("/Home") : navigate("/Home")
+				}
 				handlerJoin(data);
-			} else {
+			} else if (type == 'leave') {
+				handlerLeave(data);
 				quillCursors.removeCursor(`${data.userIdExiting}`);
 				setUsers(users.filter((user) => user.id == data.userIdExiting));
+			} else {
+				console.log("type não existe")
 			}
 		};
 
@@ -232,8 +254,6 @@ function Editor() {
 		});
 
 		const qc = q.getModule('cursors');
-		// q.disable()
-		// q.setText("Loading...")
 		setQuill(q);
 		setQuillCursors(qc);
 	}, []);
@@ -275,7 +295,7 @@ function Editor() {
 				{ withCredentials: true }
 			)
 			.then(function (response) {
-				console.log(response);
+				return
 			})
 			.catch(function (error) {
 				console.log(error);
@@ -320,6 +340,21 @@ function Editor() {
 				}}
 			>
 				<HeadersButtons gap="2rem">
+					<Button
+						colorbg="white"
+						colorfnt="black"
+						height="1.8rem"
+						width="7rem"
+						value={'Compartilhar'}
+						onClick={() => {
+							let url = window.location.href;
+							navigator.clipboard.writeText(url.slice(-36));
+							console.log('Compartilhar', url.slice(-36));
+							let message = "Código do documento copiado para clipboard"
+							setSnackbarMessage(message);
+							showSnackbar();
+						}}
+						/>
 					<DocTitle
 						id="title"
 						value={title}
@@ -346,8 +381,8 @@ function Editor() {
 							</UserIdentifier>
 						))}
 					</HeadersButtons>
-					<PerfilModal />
 				</HeadersButtons>
+				<PerfilModal />
 			</Header>
 			<CustomToolbar handleSave={saveDocument} />
 			<div className="divv">
@@ -368,11 +403,12 @@ function Editor() {
 							width: '100%',
 							border: '1px solid black',
 							padding: '25px',
-							'overflow-y': 'scroll',
+							overflowY: 'scroll',
 						}}
 						dangerouslySetInnerHTML={render()}
 					></div>
 				</HalfPage>
+				<id id="snackbar">{snackbarMessage}</id>
 			</div>
 		</>
 	);

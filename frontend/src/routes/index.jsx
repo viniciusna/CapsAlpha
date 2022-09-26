@@ -1,10 +1,8 @@
 import { Routes, Route } from 'react-router-dom';
-
 import React, { useState } from 'react';
 import Home from '../pages/Home';
 import Register from '../pages/Register';
 import Login from '../pages/Login';
-import MyProjects from '../pages/MyProjects';
 import Editor from '../pages/Editor';
 import Profile from '../pages/Profile';
 import ProtectedRoute from '../routes/protectedRoute';
@@ -41,14 +39,6 @@ function Router() {
 			<Route path="/Register" element={<Register />} />
 			<Route path="/Login" element={<Login />} />
 			<Route path="/Home" element={<Home />} />
-			<Route
-				path="/MyProjects"
-				element={
-					<ProtectedRoute user={getCookie('token')}>
-						<MyProjects />
-					</ProtectedRoute>
-				}
-			/>
 			<Route
 				path="/Profile"
 				element={

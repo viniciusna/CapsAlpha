@@ -33,35 +33,39 @@ class Document extends PostgresDB {
   async delete(userId, documentId) {
     try {
       const client = await this.pool.connect();
-      const queryExist = `                          
-        SELECT * FROM documents WHERE id = $1 and owner = $2;
-      `;
-      const valuesExist = [documentId, userId];
-      const resultExist = await client.query(queryExist, valuesExist);
-      if (resultExist.rows.length == 0) {
-        return false;
-      }
 
-      const queryUserDocuments = `                          
-        DELETE FROM users_documents WHERE document_id = $1 
-        RETURNING document_id ;
+      const queryDelUserDocuments = `                          
+        DELETE FROM users_documents WHERE document_id = $1 AND user_id = $2
+        RETURNING document_id;
       `;
-      const valuesUserDocuments = [documentId];
-      const resultUserDocuments = await client.query(
-        queryUserDocuments,
+      const valuesUserDocuments = [documentId, userId];
+      const resultDelUserDocuments = await client.query(
+        queryDelUserDocuments,
         valuesUserDocuments
       );
 
-      const query = `                          
-        DELETE FROM documents WHERE id = $1 and owner = $2
-        RETURNING id ;
+      const queryUsersDocument = `                          
+        SELECT * 
+        FROM users_documents WHERE document_id = $1 ;
       `;
-      const values = [documentId, userId];
-      const result = await client.query(query, values);
+      const valuesUsersDocuments = [documentId];
+      const resultUsersDocument = await client.query(
+        queryUsersDocument,
+        valuesUsersDocuments
+      );
+
+      if (resultUsersDocument.rows.length === 0) {
+        // Delete if anyone have the link to this document
+        const query = `                          
+          DELETE FROM documents WHERE id = $1
+          RETURNING id ;
+        `;
+        const values = [documentId];
+        const result = await client.query(query, values);
+      }
 
       client.release();
-
-      return result.rows[0].id;
+      return true;
     } catch (e) {
       console.log(e);
       throw new InternalServerError("Service temporarily unavailable");

@@ -2,9 +2,10 @@ import Header from '../../components/Header/Header.jsx';
 import HeadersButtons from '../../components/HeadersButtons/headerButton';
 import Button from '../../components/Button/Button.jsx';
 import HalfPage from '../../components/HalfPage/HalfPage.jsx';
+import Snackbar from '../../components/Snackbar/Snackbar.jsx';
 import Note from '../../images/notes.svg';
 import Doc from '../../images/document.svg';
-import { BsFillFileEarmarkTextFill } from 'react-icons/bs';
+import { BsTrashFill } from 'react-icons/bs';
 import Input from '../../components/InputHome/InputHome';
 import CardDocuments from '../../components/CardDocuments/CardDocuments.jsx';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -15,13 +16,15 @@ import { useContext } from 'react';
 import PerfilModal from '../../components/PerfilModal/index';
 import InputDocumentCode from './InputDocumentCode.jsx';
 import ButtonNewDocument from './ButtonNewDocument.jsx';
+import axios from "axios"
 
 function Home() {
 	const [value, setValue] = useState('');
 	const [hover, setHover] = useState(false);
 	const [registerHover, setRegisterHover] = useState(false);
 	const [documentLoaded, setDocumentLoaded] = useState(false);
-	const { user, setUser, documents, setDocuments } = useContext(Context);
+	const [deletedDocumentId, setDeletedDocumentId] = useState("");
+	const { user, setUser, documents, setDocuments,showSnackbar,snackbarMessage,setSnackbarMessage} = useContext(Context);
 	const navigate = useNavigate();
 
 	function handleChange(event) {
@@ -76,6 +79,28 @@ function Home() {
 			.catch((err) => console.log(err));
 	}
 
+	useEffect(() => {
+		if (!deletedDocumentId) return;
+
+		axios
+		.delete(
+			'http://localhost:3001/document/' + deletedDocumentId,
+			{ withCredentials: true }
+		)
+		.then(function (response) {
+			console.log(response)
+			if (response.data.message === "Success") {
+				setDocuments(documents.filter((doc) => doc.id != deletedDocumentId))
+			} else {
+				console.log("Internal error")
+				console.log(response)
+			}
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
+	}, [deletedDocumentId])
+
 	return (
 		<>
 			<Header onClick={() => navigate('/')}>
@@ -85,7 +110,7 @@ function Home() {
 					) : (
 						<>
 							<Button
-								onClick={() => navigate('/Login')}
+								onClick={showSnackbar}
 								onMouseOver={() => setHover(true)}
 								onMouseOut={() => setHover(false)}
 								colorbg={hover ? 'black' : 'white'}
@@ -109,7 +134,7 @@ function Home() {
 				</HeadersButtons>
 			</Header>
 			<div className="divv">
-				<HalfPage gap="3em" height="84vh">
+				<HalfPage gap="3em" height="84vh" justifyContent='center'>
 					<h1 className="h1-home">Documentos Simultâneos</h1>
 					<h3 className="h3-home">Faça aqui seu Mardown</h3>
 					<S.button>
@@ -118,7 +143,7 @@ function Home() {
 							<InputDocumentCode handleChange={handleChange} />
 						</div>
 						{value ? (
-							<S.search onClick={handleClickLinkDocument}>Join</S.search>
+							<S.search onClick={handleClickLinkDocument}>Juntar-se</S.search>
 						) : (
 							''
 						)}
@@ -129,18 +154,25 @@ function Home() {
 					</S.div>
 				</HalfPage>
 
-				<HalfPage gap="0.5em" height="84vh" padding="50%">
+				<HalfPage gap="1.5em" height="84vh" paddingTop="2em">
 					{documents ? (
 						documents.map((document, index) => {
 							if (index > 15) return;
 							return (
-								<CardDocuments
-									title={document.title}
-									key={document.id}
-									updatedAt={document.updated_at}
-									owner={document.owner}
-									handleClick={() => navigate(`/Editor/${document.id}`)}
-								/>
+								<div className='showcase'>
+									<CardDocuments
+										title={document.title}
+										key={document.id}
+										updatedAt={document.updated_at}
+										owner={document.owner}
+										handleClick={() => navigate(`/Editor/${document.id}`)}
+									/>
+									<button
+										onClick={async () => setDeletedDocumentId(document.id)}
+									>
+										<BsTrashFill size={20}/>
+									</button>
+								</div>
 							);
 						})
 					) : (
@@ -156,6 +188,7 @@ function Home() {
 						</>
 					)}
 				</HalfPage>
+			<id id="snackbar">{snackbarMessage}</id>
 			</div>
 		</>
 	);

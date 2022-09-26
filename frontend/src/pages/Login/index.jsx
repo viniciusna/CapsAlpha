@@ -8,6 +8,7 @@ import logo from '../../images/LogoVertical.svg';
 import Button from '../../components/Button/Button.jsx';
 import Error from '../../components/Error/Error';
 import { Context } from '../../context/Context.jsx';
+import Validate from '../../validator/ValidateLogin.js';
 
 const inputHeight = '6vh';
 const inputWidth = '30vw';
@@ -15,7 +16,8 @@ const inputWidth = '30vw';
 function Login() {
 	const [values, setValues] = useState({});
 	const [hover, setHover] = useState(false);
-	const [error, setError] = useState('');
+	const [serverError, setServerError] = useState(false);
+	const [formErrors, setFormErrors] = useState({});
 	const navigate = useNavigate();
 	const { user, setUser, documents, setDocuments } = useContext(Context);
 
@@ -26,10 +28,15 @@ function Login() {
 	}
 
 	function handleClick(event) {
+		const errors = Validate(values);
+		setFormErrors(errors);
+
+		if (Object.keys(errors).length !== 0) return;
+		setServerError(false);
+
 		fetch('http://localhost:3001/user/login', {
 			method: 'POST',
 			credentials: 'include',
-
 			body: JSON.stringify(values),
 			headers: new Headers({
 				'Content-Type': 'application/json',
@@ -39,7 +46,7 @@ function Login() {
 			.then((res) => {
 				console.log(res);
 				if (res.message !== 'Success') {
-					setError(res.message);
+					setServerError(res.message);
 					return null;
 				}
 				setUser(res.data.user);
@@ -52,10 +59,11 @@ function Login() {
 	return (
 		<>
 			<div className="div">
-				<HalfPage gap="0em" height="100vh">
+				<HalfPage gap="0em" height="100vh" justifyContent="center">
 					<InputBox title="Fazer Login" height="">
 						<Input
 							label="Email"
+							error={formErrors.email}
 							height={inputHeight}
 							width={inputWidth}
 							type="email"
@@ -64,6 +72,7 @@ function Login() {
 							placeholder="Seu email"
 						/>
 						<Input
+							error={formErrors.password}
 							label="Senha"
 							name="password"
 							height={inputHeight}
@@ -82,14 +91,14 @@ function Login() {
 							height="6vh"
 							width="31vw"
 						/>
-						<Error error={error} />
+						<Error error={serverError} />
 						<p>
 							Crie sua conta.{' '}
 							<a onClick={() => navigate('/Register')}>Registrar-se</a>
 						</p>
 					</InputBox>
 				</HalfPage>
-				<HalfPage gap="0em" height="100vh">
+				<HalfPage gap="0em" height="100vh" justifyContent="center">
 					<Img onClick={() => navigate('/')} src={logo} alt="" />
 				</HalfPage>
 			</div>

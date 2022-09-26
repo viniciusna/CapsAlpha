@@ -8,7 +8,6 @@ export const headerButton = Styled.div`
     width:fit-content;
     gap:${(props) => props.gap};
     margin-right: 1rem;
-    // border:1px solid red;
 
 `;
 

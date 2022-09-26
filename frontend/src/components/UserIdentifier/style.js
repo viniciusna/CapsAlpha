@@ -7,11 +7,14 @@ export const user = Styled.div`
   color: ${(props) => props.colorfnt};
   border-radius: 100%;
   cursor: pointer;
-  display:flex;
+  display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1.5rem;
-  padding-bottom: 0.2rem;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight:bold;
+  gap: 1rem;
+
+  &:hover{
+    filter: brightness(70%);
+  }
 `;
