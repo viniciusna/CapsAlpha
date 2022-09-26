@@ -110,7 +110,7 @@ function Home() {
 					) : (
 						<>
 							<Button
-								onClick={showSnackbar}
+								onClick={() => navigate('/Login')}
 								onMouseOver={() => setHover(true)}
 								onMouseOut={() => setHover(false)}
 								colorbg={hover ? 'black' : 'white'}
