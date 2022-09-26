@@ -10,6 +10,7 @@ import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import { Converter, extension, helper } from 'showdown';
 import 'highlight.js/styles/github.css';
+import 'github-markdown-css/github-markdown-light.css';
 import showdownHighlight from 'showdown-highlight';
 import dompurify from 'dompurify';
 import { useParams } from 'react-router-dom';
@@ -89,7 +90,7 @@ function Editor() {
 				}
 
 				if (!res.data.documents) {
-					return getTitle()
+					return getTitle();
 				}
 
 				setDocuments(res.data.documents);
@@ -136,9 +137,7 @@ function Editor() {
 						return null;
 					}
 					quill.setText(res.data.document.content);
-					document.getElementById('textPreview').innerHTML = marked.parse(
-						document.getElementById('textBox').innerText
-					);
+					setTextBox(quill.getText());
 				})
 				.catch((err) => console.log(err));
 		};
@@ -183,7 +182,9 @@ function Editor() {
 				setTitle(data.params.data);
 			} else if (type == 'join') {
 				if (data.status != 'Success') {
-					alert(`Status: ${data.status}, ${data.message}`) ? navigate("/Home") : navigate("/Home")
+					alert(`Status: ${data.status}, ${data.message}`)
+						? navigate('/Home')
+						: navigate('/Home');
 				}
 				handlerJoin(data);
 			} else if (type == 'leave') {
@@ -191,7 +192,7 @@ function Editor() {
 				quillCursors.removeCursor(`${data.userIdExiting}`);
 				setUsers(users.filter((user) => user.id == data.userIdExiting));
 			} else {
-				console.log("type não existe")
+				console.log('type não existe');
 			}
 		};
 
@@ -295,7 +296,7 @@ function Editor() {
 				{ withCredentials: true }
 			)
 			.then(function (response) {
-				return
+				return;
 			})
 			.catch(function (error) {
 				console.log(error);
@@ -350,11 +351,11 @@ function Editor() {
 							let url = window.location.href;
 							navigator.clipboard.writeText(url.slice(-36));
 							console.log('Compartilhar', url.slice(-36));
-							let message = "Código do documento copiado para clipboard"
+							let message = 'Código do documento copiado para clipboard';
 							setSnackbarMessage(message);
 							showSnackbar();
 						}}
-						/>
+					/>
 					<DocTitle
 						id="title"
 						value={title}
@@ -403,7 +404,7 @@ function Editor() {
 							width: '100%',
 							border: '1px solid black',
 							padding: '25px',
-							overflowY: 'scroll',
+							'overflow-y': 'scroll',
 						}}
 						dangerouslySetInnerHTML={render()}
 					></div>
