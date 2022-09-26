@@ -8,7 +8,10 @@ import Button from '../../components/Button/Button.jsx';
 import { useCallback, useContext, useEffect, useState, useRef } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
-import { marked } from 'marked';
+import { Converter, extension, helper } from 'showdown';
+import 'highlight.js/styles/github.css';
+import 'github-markdown-css/github-markdown-light.css';
+import showdownHighlight from 'showdown-highlight';
 import dompurify from 'dompurify';
 import { useParams } from 'react-router-dom';
 import { modules } from './customToolbar';
@@ -17,6 +20,16 @@ import axios from 'axios';
 import PerfilModal from '../../components/PerfilModal/index.jsx';
 import DocTitle from '../../components/DocTitle/DocTitle.jsx';
 import { FiDownload } from 'react-icons/fi';
+
+const converter = new Converter({
+	extensions: [
+		showdownHighlight({
+			pre: true,
+			auto_detection: true,
+		}),
+	],
+});
+converter.setFlavor('github');
 
 function Editor() {
 	const {
@@ -27,6 +40,9 @@ function Editor() {
 		addUser,
 		usersColors,
 		documents,
+		snackbarMessage,
+		setSnackbarMessage,
+		showSnackbar,
 	} = useContext(Context);
 
 	const [users, setUsers] = useState([]);
@@ -74,7 +90,7 @@ function Editor() {
 				}
 
 				if (!res.data.documents) {
-					return getTitle()
+					return getTitle();
 				}
 
 				setDocuments(res.data.documents);
@@ -82,15 +98,15 @@ function Editor() {
 					(doc) => doc.id == documentId
 				);
 
-				if(thisDoc[0]?.title) {
+				if (thisDoc[0]?.title) {
 					document.getElementById('title').value = thisDoc[0].title;
 					setTitle(document.getElementById('title').value);
 				} else {
-					getTitle()
+					getTitle();
 				}
 			})
 			.catch((err) => {
-				console.log(err)
+				console.log(err);
 			});
 
 		return () => {
@@ -121,9 +137,7 @@ function Editor() {
 						return null;
 					}
 					quill.setText(res.data.document.content);
-					document.getElementById('textPreview').innerHTML = marked.parse(
-						document.getElementById('textBox').innerText
-					);
+					setTextBox(quill.getText());
 				})
 				.catch((err) => console.log(err));
 		};
@@ -168,7 +182,9 @@ function Editor() {
 				setTitle(data.params.data);
 			} else if (type == 'join') {
 				if (data.status != 'Success') {
-					alert(`Status: ${data.status}, ${data.message}`) ? navigate("/Home") : navigate("/Home")
+					alert(`Status: ${data.status}, ${data.message}`)
+						? navigate('/Home')
+						: navigate('/Home');
 				}
 				handlerJoin(data);
 			} else if (type == 'leave') {
@@ -176,7 +192,7 @@ function Editor() {
 				quillCursors.removeCursor(`${data.userIdExiting}`);
 				setUsers(users.filter((user) => user.id == data.userIdExiting));
 			} else {
-				console.log("type não existe")
+				console.log('type não existe');
 			}
 		};
 
@@ -280,7 +296,7 @@ function Editor() {
 				{ withCredentials: true }
 			)
 			.then(function (response) {
-				return
+				return;
 			})
 			.catch(function (error) {
 				console.log(error);
@@ -292,7 +308,7 @@ function Editor() {
 	function render() {
 		if (textBox == null) return { __html: '' };
 		return {
-			__html: dompurify.sanitize(marked.parse(textBox)),
+			__html: dompurify.sanitize(converter.makeHtml(textBox)),
 		};
 	}
 
@@ -325,6 +341,21 @@ function Editor() {
 				}}
 			>
 				<HeadersButtons gap="2rem">
+					<Button
+						colorbg="white"
+						colorfnt="black"
+						height="1.8rem"
+						width="7rem"
+						value={'Compartilhar'}
+						onClick={() => {
+							let url = window.location.href;
+							navigator.clipboard.writeText(url.slice(-36));
+							console.log('Compartilhar', url.slice(-36));
+							let message = 'Código do documento copiado para clipboard';
+							setSnackbarMessage(message);
+							showSnackbar();
+						}}
+					/>
 					<DocTitle
 						id="title"
 						value={title}
@@ -351,8 +382,8 @@ function Editor() {
 							</UserIdentifier>
 						))}
 					</HeadersButtons>
-					<PerfilModal />
 				</HeadersButtons>
+				<PerfilModal />
 			</Header>
 			<CustomToolbar handleSave={saveDocument} />
 			<div className="divv">
@@ -366,13 +397,14 @@ function Editor() {
 				<HalfPage gap="0em" height="86vh">
 					<div
 						id="textPreview"
+						className="markdown-body"
 						ref={textPreviewRef}
 						style={{
 							height: '100%',
 							width: '100%',
 							border: '1px solid black',
 							padding: '25px',
-							overflowY: 'scroll',
+							'overflow-y': 'scroll',
 						}}
 						dangerouslySetInnerHTML={render()}
 					></div>

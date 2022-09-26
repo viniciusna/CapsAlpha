@@ -14,7 +14,15 @@ function Profile() {
 
 	const [serverError, setServerError] = useState(false);
 	const [formErrors, setFormErrors] = useState({});
-	const { user, setUser, documents, setDocuments } = useContext(Context);
+	const {
+		user,
+		setUser,
+		documents,
+		setDocuments,
+		showSnackbar,
+		snackbarMessage,
+		setSnackbarMessage,
+	} = useContext(Context);
 	let { navigate } = useContext(Context);
 	const [values, setValues] = useState({
 		name: user?.name,
@@ -36,8 +44,8 @@ function Profile() {
 		setFormErrors(errors);
 
 		if (Object.keys(errors).length !== 0) return;
-		setServerError(false);
 
+		let message = 'Perfil Atualizado com sucesso!';
 		fetch('http://localhost:3001/user', {
 			method: 'PUT',
 			credentials: 'include',
@@ -53,7 +61,10 @@ function Profile() {
 					setServerError(res.message);
 					return null;
 				}
-				alert('Update success');
+				setSnackbarMessage(message);
+				showSnackbar();
+				document.getElementsByName('password')[0].value = '';
+				document.getElementsByName('confirmPassword')[0].value = '';
 			})
 			.catch((err) => console.log(err));
 	}
@@ -61,7 +72,7 @@ function Profile() {
 		<>
 			<HeaderProfile></HeaderProfile>
 			<div className="divv">
-				<HalfPage height="92vh">
+				<HalfPage height="92vh" justifyContent="center">
 					<InputBox title="Editar Perfil" height="80vh">
 						<Input
 							label="email"
@@ -116,6 +127,7 @@ function Profile() {
 						/>
 					</InputBox>
 				</HalfPage>
+				<id id="snackbar">{snackbarMessage}</id>
 			</div>
 		</>
 	);
