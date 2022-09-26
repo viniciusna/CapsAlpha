@@ -32,6 +32,7 @@ class UserValidatorUpdate {
       }
     }
   }
+
   confirmPasswordValidate(params) {
     if (!("confirmPassword" in params)) {
       return;
