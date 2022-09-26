@@ -5,13 +5,24 @@ import HalfPage from '../../components/HalfPage/HalfPage.jsx';
 import InputBox from '../../components/InputBox/InputBox.jsx';
 import Input from '../../components/Input/Input.jsx';
 import Button from '../../components/Button/Button.jsx';
+import Validate from '../../validator/ValidateUpdate';
+import Error from '../../components/Error/Error.jsx';
 
 function Profile() {
 	const inputHeight = '6vh';
 	const inputWidth = '30vw';
 
-	const [error, setError] = useState('');
-	const { user, setUser, documents, setDocuments,showSnackbar,snackbarMessage,setSnackbarMessage } = useContext(Context);
+	const [serverError, setServerError] = useState(false);
+	const [formErrors, setFormErrors] = useState({});
+	const {
+		user,
+		setUser,
+		documents,
+		setDocuments,
+		showSnackbar,
+		snackbarMessage,
+		setSnackbarMessage,
+	} = useContext(Context);
 	let { navigate } = useContext(Context);
 	const [values, setValues] = useState({
 		name: user?.name,
@@ -29,6 +40,11 @@ function Profile() {
 	}, [user]);
 
 	function handleClick(event) {
+		const errors = Validate(values);
+		setFormErrors(errors);
+
+		if (Object.keys(errors).length !== 0) return;
+
 		let message = 'Perfil Atualizado com sucesso!';
 		fetch('http://localhost:3001/user', {
 			method: 'PUT',
@@ -42,7 +58,7 @@ function Profile() {
 			.then((res) => {
 				console.log(res);
 				if (res.message !== 'Success') {
-					setError(res.message);
+					setServerError(res.message);
 					return null;
 				}
 				setSnackbarMessage(message);
@@ -67,6 +83,7 @@ function Profile() {
 							value={values.email}
 							handleChange={handleChange}
 							placeholder="Seu email"
+							error={formErrors.email}
 						></Input>
 						<Input
 							label="Nome de usuário"
@@ -75,7 +92,7 @@ function Profile() {
 							width={inputWidth}
 							type="text"
 							value={values.name}
-							//handleChange={handleChange}
+							error={formErrors.name}
 							handleChange={handleChange}
 							placeholder="Seu nome de usuário"
 						></Input>
@@ -86,6 +103,7 @@ function Profile() {
 							width={inputWidth}
 							type="password"
 							handleChange={handleChange}
+							error={formErrors.password}
 							placeholder="Digite uma senha"
 						></Input>
 						<Input
@@ -93,10 +111,12 @@ function Profile() {
 							name="confirmPassword"
 							height={inputHeight}
 							width={inputWidth}
-							type="password"
+							type="confirmPassword"
+							error={formErrors.confirmPassword}
 							handleChange={handleChange}
 							placeholder="Confirme a sua senha"
 						></Input>
+						<Error error={serverError} />
 						<Button
 							colorbg="black"
 							colorfnt="white"
