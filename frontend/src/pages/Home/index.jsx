@@ -16,15 +16,23 @@ import { useContext } from 'react';
 import PerfilModal from '../../components/PerfilModal/index';
 import InputDocumentCode from './InputDocumentCode.jsx';
 import ButtonNewDocument from './ButtonNewDocument.jsx';
-import axios from "axios"
+import axios from 'axios';
 
 function Home() {
 	const [value, setValue] = useState('');
 	const [hover, setHover] = useState(false);
 	const [registerHover, setRegisterHover] = useState(false);
 	const [documentLoaded, setDocumentLoaded] = useState(false);
-	const [deletedDocumentId, setDeletedDocumentId] = useState("");
-	const { user, setUser, documents, setDocuments,showSnackbar,snackbarMessage,setSnackbarMessage} = useContext(Context);
+	const [deletedDocumentId, setDeletedDocumentId] = useState('');
+	const {
+		user,
+		setUser,
+		documents,
+		setDocuments,
+		showSnackbar,
+		snackbarMessage,
+		setSnackbarMessage,
+	} = useContext(Context);
 	const navigate = useNavigate();
 
 	function handleChange(event) {
@@ -83,23 +91,22 @@ function Home() {
 		if (!deletedDocumentId) return;
 
 		axios
-		.delete(
-			'http://localhost:3001/document/' + deletedDocumentId,
-			{ withCredentials: true }
-		)
-		.then(function (response) {
-			console.log(response)
-			if (response.data.message === "Success") {
-				setDocuments(documents.filter((doc) => doc.id != deletedDocumentId))
-			} else {
-				console.log("Internal error")
-				console.log(response)
-			}
-		})
-		.catch(function (error) {
-			console.log(error);
-		});
-	}, [deletedDocumentId])
+			.delete('http://localhost:3001/document/' + deletedDocumentId, {
+				withCredentials: true,
+			})
+			.then(function (response) {
+				console.log(response);
+				if (response.data.message === 'Success') {
+					setDocuments(documents.filter((doc) => doc.id != deletedDocumentId));
+				} else {
+					console.log('Internal error');
+					console.log(response);
+				}
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+	}, [deletedDocumentId]);
 
 	return (
 		<>
@@ -134,7 +141,7 @@ function Home() {
 				</HeadersButtons>
 			</Header>
 			<div className="divv">
-				<HalfPage gap="3em" height="84vh" justifyContent='center'>
+				<HalfPage gap="3em" height="84vh" justifyContent="center">
 					<h1 className="h1-home">Documentos Simultâneos</h1>
 					<h3 className="h3-home">Faça aqui seu Mardown</h3>
 					<S.button>
@@ -159,7 +166,7 @@ function Home() {
 						documents.map((document, index) => {
 							if (index > 15) return;
 							return (
-								<div className='showcase'>
+								<div key={'container_' + document.id} className="showcase">
 									<CardDocuments
 										title={document.title}
 										key={document.id}
@@ -168,9 +175,10 @@ function Home() {
 										handleClick={() => navigate(`/Editor/${document.id}`)}
 									/>
 									<button
+										key={'document_' + document.id}
 										onClick={async () => setDeletedDocumentId(document.id)}
 									>
-										<BsTrashFill size={20}/>
+										<BsTrashFill key={'icon_' + document.id} size={20} />
 									</button>
 								</div>
 							);
@@ -188,7 +196,7 @@ function Home() {
 						</>
 					)}
 				</HalfPage>
-			<id id="snackbar">{snackbarMessage}</id>
+				<div id="snackbar">{snackbarMessage}</div>
 			</div>
 		</>
 	);
