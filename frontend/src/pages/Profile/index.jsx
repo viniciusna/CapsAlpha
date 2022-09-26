@@ -11,7 +11,7 @@ function Profile() {
 	const inputWidth = '30vw';
 
 	const [error, setError] = useState('');
-	const { user, setUser, documents, setDocuments } = useContext(Context);
+	const { user, setUser, documents, setDocuments,showSnackbar,snackbarMessage,setSnackbarMessage } = useContext(Context);
 	let { navigate } = useContext(Context);
 	const [values, setValues] = useState({
 		name: user?.name,
@@ -29,6 +29,7 @@ function Profile() {
 	}, [user]);
 
 	function handleClick(event) {
+		let message = 'Perfil Atualizado com sucesso!';
 		fetch('http://localhost:3001/user', {
 			method: 'PUT',
 			credentials: 'include',
@@ -44,7 +45,10 @@ function Profile() {
 					setError(res.message);
 					return null;
 				}
-				alert('Update success');
+				setSnackbarMessage(message);
+				showSnackbar();
+				document.getElementsByName('password')[0].value = '';
+				document.getElementsByName('confirmPassword')[0].value = '';
 			})
 			.catch((err) => console.log(err));
 	}
@@ -103,6 +107,7 @@ function Profile() {
 						/>
 					</InputBox>
 				</HalfPage>
+				<id id="snackbar">{snackbarMessage}</id>
 			</div>
 		</>
 	);
