@@ -50,7 +50,7 @@ function Editor() {
 	const [quill, setQuill] = useState();
 	const [quillCursors, setQuillCursors] = useState();
 	const [connectRoom, setConnectRoom] = useState(false);
-	const [title, setTitle] = useState();
+	const [title, setTitle] = useState('');
 	const { documentId } = useParams();
 	const logo = '/src/images/logo.svg';
 	const cursorColors = ['#6290c3', '#92BCCF', '#1A1B41', '#2F3052'];
@@ -404,12 +404,12 @@ function Editor() {
 							width: '100%',
 							border: '1px solid black',
 							padding: '25px',
-							'overflow-y': 'scroll',
+							overflowY: 'scroll',
 						}}
 						dangerouslySetInnerHTML={render()}
 					></div>
 				</HalfPage>
-				<id id="snackbar">{snackbarMessage}</id>
+				<div id="snackbar">{snackbarMessage}</div>
 			</div>
 		</>
 	);

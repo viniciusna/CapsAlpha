@@ -127,7 +127,7 @@ function Profile() {
 						/>
 					</InputBox>
 				</HalfPage>
-				<id id="snackbar">{snackbarMessage}</id>
+				<div id="snackbar">{snackbarMessage}</div>
 			</div>
 		</>
 	);
