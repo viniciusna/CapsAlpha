@@ -38,11 +38,9 @@ function Home() {
 	}
 
 	useEffect(() => {
-		console.log(location);
 		if (!location?.state?.error) return;
 		setSnackbarMessage(location.state.error);
 		showSnackbar();
-		location.state.error = null;
 		return () => {};
 	}, []);
 
@@ -107,7 +105,7 @@ function Home() {
 					setSnackbarMessage('Documento deletado com sucesso.');
 					showSnackbar();
 				} else {
-					setSnackbarMessage('Erro ao delete documento.');
+					setSnackbarMessage('Erro ao deletar documento.');
 					showSnackbar();
 				}
 			})
