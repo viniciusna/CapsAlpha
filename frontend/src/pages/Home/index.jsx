@@ -35,7 +35,7 @@ function Home() {
 	useEffect(() => {
 		if (!user || documentLoaded) return;
 
-		fetch('http://localhost:3001/document/my', {
+		fetch('https://www.capsalpha.live:3001/document/my', {
 			method: 'GET',
 			credentials: 'include',
 
@@ -84,7 +84,7 @@ function Home() {
 
 		axios
 		.delete(
-			'http://localhost:3001/document/' + deletedDocumentId,
+			'https://www.capsalpha.live:3001/document/' + deletedDocumentId,
 			{ withCredentials: true }
 		)
 		.then(function (response) {

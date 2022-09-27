@@ -46,7 +46,7 @@ function Profile() {
 		if (Object.keys(errors).length !== 0) return;
 
 		let message = 'Perfil Atualizado com sucesso!';
-		fetch('http://localhost:3001/user', {
+		fetch('https://www.capsalpha.live:3001/user', {
 			method: 'PUT',
 			credentials: 'include',
 			body: JSON.stringify(values),

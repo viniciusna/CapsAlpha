@@ -28,6 +28,9 @@ const converter = new Converter({
 			auto_detection: true,
 		}),
 	],
+	underline: true,
+	openLinksInNewWindow: true,
+	simplifiedAutoLink: true,
 });
 converter.setFlavor('github');
 
@@ -59,7 +62,7 @@ function Editor() {
 	// Inicia o socket
 	useEffect(() => {
 		if (!user) return;
-		const s = new WebSocket('ws://localhost:3001');
+		const s = new WebSocket('wss://www.capsalpha.live:3001');
 		setSocket(s);
 
 		s.onopen = () => {
@@ -75,7 +78,7 @@ function Editor() {
 			);
 		};
 
-		fetch('http://localhost:3001/document/my', {
+		fetch('https://www.capsalpha.live:3001/document/my', {
 			method: 'GET',
 			credentials: 'include',
 
@@ -124,7 +127,7 @@ function Editor() {
 
 		const handlerJoin = (data) => {
 			setConnectRoom(true);
-			fetch(`http://localhost:3001/document/${documentId}`, {
+			fetch(`https://www.capsalpha.live:3001/document/${documentId}`, {
 				method: 'GET',
 				credentials: 'include',
 				headers: new Headers({
@@ -288,7 +291,7 @@ function Editor() {
 	function updateTitle() {
 		axios
 			.post(
-				'http://localhost:3001/document/title',
+				'https://www.capsalpha.live:3001/document/title',
 				{
 					documentId: documentId,
 					title: title,
@@ -313,7 +316,7 @@ function Editor() {
 	}
 
 	function getTitle() {
-		fetch(`http://localhost:3001/document/get-title/${documentId}`, {
+		fetch(`https://www.capsalpha.live:3001/document/get-title/${documentId}`, {
 			method: 'GET',
 			credentials: 'include',
 
