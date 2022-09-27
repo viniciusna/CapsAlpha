@@ -18,6 +18,7 @@ import UserIdentifier from '../../components/UserIdentifier/UserIdentifier.jsx';
 import 'github-markdown-css/github-markdown-light.css';
 import 'highlight.js/styles/github.css';
 import 'quill/dist/quill.snow.css';
+import Tooltip from '@mui/material/Tooltip';
 
 const converter = new Converter({
 	extensions: [
@@ -365,9 +366,11 @@ function Editor() {
 					/>
 					<HeadersButtons gap="0.2rem">
 						{users.map((user, i) => (
-							<UserIdentifier key={i} colorbg={user.color} colorfnt={'white'}>
-								{user.name.toString().charAt(0).toUpperCase()}
-							</UserIdentifier>
+							<Tooltip title={user.name}>
+								<UserIdentifier key={i} colorbg={user.color} colorfnt={'white'}>
+									{user.name.toString().charAt(0).toUpperCase()}
+								</UserIdentifier>
+							</Tooltip>
 						))}
 					</HeadersButtons>
 				</HeadersButtons>
