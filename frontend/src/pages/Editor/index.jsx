@@ -48,6 +48,8 @@ function Editor() {
 	const [quill, setQuill] = useState();
 	const [quillCursors, setQuillCursors] = useState();
 	const [connectRoom, setConnectRoom] = useState(false);
+	const [hoverDownload, setHoverDownload] = useState(false);
+	const [hoverShare, setHoverShare] = useState(false);
 	const [title, setTitle] = useState('');
 	const { documentId } = useParams();
 	const logo = '/src/images/logo.svg';
@@ -338,8 +340,10 @@ function Editor() {
 			>
 				<HeadersButtons gap="2rem">
 					<Button
-						colorbg="white"
-						colorfnt="black"
+						onMouseOver={() => setHoverShare(true)}
+						onMouseOut={() => setHoverShare(false)}
+						colorbg={hoverShare ? 'black' : 'white'}
+						colorfnt={hoverShare ? 'white' : 'black'}
 						height="1.8rem"
 						width="7rem"
 						value={'Compartilhar'}
@@ -359,8 +363,10 @@ function Editor() {
 						onBlur={() => updateTitle()}
 					/>
 					<Button
-						colorbg="white"
-						colorfnt="black"
+						onMouseOver={() => setHoverDownload(true)}
+						onMouseOut={() => setHoverDownload(false)}
+						colorbg={hoverDownload ? 'black' : 'white'}
+						colorfnt={hoverDownload ? 'white' : 'black'}
 						height="1.8rem"
 						width="6rem"
 						value={'Download'}
