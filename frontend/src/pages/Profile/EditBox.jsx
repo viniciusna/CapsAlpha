@@ -27,7 +27,7 @@ export default function EditBox() {
 	}
 
 	function handleClick(event) {
-		fetch('http://localhost:3001/user', {
+		fetch('https://www.capsalpha.live:3001/user', {
 			method: 'PUT',
 			credentials: 'include',
 			body: JSON.stringify(values),

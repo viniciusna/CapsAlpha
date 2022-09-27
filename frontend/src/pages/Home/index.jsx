@@ -60,7 +60,7 @@ function Home() {
 	}
 
 	function handleClickCreateDocument(event) {
-		fetch('http://localhost:3001/document/', {
+		fetch('https://www.capsalpha.live:3001/document/', {
 			method: 'POST',
 			credentials: 'include',
 			headers: new Headers({

@@ -1,9 +1,13 @@
 require("express-async-errors");
 
+const fs = require('fs');
 const express = require("express");
 const app = express();
-const http = require("http");
-const server = http.createServer(app);
+const https = require("https");
+const server = https.createServer({
+  key: fs.readFileSync('/root/capsalpha.live.key'),
+  cert: fs.readFileSync('/root/capsalpha.live.crt')
+}, app);
 
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -41,6 +45,12 @@ app.use(
       "http://127.0.0.1:5173",
       "http://localhost:5173",
       "ws://localhost:3001",
+      "http://capsalpha.live",
+      "https://capsalpha.live",
+      "wss://capsalpha.live:3001",
+      "wss://www.capsalpha.live",
+      "http://www.capsalpha.live",
+      "https://www.capsalpha.live"
     ],
   })
 );
