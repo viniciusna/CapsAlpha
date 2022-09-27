@@ -5,8 +5,8 @@ const express = require("express");
 const app = express();
 const https = require("https");
 const server = https.createServer({
-  key: fs.readFileSync('/root/capsalpha.live.key'),
-  cert: fs.readFileSync('/root/capsalpha.live.crt')
+  key: fs.readFileSync('./.ssl/capsalpha.live.key'),
+  cert: fs.readFileSync('./.ssl/capsalpha.live.crt')
 }, app);
 
 const cookieParser = require("cookie-parser");
@@ -50,6 +50,7 @@ app.use(
       "wss://capsalpha.live:3001",
       "wss://www.capsalpha.live",
       "http://www.capsalpha.live",
+      "https://www.capsalpha.live:3001",
       "https://www.capsalpha.live"
     ],
   })
