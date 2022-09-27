@@ -29,6 +29,7 @@ const converter = new Converter({
 	underline: true,
 	openLinksInNewWindow: true,
 	simplifiedAutoLink: true,
+	tasklists: true,
 });
 converter.setFlavor('github');
 
