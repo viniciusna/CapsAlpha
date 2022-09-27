@@ -8,6 +8,8 @@ import {
 	AiOutlineStrikethrough,
 	AiOutlineUnorderedList,
 	AiOutlineOrderedList,
+	AiOutlineDownload,
+	AiOutlineShareAlt,
 } from 'react-icons/ai';
 import { MdChecklist } from 'react-icons/md';
 import Tooltip from '@mui/material/Tooltip';
@@ -112,7 +114,7 @@ function insertCheckList() {
  * Custom toolbar component including the custom heart button and dropdowns
  */
 
-const CustomToolbar = ({ props, handleSave }) => (
+const CustomToolbar = ({ props, handleSave, handleDownload, handleShare }) => (
 	<S.Toolbar id="toolbar">
 		<S.Elements>
 			<Tooltip title="Bold">
@@ -168,6 +170,34 @@ const CustomToolbar = ({ props, handleSave }) => (
 					className="ql-save"
 				>
 					<AiTwotoneSave onClick={handleSave} color={'#b9b9b9'} size={20} />
+				</button>
+			</Tooltip>
+			<Tooltip title="File Download">
+				<button
+					onClick={() => {
+						alert('Your code has Been saved on clipboard!');
+					}}
+					className="ql-fileDownload"
+				>
+					<AiOutlineDownload
+						onClick={handleDownload}
+						color={'#b9b9b9'}
+						size={20}
+					/>
+				</button>
+			</Tooltip>
+			<Tooltip title="Share">
+				<button
+					onClick={() => {
+						alert('Your code has Been saved on clipboard!');
+					}}
+					className="ql-share"
+				>
+					<AiOutlineShareAlt
+						onClick={handleShare}
+						color={'#b9b9b9'}
+						size={20}
+					/>
 				</button>
 			</Tooltip>
 		</S.Elements>
