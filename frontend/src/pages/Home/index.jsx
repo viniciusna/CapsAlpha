@@ -11,7 +11,7 @@ import InputDocumentCode from '../../components/InputDocumentCode/InputDocumentC
 import Note from '../../assets/images/notes.svg';
 import PerfilModal from '../../components/PerfilModal/index';
 import { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import * as S from '../../components/InputDocumentCode/style';
 
@@ -21,14 +21,28 @@ function Home() {
 	const [registerHover, setRegisterHover] = useState(false);
 	const [documentLoaded, setDocumentLoaded] = useState(false);
 	const [deletedDocumentId, setDeletedDocumentId] = useState('');
-	const { user, documents, setDocuments, snackbarMessage } =
-		useContext(Context);
+	const {
+		user,
+		documents,
+		setDocuments,
+		snackbarMessage,
+		setSnackbarMessage,
+		showSnackbar,
+	} = useContext(Context);
+	const location = useLocation();
 	const navigate = useNavigate();
 
 	function handleChange(event) {
 		const value = event.target.value;
 		setValue(value);
 	}
+
+	useEffect(() => {
+		if (!location?.state?.error) return;
+		setSnackbarMessage(location.state.error);
+		showSnackbar();
+		return () => {};
+	}, []);
 
 	useEffect(() => {
 		if (!user || documentLoaded) return;
@@ -88,9 +102,11 @@ function Home() {
 				console.log(response);
 				if (response.data.message === 'Success') {
 					setDocuments(documents.filter((doc) => doc.id != deletedDocumentId));
+					setSnackbarMessage('Documento deletado com sucesso.');
+					showSnackbar();
 				} else {
-					console.log('Internal error');
-					console.log(response);
+					setSnackbarMessage('Erro ao deletar documento.');
+					showSnackbar();
 				}
 			})
 			.catch(function (error) {
