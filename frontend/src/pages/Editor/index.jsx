@@ -1,25 +1,24 @@
+import axios from 'axios';
+import Button from '../../components/Button/Button.jsx';
 import { Context } from '../../context/Context.jsx';
+import { Converter} from 'showdown';
+import { CustomToolbar } from '../../components/CustomToolbar/customToolbar';
+import DocTitle from '../../components/DocTitle/DocTitle.jsx';
+import dompurify from 'dompurify';
 import HalfPage from '../../components/HalfPage/HalfPage';
 import Header from '../../components/Header/Header.jsx';
-import UserIdentifier from '../../components/UserIdentifier/UserIdentifier.jsx';
 import HeadersButtons from '../../components/HeadersButtons/headerButton';
-import { CgProfile } from 'react-icons/cg';
-import Button from '../../components/Button/Button.jsx';
-import { useCallback, useContext, useEffect, useState, useRef } from 'react';
 import Quill from 'quill';
-import 'quill/dist/quill.snow.css';
-import { Converter, extension, helper } from 'showdown';
-import 'highlight.js/styles/github.css';
-import 'github-markdown-css/github-markdown-light.css';
 import showdownHighlight from 'showdown-highlight';
-import dompurify from 'dompurify';
 import { useParams } from 'react-router-dom';
-import { modules } from '../../components/CustomToolbar/customToolbar';
-import { CustomToolbar } from '../../components/CustomToolbar/customToolbar';
-import axios from 'axios';
 import PerfilModal from '../../components/PerfilModal/index.jsx';
-import DocTitle from '../../components/DocTitle/DocTitle.jsx';
-import { FiDownload } from 'react-icons/fi';
+import { modules } from '../../components/CustomToolbar/customToolbar';
+import { useCallback, useContext, useEffect, useState, useRef } from 'react';
+import UserIdentifier from '../../components/UserIdentifier/UserIdentifier.jsx';
+import 'github-markdown-css/github-markdown-light.css';
+import 'highlight.js/styles/github.css';
+import 'quill/dist/quill.snow.css';
+
 
 const converter = new Converter({
 	extensions: [

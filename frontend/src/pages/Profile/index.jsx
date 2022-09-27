@@ -1,12 +1,12 @@
-import { Context } from '../../context/Context.jsx';
-import { useContext, useEffect, useState } from 'react';
-import HeaderProfile from '../../components/Header/HeaderProfile.jsx';
-import HalfPage from '../../components/HalfPage/HalfPage.jsx';
-import InputBox from '../../components/InputBox/InputBox.jsx';
-import Input from '../../components/Input/Input.jsx';
 import Button from '../../components/Button/Button.jsx';
-import Validate from '../../validator/ValidateUpdate';
+import { Context } from '../../context/Context.jsx';
 import Error from '../../components/Error/Error.jsx';
+import Input from '../../components/Input/Input.jsx';
+import InputBox from '../../components/InputBox/InputBox.jsx';
+import HalfPage from '../../components/HalfPage/HalfPage.jsx';
+import HeaderProfile from '../../components/Header/HeaderProfile.jsx';
+import { useContext, useEffect, useState } from 'react';
+import Validate from '../../validator/ValidateUpdate';
 
 function Profile() {
 	const inputHeight = '6vh';

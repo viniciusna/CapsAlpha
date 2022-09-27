@@ -1,19 +1,19 @@
+import axios from 'axios';
+import { BsTrashFill } from 'react-icons/bs';
+import Button from '../../components/Button/Button.jsx';
+import ButtonNewDocument from '../../components/Button/ButtonNewDocument.jsx';
+import CardDocuments from '../../components/CardDocuments/CardDocuments.jsx';
+import { Context } from '../../context/Context.jsx';
+import HalfPage from '../../components/HalfPage/HalfPage.jsx';
 import Header from '../../components/Header/Header.jsx';
 import HeadersButtons from '../../components/HeadersButtons/headerButton';
-import Button from '../../components/Button/Button.jsx';
-import HalfPage from '../../components/HalfPage/HalfPage.jsx';
+import InputDocumentCode from '../../components/InputDocumentCode/InputDocumentCode.jsx';
 import Note from '../../assets/images/notes.svg';
-import { BsTrashFill } from 'react-icons/bs';
-import CardDocuments from '../../components/CardDocuments/CardDocuments.jsx';
+import PerfilModal from '../../components/PerfilModal/index';
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect} from 'react';
 import * as S from '../../components/InputDocumentCode/style';
-import { Context } from '../../context/Context.jsx';
-import { useContext } from 'react';
-import PerfilModal from '../../components/PerfilModal/index';
-import InputDocumentCode from '../../components/InputDocumentCode/InputDocumentCode.jsx';
-import ButtonNewDocument from '../../components/Button/ButtonNewDocument.jsx';
-import axios from 'axios';
 
 function Home() {
 	const [value, setValue] = useState('');
@@ -23,12 +23,9 @@ function Home() {
 	const [deletedDocumentId, setDeletedDocumentId] = useState('');
 	const {
 		user,
-		setUser,
 		documents,
 		setDocuments,
-		showSnackbar,
 		snackbarMessage,
-		setSnackbarMessage,
 	} = useContext(Context);
 	const navigate = useNavigate();
 
@@ -142,10 +139,16 @@ function Home() {
 					<h1 className="h1-home">Documentos Simultâneos</h1>
 					<h3 className="h3-home">Faça aqui seu Mardown</h3>
 					<S.button>
+						{user ? (
 						<div>
 							<ButtonNewDocument handleClick={handleClickCreateDocument} />
 							<InputDocumentCode handleChange={handleChange} />
 						</div>
+						) : (
+							[]
+				 		)
+						
+}
 						{value ? (
 							<S.search onClick={handleClickLinkDocument}>Entrar</S.search>
 						) : (
