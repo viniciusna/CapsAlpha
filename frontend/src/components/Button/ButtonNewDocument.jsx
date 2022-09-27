@@ -1,7 +1,7 @@
 import { BsFillFileEarmarkTextFill } from 'react-icons/bs';
-import Button from '../../components/Button/Button';
+import Button from './Button';
 import { useState } from 'react';
-import * as S from './style';
+import * as S from '../InputDocumentCode/style';
 export default function ButtonNewDocument({ handleClick }) {
 	const [hover, setHover] = useState(false);
 	return (

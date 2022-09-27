@@ -2,20 +2,17 @@ import Header from '../../components/Header/Header.jsx';
 import HeadersButtons from '../../components/HeadersButtons/headerButton';
 import Button from '../../components/Button/Button.jsx';
 import HalfPage from '../../components/HalfPage/HalfPage.jsx';
-import Snackbar from '../../components/Snackbar/Snackbar.jsx';
 import Note from '../../images/notes.svg';
-import Doc from '../../images/document.svg';
 import { BsTrashFill } from 'react-icons/bs';
-import Input from '../../components/InputHome/InputHome';
 import CardDocuments from '../../components/CardDocuments/CardDocuments.jsx';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useState, useEffect, useDebugValue } from 'react';
-import * as S from './style';
+import { useNavigate } from 'react-router-dom';
+import { useState, useEffect} from 'react';
+import * as S from '../../components/InputDocumentCode/style';
 import { Context } from '../../context/Context.jsx';
 import { useContext } from 'react';
 import PerfilModal from '../../components/PerfilModal/index';
-import InputDocumentCode from './InputDocumentCode.jsx';
-import ButtonNewDocument from './ButtonNewDocument.jsx';
+import InputDocumentCode from '../../components/InputDocumentCode/InputDocumentCode.jsx';
+import ButtonNewDocument from '../../components/Button/ButtonNewDocument.jsx';
 import axios from 'axios';
 
 function Home() {

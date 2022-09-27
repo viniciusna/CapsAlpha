@@ -1,6 +1,5 @@
 import { Context } from '../../context/Context.jsx';
 import { useContext, useState } from 'react';
-import { Img } from './style.js';
 import InputBox from '../../components/InputBox/InputBox.jsx';
 import Input from '../../components/Input/Input';
 import HalfPage from '../../components/HalfPage/HalfPage.jsx';
@@ -116,7 +115,7 @@ function Register() {
 					</InputBox>
 				</HalfPage>
 				<HalfPage gap="0em" height="100vh" justifyContent="center">
-					<Img onClick={() => navigate('/')} src={logo} alt="" />
+					<img className='logo-v' onClick={() => navigate('/')} src={logo} alt="" />
 				</HalfPage>
 			</div>
 		</>
