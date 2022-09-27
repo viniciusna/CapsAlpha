@@ -57,6 +57,11 @@ function Profile() {
 			})
 			.catch((err) => console.log(err));
 	}
+	function handleKeyPress(event) {
+		if (event.key === 'Enter') {
+			handleClick(event);
+		}
+	}
 	return (
 		<>
 			<HeaderProfile></HeaderProfile>
@@ -64,6 +69,7 @@ function Profile() {
 				<HalfPage height="92vh" justifyContent="center">
 					<InputBox title="Editar Perfil" height="80vh">
 						<Input
+							onKeyPress={(event) => handleKeyPress(event)}
 							label="email"
 							name="email"
 							height={inputHeight}
@@ -74,6 +80,7 @@ function Profile() {
 							placeholder="Seu email"
 						></Input>
 						<Input
+							onKeyPress={(event) => handleKeyPress(event)}
 							label="Nome de usuário"
 							name="name"
 							height={inputHeight}
@@ -85,6 +92,7 @@ function Profile() {
 							placeholder="Seu nome de usuário"
 						></Input>
 						<Input
+							onKeyPress={(event) => handleKeyPress(event)}
 							label="Senha"
 							name="password"
 							height={inputHeight}
@@ -94,6 +102,7 @@ function Profile() {
 							placeholder="Digite uma senha"
 						></Input>
 						<Input
+							onKeyPress={(event) => handleKeyPress(event)}
 							label="Confirme sua senha"
 							name="confirmPassword"
 							height={inputHeight}

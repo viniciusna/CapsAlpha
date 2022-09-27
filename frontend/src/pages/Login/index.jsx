@@ -12,6 +12,8 @@ import Validate from '../../validator/ValidateLogin.js';
 const inputHeight = '6vh';
 const inputWidth = '30vw';
 
+
+
 function Login() {
 	const [values, setValues] = useState({});
 	const [hover, setHover] = useState(false);
@@ -54,13 +56,18 @@ function Login() {
 			})
 			.catch((err) => console.log(err));
 	}
-
+	function handleKeyPress(event){
+		if (event.key === 'Enter') {
+			handleClick(event);
+		}
+	};
 	return (
 		<>
 			<div className="div">
 				<HalfPage gap="0em" height="100vh" justifyContent="center">
 					<InputBox title="Fazer Login" height="">
 						<Input
+							onKeyPress={(event) => handleKeyPress(event)}
 							label="Email"
 							error={formErrors.email}
 							height={inputHeight}
@@ -71,6 +78,7 @@ function Login() {
 							placeholder="Seu email"
 						/>
 						<Input
+							onKeyPress={(event) => handleKeyPress(event)}
 							error={formErrors.password}
 							label="Senha"
 							name="password"
@@ -98,7 +106,12 @@ function Login() {
 					</InputBox>
 				</HalfPage>
 				<HalfPage gap="0em" height="100vh" justifyContent="center">
-					<img className='logo-v' onClick={() => navigate('/')} src={logo} alt="" />
+					<img
+						className="logo-v"
+						onClick={() => navigate('/')}
+						src={logo}
+						alt=""
+					/>
 				</HalfPage>
 			</div>
 		</>

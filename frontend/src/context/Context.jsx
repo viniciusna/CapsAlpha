@@ -33,6 +33,10 @@ export const Provider = (props) => {
 		setUsers(allUsers);
 	}
 
+	function handleKeyPress() {
+		handleClick();
+	}
+
 	const navigate = useNavigate();
 
 	return (
@@ -50,6 +54,7 @@ export const Provider = (props) => {
 				showSnackbar,
 				snackbarMessage,
 				setSnackbarMessage,
+				handleKeyPress,
 			}}
 		>
 			{props.children}

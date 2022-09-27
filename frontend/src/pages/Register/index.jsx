@@ -51,13 +51,18 @@ function Register() {
 			})
 			.catch((err) => console.log(err));
 	}
-
+	function handleKeyPress(event) {
+		if (event.key === 'Enter') {
+			handleClick(event);
+		}
+	}
 	return (
 		<>
 			<div className="div">
 				<HalfPage gap="0em" height="100vh" justifyContent="center">
 					<InputBox title="Registre-se" height="">
 						<Input
+							onKeyPress={(event) => handleKeyPress(event)}
 							label="Email"
 							height={inputHeight}
 							width={inputWidth}
@@ -68,6 +73,7 @@ function Register() {
 							handleChange={handleChange}
 						/>
 						<Input
+							onKeyPress={(event) => handleKeyPress(event)}
 							label="Usuário"
 							error={formErrors.name}
 							height={inputHeight}
@@ -78,6 +84,7 @@ function Register() {
 							placeholder="Seu nome de usuário"
 						/>
 						<Input
+							onKeyPress={(event) => handleKeyPress(event)}
 							label="Senha"
 							error={formErrors.password}
 							height={inputHeight}
@@ -88,6 +95,7 @@ function Register() {
 							placeholder="Digite uma senha"
 						/>
 						<Input
+							onKeyPress={(event) => handleKeyPress(event)}
 							label="Confirmar Senha"
 							error={formErrors.passwordConfirm}
 							height={inputHeight}
@@ -115,7 +123,12 @@ function Register() {
 					</InputBox>
 				</HalfPage>
 				<HalfPage gap="0em" height="100vh" justifyContent="center">
-					<img className='logo-v' onClick={() => navigate('/')} src={logo} alt="" />
+					<img
+						className="logo-v"
+						onClick={() => navigate('/')}
+						src={logo}
+						alt=""
+					/>
 				</HalfPage>
 			</div>
 		</>
