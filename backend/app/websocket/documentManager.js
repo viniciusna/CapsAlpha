@@ -53,13 +53,17 @@ class DocumentManager {
     return await redis.set(`document_${this.documentId}`, text);
   }
 
-  toPlaintext(delta) {
+  filterInsert(delta) {
+    const clearDelta = new Delta(delta);
+    const deltaNew = new Delta().compose(clearDelta);
+    return deltaNew;
+  }
+
+  toPlaintext(object) {
+    const delta = this.filterInsert(object);
     return delta.reduce(function (text, op) {
-      if (!op.insert) {
-        console.log('delta:', delta)
-        console.log('op:', op)
-        throw new TypeError("only `insert` operations can be transformed!");
-      }
+      if (!op.insert)
+        throw new TypeError("only insert operations can be transformed!");
       if (typeof op.insert !== "string") return text + " ";
       return text + op.insert;
     }, "");
