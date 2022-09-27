@@ -2,7 +2,7 @@ import Header from '../../components/Header/Header.jsx';
 import HeadersButtons from '../../components/HeadersButtons/headerButton';
 import Button from '../../components/Button/Button.jsx';
 import HalfPage from '../../components/HalfPage/HalfPage.jsx';
-import Note from '../../images/notes.svg';
+import Note from '../../assets/images/notes.svg';
 import { BsTrashFill } from 'react-icons/bs';
 import CardDocuments from '../../components/CardDocuments/CardDocuments.jsx';
 import { useNavigate } from 'react-router-dom';
@@ -147,7 +147,7 @@ function Home() {
 							<InputDocumentCode handleChange={handleChange} />
 						</div>
 						{value ? (
-							<S.search onClick={handleClickLinkDocument}>Juntar-se</S.search>
+							<S.search onClick={handleClickLinkDocument}>Entrar</S.search>
 						) : (
 							''
 						)}

@@ -1,6 +1,6 @@
 import { createContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import logo from '../images/logo.svg';
+import logo from '../assets/images/logo.svg';
 
 export const Context = createContext({});
 

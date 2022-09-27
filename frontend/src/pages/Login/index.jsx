@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import InputBox from '../../components/InputBox/InputBox.jsx';
 import Input from '../../components/Input/Input';
 import HalfPage from '../../components/HalfPage/HalfPage.jsx';
-import logo from '../../images/LogoVertical.svg';
+import logo from '../../assets/images/LogoVertical.svg';
 import Button from '../../components/Button/Button.jsx';
 import Error from '../../components/Error/Error';
 import { Context } from '../../context/Context.jsx';
