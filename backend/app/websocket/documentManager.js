@@ -37,8 +37,13 @@ class DocumentManager {
     const text = await this.getText();
     const deltaOld = new Delta().insert(text);
     const dataDocument = deltaOld.compose(deltaNew);
-    const newDocument = this.toPlaintext(dataDocument);
-    await this.setText(newDocument);
+
+    try {
+      const newDocument = this.toPlaintext(dataDocument);
+      await this.setText(newDocument);
+    } catch {
+      return
+    }
   }
 
   async getText() {
