@@ -366,11 +366,11 @@ function Editor() {
 					/>
 					<HeadersButtons gap="0.2rem">
 						{users.map((user, i) => (
-							<Tooltip title={user.name}>
-								<UserIdentifier key={i} colorbg={user.color} colorfnt={'white'}>
+							<UserIdentifier key={i} colorbg={user.color} colorfnt={'white'}>
+								<Tooltip title={user.name}>
 									{user.name.toString().charAt(0).toUpperCase()}
-								</UserIdentifier>
-							</Tooltip>
+								</Tooltip>
+							</UserIdentifier>
 						))}
 					</HeadersButtons>
 				</HeadersButtons>
