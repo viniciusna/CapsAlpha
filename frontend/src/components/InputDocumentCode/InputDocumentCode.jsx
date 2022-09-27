@@ -1,5 +1,4 @@
 import { FaKeyboard } from 'react-icons/fa';
-import Input from '../../components/Input/Input';
 import * as S from './style';
 
 export default function InputDocumentCode({ handleChange }) {

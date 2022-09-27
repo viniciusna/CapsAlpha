@@ -1,36 +1,48 @@
+import axios from 'axios';
+import { BsTrashFill } from 'react-icons/bs';
+import Button from '../../components/Button/Button.jsx';
+import ButtonNewDocument from '../../components/Button/ButtonNewDocument.jsx';
+import CardDocuments from '../../components/CardDocuments/CardDocuments.jsx';
+import { Context } from '../../context/Context.jsx';
+import HalfPage from '../../components/HalfPage/HalfPage.jsx';
 import Header from '../../components/Header/Header.jsx';
 import HeadersButtons from '../../components/HeadersButtons/headerButton';
-import Button from '../../components/Button/Button.jsx';
-import HalfPage from '../../components/HalfPage/HalfPage.jsx';
-import Snackbar from '../../components/Snackbar/Snackbar.jsx';
-import Note from '../../images/notes.svg';
-import Doc from '../../images/document.svg';
-import { BsTrashFill } from 'react-icons/bs';
-import Input from '../../components/InputHome/InputHome';
-import CardDocuments from '../../components/CardDocuments/CardDocuments.jsx';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useState, useEffect, useDebugValue } from 'react';
-import * as S from './style';
-import { Context } from '../../context/Context.jsx';
-import { useContext } from 'react';
+import InputDocumentCode from '../../components/InputDocumentCode/InputDocumentCode.jsx';
+import Note from '../../assets/images/notes.svg';
 import PerfilModal from '../../components/PerfilModal/index';
-import InputDocumentCode from './InputDocumentCode.jsx';
-import ButtonNewDocument from './ButtonNewDocument.jsx';
-import axios from "axios"
+import { useContext } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import * as S from '../../components/InputDocumentCode/style';
 
 function Home() {
 	const [value, setValue] = useState('');
 	const [hover, setHover] = useState(false);
 	const [registerHover, setRegisterHover] = useState(false);
 	const [documentLoaded, setDocumentLoaded] = useState(false);
-	const [deletedDocumentId, setDeletedDocumentId] = useState("");
-	const { user, setUser, documents, setDocuments,showSnackbar,snackbarMessage,setSnackbarMessage} = useContext(Context);
+	const [deletedDocumentId, setDeletedDocumentId] = useState('');
+	const {
+		user,
+		documents,
+		setDocuments,
+		snackbarMessage,
+		setSnackbarMessage,
+		showSnackbar,
+	} = useContext(Context);
+	const location = useLocation();
 	const navigate = useNavigate();
 
 	function handleChange(event) {
 		const value = event.target.value;
 		setValue(value);
 	}
+
+	useEffect(() => {
+		if (!location?.state?.error) return;
+		setSnackbarMessage(location.state.error);
+		showSnackbar();
+		return () => {};
+	}, []);
 
 	useEffect(() => {
 		if (!user || documentLoaded) return;
@@ -83,23 +95,24 @@ function Home() {
 		if (!deletedDocumentId) return;
 
 		axios
-		.delete(
-			'https://www.capsalpha.live:3001/document/' + deletedDocumentId,
-			{ withCredentials: true }
-		)
-		.then(function (response) {
-			console.log(response)
-			if (response.data.message === "Success") {
-				setDocuments(documents.filter((doc) => doc.id != deletedDocumentId))
-			} else {
-				console.log("Internal error")
-				console.log(response)
-			}
-		})
-		.catch(function (error) {
-			console.log(error);
-		});
-	}, [deletedDocumentId])
+			.delete('https://www.capsalpha.live:3001/document/' + deletedDocumentId, {
+				withCredentials: true,
+			})
+			.then(function (response) {
+				console.log(response);
+				if (response.data.message === 'Success') {
+					setDocuments(documents.filter((doc) => doc.id != deletedDocumentId));
+					setSnackbarMessage('Documento deletado com sucesso.');
+					showSnackbar();
+				} else {
+					setSnackbarMessage('Erro ao deletar documento.');
+					showSnackbar();
+				}
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+	}, [deletedDocumentId]);
 
 	return (
 		<>
@@ -134,24 +147,32 @@ function Home() {
 				</HeadersButtons>
 			</Header>
 			<div className="divv">
-				<HalfPage gap="3em" height="84vh" justifyContent='center'>
+				<HalfPage gap="3em" height="84vh" justifyContent="center">
 					<h1 className="h1-home">Documentos Simultâneos</h1>
 					<h3 className="h3-home">Faça aqui seu Mardown</h3>
 					<S.button>
-						<div>
-							<ButtonNewDocument handleClick={handleClickCreateDocument} />
-							<InputDocumentCode handleChange={handleChange} />
-						</div>
+						{user ? (
+							<div>
+								<ButtonNewDocument handleClick={handleClickCreateDocument} />
+								<InputDocumentCode handleChange={handleChange} />
+							</div>
+						) : (
+							[]
+						)}
 						{value ? (
-							<S.search onClick={handleClickLinkDocument}>Juntar-se</S.search>
+							<S.search onClick={handleClickLinkDocument}>Entrar</S.search>
 						) : (
 							''
 						)}
 					</S.button>
-					<S.div className="hometrace">
-						Não tem uma conta?
-						<a onClick={() => navigate('/Register')}>Comece agora</a>
-					</S.div>
+					{user ? (
+						[]
+					) : (
+						<S.div className="hometrace">
+							Não tem uma conta?
+							<a onClick={() => navigate('/Register')}>Comece agora</a>
+						</S.div>
+					)}
 				</HalfPage>
 
 				<HalfPage gap="1.5em" height="84vh" paddingTop="2em">
@@ -159,7 +180,7 @@ function Home() {
 						documents.map((document, index) => {
 							if (index > 15) return;
 							return (
-								<div className='showcase'>
+								<div key={'container_' + document.id} className="showcase">
 									<CardDocuments
 										title={document.title}
 										key={document.id}
@@ -168,9 +189,10 @@ function Home() {
 										handleClick={() => navigate(`/Editor/${document.id}`)}
 									/>
 									<button
+										key={'document_' + document.id}
 										onClick={async () => setDeletedDocumentId(document.id)}
 									>
-										<BsTrashFill size={20}/>
+										<BsTrashFill key={'icon_' + document.id} size={20} />
 									</button>
 								</div>
 							);
@@ -188,7 +210,7 @@ function Home() {
 						</>
 					)}
 				</HalfPage>
-			<id id="snackbar">{snackbarMessage}</id>
+				<div id="snackbar">{snackbarMessage}</div>
 			</div>
 		</>
 	);

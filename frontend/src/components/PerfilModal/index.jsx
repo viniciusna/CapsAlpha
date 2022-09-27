@@ -9,7 +9,7 @@ import { deleteCookie } from '../../utils/cookie';
 const HoverableDiv = ({ handleMouseOver, handleMouseOut }) => {
 	return (
 		<S.img onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>
-			<CgProfile size={38} />
+			<CgProfile size={'38px'} />
 		</S.img>
 	);
 };

@@ -13,7 +13,6 @@ export const button = Styled.div`
   justify-content: center;
   align-items: center;
   gap: 1.5rem;
-  
 `;
 
 export const buttonModal = Styled.div`
@@ -31,8 +30,14 @@ export const buttonModal = Styled.div`
   margin: 5px;
 
   &:hover{
-      background-color: ${(props) =>
-    props.colorfnt};
-      color: ${(props) => (props.colorbg)};
+      background-color: #181818;
+      color: white;
   }
+`;
+export const Search = Styled.div`
+    padding: .5rem;
+    position: relative;
+    display: flex;  
+    align-items: center;
+    width: 18vw;
 `;

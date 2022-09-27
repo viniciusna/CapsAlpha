@@ -87,6 +87,11 @@ a{
   height:12vh;
 }
 
+.hometrace{
+  flex-direction: row;    
+  column-gap: 5px;
+}
+
 #snackbar {
   visibility: hidden;
   min-width: 500px;
@@ -144,6 +149,10 @@ button{
   width:45vw;
   gap:2em;
   // border:red solid 1px;
+}
+
+.logo-v{
+  cursor:pointer;
 }
 `;
 

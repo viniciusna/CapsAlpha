@@ -1,13 +1,12 @@
-import { useNavigate } from 'react-router-dom';
-import { useLocation, useContext, useState } from 'react';
-import { Img } from './style.js';
-import InputBox from '../../components/InputBox/InputBox.jsx';
-import Input from '../../components/Input/Input';
-import HalfPage from '../../components/HalfPage/HalfPage.jsx';
-import logo from '../../images/LogoVertical.svg';
 import Button from '../../components/Button/Button.jsx';
-import Error from '../../components/Error/Error';
 import { Context } from '../../context/Context.jsx';
+import Error from '../../components/Error/Error';
+import Input from '../../components/Input/Input';
+import InputBox from '../../components/InputBox/InputBox.jsx';
+import HalfPage from '../../components/HalfPage/HalfPage.jsx';
+import logo from '../../assets/images/LogoVertical.svg';
+import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Validate from '../../validator/ValidateLogin.js';
 
 const inputHeight = '6vh';
@@ -99,7 +98,7 @@ function Login() {
 					</InputBox>
 				</HalfPage>
 				<HalfPage gap="0em" height="100vh" justifyContent="center">
-					<Img onClick={() => navigate('/')} src={logo} alt="" />
+					<img className='logo-v' onClick={() => navigate('/')} src={logo} alt="" />
 				</HalfPage>
 			</div>
 		</>
