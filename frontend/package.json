@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"nginx": "vite build && sudo rsync -avh --delete --ignore-existing ./dist/ /var/www/capsalpha.live/public",
+		"nginx": "vite build && sudo rsync -avh --delete ./dist/ /var/www/capsalpha.live/public",
 		"build": "vite build",
 		"preview": "vite preview"
 	},
