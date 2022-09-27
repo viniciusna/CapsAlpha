@@ -30,9 +30,8 @@ export const buttonModal = Styled.div`
   margin: 5px;
 
   &:hover{
-      background-color: ${(props) =>
-    props.colorfnt};
-      color: ${(props) => (props.colorbg)};
+      background-color: #181818;
+      color: white;
   }
 `;
 export const Search = Styled.div`
