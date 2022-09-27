@@ -12,7 +12,7 @@ import Note from '../../assets/images/notes.svg';
 import PerfilModal from '../../components/PerfilModal/index';
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import * as S from '../../components/InputDocumentCode/style';
 
 function Home() {
@@ -21,12 +21,8 @@ function Home() {
 	const [registerHover, setRegisterHover] = useState(false);
 	const [documentLoaded, setDocumentLoaded] = useState(false);
 	const [deletedDocumentId, setDeletedDocumentId] = useState('');
-	const {
-		user,
-		documents,
-		setDocuments,
-		snackbarMessage,
-	} = useContext(Context);
+	const { user, documents, setDocuments, snackbarMessage } =
+		useContext(Context);
 	const navigate = useNavigate();
 
 	function handleChange(event) {
@@ -140,25 +136,27 @@ function Home() {
 					<h3 className="h3-home">Faça aqui seu Mardown</h3>
 					<S.button>
 						{user ? (
-						<div>
-							<ButtonNewDocument handleClick={handleClickCreateDocument} />
-							<InputDocumentCode handleChange={handleChange} />
-						</div>
+							<div>
+								<ButtonNewDocument handleClick={handleClickCreateDocument} />
+								<InputDocumentCode handleChange={handleChange} />
+							</div>
 						) : (
 							[]
-				 		)
-						
-}
+						)}
 						{value ? (
 							<S.search onClick={handleClickLinkDocument}>Entrar</S.search>
 						) : (
 							''
 						)}
 					</S.button>
-					<S.div className="hometrace">
-						Não tem uma conta?
-						<a onClick={() => navigate('/Register')}>Comece agora</a>
-					</S.div>
+					{user ? (
+						[]
+					) : (
+						<S.div className="hometrace">
+							Não tem uma conta?
+							<a onClick={() => navigate('/Register')}>Comece agora</a>
+						</S.div>
+					)}
 				</HalfPage>
 
 				<HalfPage gap="1.5em" height="84vh" paddingTop="2em">
