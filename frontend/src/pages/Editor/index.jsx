@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Button from '../../components/Button/Button.jsx';
 import { Context } from '../../context/Context.jsx';
-import { Converter} from 'showdown';
+import { Converter } from 'showdown';
 import { CustomToolbar } from '../../components/CustomToolbar/customToolbar';
 import DocTitle from '../../components/DocTitle/DocTitle.jsx';
 import dompurify from 'dompurify';
@@ -18,7 +18,6 @@ import UserIdentifier from '../../components/UserIdentifier/UserIdentifier.jsx';
 import 'github-markdown-css/github-markdown-light.css';
 import 'highlight.js/styles/github.css';
 import 'quill/dist/quill.snow.css';
-
 
 const converter = new Converter({
 	extensions: [
@@ -181,9 +180,7 @@ function Editor() {
 				setTitle(data.params.data);
 			} else if (type == 'join') {
 				if (data.status != 'Success') {
-					alert(`Status: ${data.status}, ${data.message}`)
-						? navigate('/Home')
-						: navigate('/Home');
+					navigate('/Home', { state: { error: data.message } });
 				}
 				handlerJoin(data);
 			} else if (type == 'leave') {
