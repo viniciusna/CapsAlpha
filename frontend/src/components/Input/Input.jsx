@@ -9,6 +9,8 @@ function Input(props) {
 		<S.div>
 			<label>{props.label}</label>
 			<S.input
+				onKeyPress={props.onKeyPress}
+				className={props.className}
 				name={props.name}
 				value={props.value}
 				type={props.type}

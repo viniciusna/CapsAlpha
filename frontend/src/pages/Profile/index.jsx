@@ -1,19 +1,16 @@
-import Button from '../../components/Button/Button.jsx';
 import { Context } from '../../context/Context.jsx';
-import Error from '../../components/Error/Error.jsx';
-import Input from '../../components/Input/Input.jsx';
-import InputBox from '../../components/InputBox/InputBox.jsx';
-import HalfPage from '../../components/HalfPage/HalfPage.jsx';
-import HeaderProfile from '../../components/Header/HeaderProfile.jsx';
 import { useContext, useEffect, useState } from 'react';
-import Validate from '../../validator/ValidateUpdate';
+import HeaderProfile from '../../components/Header/HeaderProfile.jsx';
+import HalfPage from '../../components/HalfPage/HalfPage.jsx';
+import InputBox from '../../components/InputBox/InputBox.jsx';
+import Input from '../../components/Input/Input.jsx';
+import Button from '../../components/Button/Button.jsx';
 
 function Profile() {
 	const inputHeight = '6vh';
 	const inputWidth = '30vw';
 
-	const [serverError, setServerError] = useState(false);
-	const [formErrors, setFormErrors] = useState({});
+	const [error, setError] = useState('');
 	const {
 		user,
 		setUser,
@@ -40,11 +37,6 @@ function Profile() {
 	}, [user]);
 
 	function handleClick(event) {
-		const errors = Validate(values);
-		setFormErrors(errors);
-
-		if (Object.keys(errors).length !== 0) return;
-
 		let message = 'Perfil Atualizado com sucesso!';
 		fetch('http://localhost:3001/user', {
 			method: 'PUT',
@@ -58,7 +50,7 @@ function Profile() {
 			.then((res) => {
 				console.log(res);
 				if (res.message !== 'Success') {
-					setServerError(res.message);
+					setError(res.message);
 					return null;
 				}
 				setSnackbarMessage(message);
@@ -68,6 +60,11 @@ function Profile() {
 			})
 			.catch((err) => console.log(err));
 	}
+	function handleKeyPress(event) {
+		if (event.key === 'Enter') {
+			handleClick(event);
+		}
+	}
 	return (
 		<>
 			<HeaderProfile></HeaderProfile>
@@ -75,6 +72,7 @@ function Profile() {
 				<HalfPage height="92vh" justifyContent="center">
 					<InputBox title="Editar Perfil" height="80vh">
 						<Input
+							onKeyPress={(event) => handleKeyPress(event)}
 							label="email"
 							name="email"
 							height={inputHeight}
@@ -83,40 +81,39 @@ function Profile() {
 							value={values.email}
 							handleChange={handleChange}
 							placeholder="Seu email"
-							error={formErrors.email}
 						></Input>
 						<Input
+							onKeyPress={(event) => handleKeyPress(event)}
 							label="Nome de usuário"
 							name="name"
 							height={inputHeight}
 							width={inputWidth}
 							type="text"
 							value={values.name}
-							error={formErrors.name}
+							//handleChange={handleChange}
 							handleChange={handleChange}
 							placeholder="Seu nome de usuário"
 						></Input>
 						<Input
+							onKeyPress={(event) => handleKeyPress(event)}
 							label="Senha"
 							name="password"
 							height={inputHeight}
 							width={inputWidth}
 							type="password"
 							handleChange={handleChange}
-							error={formErrors.password}
 							placeholder="Digite uma senha"
 						></Input>
 						<Input
+							onKeyPress={(event) => handleKeyPress(event)}
 							label="Confirme sua senha"
 							name="confirmPassword"
 							height={inputHeight}
 							width={inputWidth}
-							type="confirmPassword"
-							error={formErrors.confirmPassword}
+							type="password"
 							handleChange={handleChange}
 							placeholder="Confirme a sua senha"
 						></Input>
-						<Error error={serverError} />
 						<Button
 							colorbg="black"
 							colorfnt="white"
@@ -127,7 +124,7 @@ function Profile() {
 						/>
 					</InputBox>
 				</HalfPage>
-				<div id="snackbar">{snackbarMessage}</div>
+				<id id="snackbar">{snackbarMessage}</id>
 			</div>
 		</>
 	);
