@@ -32,7 +32,7 @@ class UserValidator {
       throw new BadRequest("Password is required");
     }
     const { password } = params;
-    if (password.length <= 8) {
+    if (password.length < 8) {
       throw new BadRequest("The password must be at least 8 digits long");
     }
   }
