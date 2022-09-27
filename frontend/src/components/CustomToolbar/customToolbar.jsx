@@ -163,22 +163,12 @@ const CustomToolbar = ({ props, handleSave, handleDownload, handleShare }) => (
 				</button>
 			</Tooltip>
 			<Tooltip title="Save">
-				<button
-					onClick={() => {
-						alert('Your File has Been Saved!');
-					}}
-					className="ql-save"
-				>
+				<button className="ql-save">
 					<AiTwotoneSave onClick={handleSave} color={'#b9b9b9'} size={20} />
 				</button>
 			</Tooltip>
 			<Tooltip title="File Download">
-				<button
-					onClick={() => {
-						alert('Your code has Been download!');
-					}}
-					className="ql-fileDownload"
-				>
+				<button className="ql-fileDownload">
 					<AiOutlineDownload
 						onClick={handleDownload}
 						color={'#b9b9b9'}
@@ -187,12 +177,7 @@ const CustomToolbar = ({ props, handleSave, handleDownload, handleShare }) => (
 				</button>
 			</Tooltip>
 			<Tooltip title="Share">
-				<button
-					onClick={() => {
-						alert('Your code has Been saved on clipboard!');
-					}}
-					className="ql-share"
-				>
+				<button className="ql-share">
 					<AiOutlineShareAlt
 						onClick={handleShare}
 						color={'#b9b9b9'}
