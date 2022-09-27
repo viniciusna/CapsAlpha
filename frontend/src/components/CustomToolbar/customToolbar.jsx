@@ -75,7 +75,7 @@ function insertH3() {
 
 function insertBold() {
 	const cursorPosition = this.quill.getSelection().index;
-	this.quill.insertText(cursorPosition, '**');
+	this.quill.insertText(cursorPosition, '****');
 	this.quill.setSelection(cursorPosition + 2);
 }
 
@@ -87,7 +87,7 @@ function insertItalic() {
 
 function insertStrikethrough() {
 	const cursorPosition = this.quill.getSelection().index;
-	this.quill.insertText(cursorPosition, '~~');
+	this.quill.insertText(cursorPosition, '~~~~');
 	this.quill.setSelection(cursorPosition + 2);
 }
 function insertUnorderedList() {
