@@ -175,7 +175,7 @@ const CustomToolbar = ({ props, handleSave, handleDownload, handleShare }) => (
 			<Tooltip title="File Download">
 				<button
 					onClick={() => {
-						alert('Your code has Been saved on clipboard!');
+						alert('Your code has Been download!');
 					}}
 					className="ql-fileDownload"
 				>
