@@ -26,6 +26,10 @@ const converter = new Converter({
 			auto_detection: true,
 		}),
 	],
+	underline: true,
+	openLinksInNewWindow: true,
+	simplifiedAutoLink: true,
+	tasklists: true,
 });
 converter.setFlavor('github');
 
@@ -263,6 +267,22 @@ function Editor() {
 
 	function saveDocument() {
 		socket.send(JSON.stringify({ type: 'save', params: { room: documentId } }));
+	}
+
+	function downloadDocument() {
+		download(
+			`${title}.md`,
+			document.getElementsByClassName('ql-editor')[0].innerText
+		);
+	}
+
+	function shareDocument() {
+		let url = window.location.href;
+		navigator.clipboard.writeText(url.slice(-36));
+		console.log('Compartilhar', url.slice(-36));
+		let message = 'Código do documento copiado para clipboard';
+		setSnackbarMessage(message);
+		showSnackbar();
 	}
 
 	function download(filename, text) {
