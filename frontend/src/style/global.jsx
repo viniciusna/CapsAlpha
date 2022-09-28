@@ -12,7 +12,7 @@ export const GlobalStyle = createGlobalStyle`
   padding:0;
   box-sizing: border-box;
   font-family: 'Roboto', sans-serif;
-
+  font-size: 16px;
     }
 .divv{
       display:flex;
@@ -42,7 +42,7 @@ export const GlobalStyle = createGlobalStyle`
 
 .h1-home{
   font-family: 'Roboto Mono', monospace;
-  font-size:3em;
+  font-size:3rem;
   // border:1px solid red;
   width:75%;
 
@@ -166,6 +166,17 @@ button{
     overflow: auto;
     padding-right: 15px;
 }
+  
+  @media (min-aspect-ratio: 16/8) {
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #root {
+    width: 200vh;
+    height: 100vh;
+  }
+  }
 
 `;
-

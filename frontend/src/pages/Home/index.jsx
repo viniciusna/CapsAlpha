@@ -149,7 +149,7 @@ function Home() {
 			<div className="divv">
 				<HalfPage gap="3em" height="84vh" justifyContent="center">
 					<h1 className="h1-home">Documentos Simultâneos</h1>
-					<h3 className="h3-home">Faça aqui seu Mardown</h3>
+					<h3 className="h3-home">Faça aqui seu Markdown</h3>
 					<S.button>
 						{user ? (
 							<div>
@@ -200,7 +200,7 @@ function Home() {
 							})
 						) : (
 							<>
-								<img src={Note} alt="" srcSet="" />
+								<img src={Note} alt="" srcSet="" height='60%' />
 								<div className="text">
 									<h2 className="h2-home">Criar um link para compartilhar</h2>
 									<p className="p-home">
