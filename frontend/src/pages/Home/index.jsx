@@ -147,71 +147,73 @@ function Home() {
 				</HeadersButtons>
 			</Header>
 			<div className="divv">
-				<HalfPage gap="3em" height="84vh" justifyContent="center">
-					<h1 className="h1-home">Documentos Simultâneos</h1>
-					<h3 className="h3-home">Faça aqui seu Markdown</h3>
-					<S.button>
-						{user ? (
-							<div>
-								<ButtonNewDocument handleClick={handleClickCreateDocument} />
-								<InputDocumentCode handleChange={handleChange} />
-							</div>
-						) : (
-							[]
-						)}
-						{value ? (
-							<S.search onClick={handleClickLinkDocument}>Entrar</S.search>
-						) : (
-							''
-						)}
-					</S.button>
-					{user ? (
-						[]
-					) : (
-						<S.div className="hometrace">
-							Não tem uma conta?
-							<a onClick={() => navigate('/Register')}>Comece agora</a>
-						</S.div>
-					)}
-				</HalfPage>
-
-				<HalfPage gap="1.5em" height="84vh" paddingTop="2em">
-					<div className='scroll-ajust'>
-						{documents ? (
-							documents.map((document, index) => {
-								if (index > 15) return;
-								return (
-									<div key={'container_' + document.id} className="showcase">
-										<CardDocuments
-											title={document.title}
-											key={document.id}
-											updatedAt={document.updated_at}
-											owner={document.owner}
-											handleClick={() => navigate(`/Editor/${document.id}`)}
-										/>
-										<button
-											key={'document_' + document.id}
-											onClick={async () => setDeletedDocumentId(document.id)}
-										>
-											<BsTrashFill key={'icon_' + document.id} size={20} />
-										</button>
-									</div>
-								);
-							})
-						) : (
-							<>
-								<img src={Note} alt="" srcSet="" height='60%' />
-								<div className="text">
-									<h2 className="h2-home">Criar um link para compartilhar</h2>
-									<p className="p-home">
-										Clique em Novo documento se quiser criar um link para enviar
-										aos convidados
-									</p>
+				<div className="container-home">
+					<HalfPage gap="3em" height="84vh" justifyContent="center">
+						<h1 className="h1-home">Documentos Simultâneos</h1>
+						<h3 className="h3-home">Faça aqui seu Markdown</h3>
+						<S.button>
+							{user ? (
+								<div>
+									<ButtonNewDocument handleClick={handleClickCreateDocument} />
+									<InputDocumentCode handleChange={handleChange} />
 								</div>
-							</>
+							) : (
+								[]
+							)}
+							{value ? (
+								<S.search onClick={handleClickLinkDocument}>Entrar</S.search>
+							) : (
+								''
+							)}
+						</S.button>
+						{user ? (
+							[]
+						) : (
+							<S.div className="hometrace">
+								Não tem uma conta?
+								<a onClick={() => navigate('/Register')}>Comece agora</a>
+							</S.div>
 						)}
-					</div>
-				</HalfPage>
+					</HalfPage>
+
+					<HalfPage gap="1.5em" height="84vh" paddingTop="2em">
+						<div className="scroll-ajust">
+							{documents ? (
+								documents.map((document, index) => {
+									if (index > 15) return;
+									return (
+										<div key={'container_' + document.id} className="showcase">
+											<CardDocuments
+												title={document.title}
+												key={document.id}
+												updatedAt={document.updated_at}
+												owner={document.owner}
+												handleClick={() => navigate(`/Editor/${document.id}`)}
+											/>
+											<button
+												key={'document_' + document.id}
+												onClick={async () => setDeletedDocumentId(document.id)}
+											>
+												<BsTrashFill key={'icon_' + document.id} size={20} />
+											</button>
+										</div>
+									);
+								})
+							) : (
+								<>
+									<img src={Note} alt="" srcSet="" height="60%" />
+									<div className="text">
+										<h2 className="h2-home">Criar um link para compartilhar</h2>
+										<p className="p-home">
+											Clique em Novo documento se quiser criar um link para
+											enviar aos convidados
+										</p>
+									</div>
+								</>
+							)}
+						</div>
+					</HalfPage>
+				</div>
 				<div id="snackbar">{snackbarMessage}</div>
 			</div>
 		</>
