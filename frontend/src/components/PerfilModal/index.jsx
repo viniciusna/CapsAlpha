@@ -7,15 +7,31 @@ import ButtonModal from '../Button/ButtonModal';
 import { useNavigate } from 'react-router-dom';
 import { deleteCookie } from '../../utils/cookie';
 const HoverableDiv = ({ handleMouseOver, handleMouseOut }) => {
+	let clicked = false;
+
+	function clickModal() {
+		if (!clicked){
+			clicked = true;
+			handleMouseOver();
+		}else{
+			clicked = false;
+			handleMouseOut();
+		}
+	}
+
 	return (
-		<S.img onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>
+		<S.img
+			onMouseOver={handleMouseOver}
+			onMouseOut={handleMouseOut}
+			onClick={clickModal}
+		>
 			<CgProfile size={'38px'} />
 		</S.img>
 	);
 };
 
 const HoverText = ({ name, handleMouseOver, handleMouseOut }) => {
-	const { user, setUser, documents, setDocuments } = useContext(Context);
+	const {setUser, setDocuments } = useContext(Context);
 	const navigate = useNavigate();
 
 	function handleClickExit() {
@@ -48,7 +64,7 @@ const HoverText = ({ name, handleMouseOver, handleMouseOut }) => {
 };
 
 function PerfilModal() {
-	const { user, setUser, documents, setDocuments } = useContext(Context);
+	const { user} = useContext(Context);
 	const [isHovering, setIsHovering] = useState(false);
 	const handleMouseOver = () => {
 		setIsHovering(true);
