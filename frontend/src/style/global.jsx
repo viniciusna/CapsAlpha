@@ -162,7 +162,6 @@ button{
     align-items: center;
     width: 100%;
     height: 99%;
-    border: 1px solid blue;
     overflow: auto;
     padding-right: 15px;
 }
