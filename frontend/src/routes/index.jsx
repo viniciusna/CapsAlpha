@@ -14,7 +14,7 @@ function Router() {
 	useEffect(() => {
 		const userToken = getCookie('token');
 		if (userToken && !user) {
-			fetch('http://localhost:3001/user/me', {
+			fetch('https://capsalpha.live:3001/user/me', {
 				method: 'GET',
 				credentials: 'include',
 				headers: new Headers({

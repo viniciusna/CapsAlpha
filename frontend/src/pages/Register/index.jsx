@@ -32,7 +32,7 @@ function Register() {
 		if (Object.keys(errors).length !== 0) return;
 		setServerError(false);
 
-		fetch('http://localhost:3001/user/register', {
+		fetch('https://capsalpha.live:3001/user/register', {
 			method: 'POST',
 			credentials: 'include',
 			body: JSON.stringify(values),
