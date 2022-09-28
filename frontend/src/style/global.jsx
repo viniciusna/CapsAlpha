@@ -142,7 +142,7 @@ button{
 }
 
 .showcase{
-  padding: 1em 0;
+  padding: 3rem 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -162,7 +162,7 @@ button{
     align-items: center;
     width: 100%;
     height: 99%;
-    border: 1px solid blue;
+    // border: 1px solid blue;
     overflow: auto;
     padding-right: 15px;
 }
@@ -178,5 +178,12 @@ button{
     height: 100vh;
   }
   }
-
+.ql-toolbar.ql-snow {
+    display: flex;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+    padding: 8px;
+    align-content: center;
+    align-items: center;
 `;
