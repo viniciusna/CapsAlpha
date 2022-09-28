@@ -26,6 +26,10 @@ const converter = new Converter({
 			auto_detection: true,
 		}),
 	],
+	underline: true,
+	openLinksInNewWindow: true,
+	simplifiedAutoLink: true,
+	tasklists: true,
 });
 converter.setFlavor('github');
 
@@ -265,6 +269,22 @@ function Editor() {
 		socket.send(JSON.stringify({ type: 'save', params: { room: documentId } }));
 	}
 
+	function downloadDocument() {
+		download(
+			`${title}.md`,
+			document.getElementsByClassName('ql-editor')[0].innerText
+		);
+	}
+
+	function shareDocument() {
+		let url = window.location.href;
+		navigator.clipboard.writeText(url.slice(-36));
+		console.log('Compartilhar', url.slice(-36));
+		let message = 'Código do documento copiado para clipboard';
+		setSnackbarMessage(message);
+		showSnackbar();
+	}
+
 	function download(filename, text) {
 		var element = document.createElement('a');
 		element.setAttribute(
@@ -337,51 +357,32 @@ function Editor() {
 				}}
 			>
 				<HeadersButtons gap="2rem">
-					<Button
-						colorbg="white"
-						colorfnt="black"
-						height="1.8rem"
-						width="7rem"
-						value={'Compartilhar'}
-						onClick={() => {
-							let url = window.location.href;
-							navigator.clipboard.writeText(url.slice(-36));
-							console.log('Compartilhar', url.slice(-36));
-							let message = 'Código do documento copiado para clipboard';
-							setSnackbarMessage(message);
-							showSnackbar();
-						}}
-					/>
 					<DocTitle
 						id="title"
 						value={title}
 						onInput={(event) => setTitle(event.target.value)}
 						onBlur={() => updateTitle()}
 					/>
-					<Button
-						colorbg="white"
-						colorfnt="black"
-						height="1.8rem"
-						width="6rem"
-						value={'Download'}
-						onClick={() =>
-							download(
-								`${title}.md`,
-								document.getElementsByClassName('ql-editor')[0].innerText
-							)
-						}
-					></Button>
 					<HeadersButtons gap="0.2rem">
 						{users.map((user, i) => (
-							<UserIdentifier key={i} colorbg={user.color} colorfnt={'white'}>
-								{user.name.toString().charAt(0)}
+							<UserIdentifier
+								name={user.name}
+								key={i}
+								colorbg={user.color}
+								colorfnt={'white'}
+							>
+								{user.name.toString().charAt(0).toUpperCase()}
 							</UserIdentifier>
 						))}
 					</HeadersButtons>
 				</HeadersButtons>
 				<PerfilModal />
 			</Header>
-			<CustomToolbar handleSave={saveDocument} />
+			<CustomToolbar
+				handleSave={saveDocument}
+				handleDownload={downloadDocument}
+				handleShare={shareDocument}
+			/>
 			<div className="divv">
 				<HalfPage gap="0em" height="86vh">
 					<div

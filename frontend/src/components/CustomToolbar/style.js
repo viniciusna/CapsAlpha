@@ -12,9 +12,15 @@ export const Toolbar = Styled.div`
     }
 `;
 export const Elements = Styled.div`
-    width: 50%;
+    height:6vh;
     display: flex;
     justify-content: space-around;
+    align-items: center;
+
+    @media (min-width: 700px){
+        width: 50%;
+    }
+
     @media (max-width: 500px) {
         &{
             overflowY: hidden;

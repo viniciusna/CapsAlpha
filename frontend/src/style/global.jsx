@@ -12,7 +12,7 @@ export const GlobalStyle = createGlobalStyle`
   padding:0;
   box-sizing: border-box;
   font-family: 'Roboto', sans-serif;
-
+  font-size: 16px;
     }
 .divv{
       display:flex;
@@ -42,7 +42,7 @@ export const GlobalStyle = createGlobalStyle`
 
 .h1-home{
   font-family: 'Roboto Mono', monospace;
-  font-size:3em;
+  font-size:3rem;
   // border:1px solid red;
   width:75%;
 
@@ -142,6 +142,7 @@ button{
 }
 
 .showcase{
+  padding: 3rem 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -154,5 +155,35 @@ button{
 .logo-v{
   cursor:pointer;
 }
-`;
 
+.scroll-ajust{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 99%;
+    // border: 1px solid blue;
+    overflow: auto;
+    padding-right: 15px;
+}
+  
+  @media (min-aspect-ratio: 16/8) {
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #root {
+    width: 200vh;
+    height: 100vh;
+  }
+  }
+.ql-toolbar.ql-snow {
+    display: flex;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+    padding: 8px;
+    align-content: center;
+    align-items: center;
+`;
