@@ -142,6 +142,7 @@ button{
 }
 
 .showcase{
+  padding: 1em 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -154,5 +155,17 @@ button{
 .logo-v{
   cursor:pointer;
 }
+
+.scroll-ajust{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 99%;
+    border: 1px solid blue;
+    overflow: auto;
+    padding-right: 15px;
+}
+
 `;
 
