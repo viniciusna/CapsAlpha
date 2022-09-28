@@ -35,7 +35,7 @@ function Login() {
 		if (Object.keys(errors).length !== 0) return;
 		setServerError(false);
 
-		fetch('http://localhost:3001/user/login', {
+		fetch('https//www.capsalpha.live:3001/user/login', {
 			method: 'POST',
 			credentials: 'include',
 			body: JSON.stringify(values),

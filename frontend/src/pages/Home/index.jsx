@@ -47,7 +47,7 @@ function Home() {
 	useEffect(() => {
 		if (!user || documentLoaded) return;
 
-		fetch('http://localhost:3001/document/my', {
+		fetch('https//www.capsalpha.live:3001/document/my', {
 			method: 'GET',
 			credentials: 'include',
 
@@ -72,7 +72,7 @@ function Home() {
 	}
 
 	function handleClickCreateDocument(event) {
-		fetch('http://localhost:3001/document/', {
+		fetch('https//www.capsalpha.live:3001/document/', {
 			method: 'POST',
 			credentials: 'include',
 			headers: new Headers({
@@ -95,7 +95,7 @@ function Home() {
 		if (!deletedDocumentId) return;
 
 		axios
-			.delete('http://localhost:3001/document/' + deletedDocumentId, {
+			.delete('https//www.capsalpha.live:3001/document/' + deletedDocumentId, {
 				withCredentials: true,
 			})
 			.then(function (response) {
